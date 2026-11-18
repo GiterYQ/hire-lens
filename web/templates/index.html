@@ -1,50 +1,68 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="dark">
+<html lang="zh-CN" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HireLens 聘镜 v3.0 · 招聘端视角全链路 AI 求职系统</title>
+  <title>HireLens 聘镜 · 招聘端视角全链路 AI 求职系统</title>
   <style>
-    :root[data-theme="dark"] {
-      --bg: #0b1120;
-      --surface: #131c2e;
-      --surface-2: #1b2740;
-      --surface-3: #0f172a;
-      --border: #263552;
-      --text: #f1f5f9;
-      --text-muted: #94a3b8;
-      --accent: #00bebd;
-      --accent-hover: #00a3a2;
-      --accent-soft: rgba(0, 190, 189, 0.14);
-      --warn: #f59e0b;
-      --warn-soft: rgba(245, 158, 11, 0.15);
-      --danger: #f43f5e;
-      --danger-soft: rgba(244, 63, 94, 0.15);
-      --info: #38bdf8;
-      --info-soft: rgba(56, 189, 248, 0.14);
-      --purple: #c084fc;
-      --shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+    /*
+     * 视觉层级与色彩克制规范 (60-30-10 Editorial Hierarchy):
+     * - 60% 柔和纸感底色与纯白卡片（消除深蓝眩光与多层套盒压迫感）
+     * - 30% 四级中性墨色字重梯度（主标题/正文/表头/弱辅助说明分明）
+     * - 10% 单一主行动色（克制深蓝 #2563EB 仅用于当前视图唯一核心按钮；红/琥珀/绿仅用于真实状态预警）
+     */
+    :root[data-theme="light"] {
+      --bg: #f5f6f8;
+      --surface: #ffffff;
+      --surface-2: #f8f9fb;
+      --surface-3: #f1f3f6;
+      --input-bg: #ffffff;
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --text: #111827;
+      --text-2: #374151;
+      --text-muted: #6b7280;
+      --text-faint: #9ca3af;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-soft: #eff6ff;
+      --ok: #059669;
+      --ok-soft: #ecfdf5;
+      --warn: #b45309;
+      --warn-soft: #fffbeb;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --highlight-bg: #fef3c7;
+      --highlight-ink: #111827;
+      --shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+      --tab-active-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
     }
 
-    :root[data-theme="light"] {
-      --bg: #f3f6fa;
-      --surface: #ffffff;
-      --surface-2: #f1f5f9;
-      --surface-3: #f8fafc;
-      --border: #dce3ee;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --accent: #00a6a7;
-      --accent-hover: #008c8d;
-      --accent-soft: rgba(0, 166, 167, 0.1);
-      --warn: #d97706;
-      --warn-soft: rgba(217, 119, 6, 0.11);
-      --danger: #e11d48;
-      --danger-soft: rgba(225, 29, 72, 0.1);
-      --info: #0284c7;
-      --info-soft: rgba(2, 132, 199, 0.1);
-      --purple: #9333ea;
-      --shadow: 0 6px 22px rgba(15, 23, 42, 0.06);
+    :root[data-theme="dark"] {
+      --bg: #111315;
+      --surface: #181b1f;
+      --surface-2: #1f2328;
+      --surface-3: #14171a;
+      --input-bg: #14171a;
+      --border: #2a2f36;
+      --border-strong: #3a414a;
+      --text: #f3f4f6;
+      --text-2: #d1d5db;
+      --text-muted: #9ca3af;
+      --text-faint: #6b7280;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-soft: rgba(59, 130, 246, 0.14);
+      --ok: #34d399;
+      --ok-soft: rgba(16, 185, 129, 0.14);
+      --warn: #fbbf24;
+      --warn-soft: rgba(245, 158, 11, 0.14);
+      --danger: #f87171;
+      --danger-soft: rgba(239, 68, 68, 0.14);
+      --highlight-bg: rgba(251, 191, 36, 0.22);
+      --highlight-ink: #fef3c7;
+      --shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+      --tab-active-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,197 +71,235 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      font-size: 13px;
-      line-height: 1.55;
+      font-size: 13.5px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
     button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
 
-    /* Top Header */
+    /* Top Header — Clean, Quiet Segmented Navigation */
     .topbar {
       position: sticky; top: 0; z-index: 40;
       background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 10px 20px;
+      padding: 8px 20px;
     }
     .topbar-inner {
       max-width: 1460px; margin: 0 auto;
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 8px; }
     .brand-logo {
-      width: 34px; height: 34px; border-radius: 10px;
-      background: linear-gradient(135deg, #00bebd, #0284c7);
-      color: #fff; font-weight: 800; font-size: 13.5px;
+      width: 28px; height: 28px; border-radius: 7px;
+      background: var(--text); color: var(--surface);
+      font-weight: 800; font-size: 12px; letter-spacing: -0.5px;
       display: flex; align-items: center; justify-content: center;
     }
-    .brand-title { font-size: 15px; font-weight: 800; }
-    .brand-sub { font-size: 11px; color: var(--text-muted); }
+    .brand-title { font-size: 14.5px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; white-space: nowrap; }
+    .brand-sub { font-size: 11.5px; color: var(--text-muted); }
 
     .nav-tabs {
-      display: flex; flex-wrap: wrap; gap: 4px;
-      background: var(--surface-3); padding: 4px; border-radius: 10px; border: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; gap: 2px;
+      background: var(--surface-3); padding: 3px; border-radius: 8px;
     }
     .nav-tab {
-      padding: 6px 11px; border-radius: 7px; border: none; background: transparent;
-      color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; white-space: nowrap;
+      padding: 5px 10px; border-radius: 6px; border: none; background: transparent;
+      color: var(--text-muted); font-weight: 500; font-size: 12px; cursor: pointer; white-space: nowrap;
+      transition: all 0.12s;
     }
-    .nav-tab.active { background: var(--accent); color: #fff; }
+    .nav-tab:hover { color: var(--text); }
+    .nav-tab.active {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: var(--tab-active-shadow);
+    }
 
-    .status-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font-size: 11.5px; }
+    .status-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; }
     .pill {
-      padding: 3px 9px; border-radius: 999px; background: var(--surface-3);
-      border: 1px solid var(--border); color: var(--text-muted); display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px; border-radius: 7px; background: transparent;
+      border: 1px solid transparent; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;
     }
-    .dot-ok { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; }
-    .dot-run { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); display: inline-block; animation: pulse 1s infinite; }
+    .pill-btn {
+      background: var(--surface); border: 1px solid var(--border-strong); color: var(--text-2);
+      font-weight: 600; cursor: pointer; transition: border-color 0.15s;
+    }
+    .pill-btn:hover { border-color: var(--text); color: var(--text); }
+    .dot-ok { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); display: inline-block; }
+    .dot-run { width: 6px; height: 6px; border-radius: 50%; background: var(--warn); display: inline-block; animation: pulse 1s infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-    .container { max-width: 1460px; margin: 0 auto; padding: 16px 20px 76px; }
+    .container { max-width: 1440px; margin: 0 auto; padding: 20px 24px 80px; }
     .view-panel { display: none; }
     .view-panel.active { display: block; }
 
-    .studio-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 16px; align-items: start; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
-    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .studio-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 20px; align-items: start; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     @media (max-width: 1060px) { .studio-grid, .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
     .card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 15px; padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 16px;
+      border-radius: 12px; padding: 20px 22px; box-shadow: var(--shadow); margin-bottom: 18px;
     }
     .card-header {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
-      padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+      padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border);
     }
-    .card-title { font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+    .card-title { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
+    .section-divider {
+      font-size: 12px; font-weight: 700; color: var(--text-2);
+      padding: 8px 0 6px; margin: 12px 0 8px; border-bottom: 1px solid var(--border);
+      letter-spacing: 0.2px;
+    }
 
-    /* Form Controls */
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-    .form-group { margin-bottom: 10px; }
-    label { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+    /* Form Controls — Clear Input Contrast */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; }
     input[type="text"], input[type="password"], input[type="number"], select, textarea {
-      width: 100%; background: var(--surface-3); border: 1px solid var(--border);
-      border-radius: 8px; padding: 7px 10px; outline: none; transition: border-color 0.15s;
+      width: 100%; background: var(--input-bg); border: 1px solid var(--border-strong);
+      border-radius: 8px; padding: 8px 11px; color: var(--text); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
     }
-    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
-    textarea { resize: vertical; line-height: 1.52; }
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+    textarea { resize: vertical; line-height: 1.6; }
 
-    /* Buttons */
+    /* Strict 3-Tier Button Hierarchy */
     .btn {
-      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
-      padding: 7px 13px; border-radius: 8px; border: 1px solid transparent;
-      font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.15s; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+      padding: 8px 14px; border-radius: 8px; border: 1px solid transparent;
+      font-weight: 600; font-size: 12.5px; cursor: pointer; transition: all 0.14s; text-decoration: none;
     }
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-primary { background: var(--accent); color: #fff; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    /* Tier 1: Primary Focal Action (1 per panel) */
+    .btn-primary { background: var(--accent); color: #ffffff; }
     .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
-    .btn-secondary { background: var(--surface-2); border-color: var(--border); color: var(--text); }
-    .btn-secondary:hover:not(:disabled) { border-color: var(--accent); }
-    .btn-danger { background: var(--danger-soft); border-color: rgba(244,63,94,0.4); color: var(--danger); }
-    .btn-ghost { background: transparent; border-color: var(--border); color: var(--text-muted); padding: 4px 9px; font-size: 11.5px; }
-    .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
-    .btn-full { width: 100%; padding: 9px; font-size: 13px; }
+    /* Tier 2: Crisp Neutral Outline */
+    .btn-secondary { background: var(--surface); border-color: var(--border-strong); color: var(--text-2); }
+    .btn-secondary:hover:not(:disabled) { background: var(--surface-2); border-color: var(--text-muted); color: var(--text); }
+    /* Destructive */
+    .btn-danger { background: var(--surface); border-color: rgba(220,38,38,0.35); color: var(--danger); }
+    .btn-danger:hover:not(:disabled) { background: var(--danger-soft); }
+    /* Tier 3: Quiet Auxiliary Link/Action */
+    .btn-ghost { background: transparent; border-color: transparent; color: var(--text-muted); padding: 5px 9px; font-size: 12px; font-weight: 500; }
+    .btn-ghost:hover { background: var(--surface-3); color: var(--text); }
+    .btn-full { width: 100%; padding: 10px 14px; font-size: 13.5px; }
 
-    /* Quick Paste & Screenshot Dropzone */
-    .quick-paste {
-      background: var(--surface-3); border: 1px dashed var(--accent);
-      border-radius: 10px; padding: 10px; margin-bottom: 10px;
+    /* Unified Quiet Import Box & Helper Notes (Zero Rainbow Borders) */
+    .quick-paste, .shot-dropzone {
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 9px; padding: 11px 13px; margin-bottom: 12px;
     }
     .shot-dropzone {
-      background: var(--surface-3); border: 1px dashed var(--info);
-      border-radius: 10px; padding: 9px 11px; margin-bottom: 11px;
       display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
     }
     .mechanism-tip {
-      background: var(--accent-soft); border-left: 3px solid var(--accent);
-      border-radius: 7px; padding: 7px 10px; font-size: 11.5px; color: var(--text); margin-bottom: 6px;
+      border-left: 2px solid var(--border-strong);
+      padding: 2px 0 2px 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      line-height: 1.55;
     }
+    .mechanism-tip strong { color: var(--text-2); font-weight: 600; }
     .live-cut-bar {
-      background: var(--surface-3); border: 1px solid var(--border); border-radius: 8px;
-      padding: 6px 10px; font-size: 12px; margin-top: 5px;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 7px 11px; font-size: 12px; margin-top: 6px;
       display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
     }
-    .exposed-txt { color: var(--accent); font-weight: 700; }
+    .exposed-txt {
+      background: var(--highlight-bg);
+      color: var(--highlight-ink);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-weight: 700;
+    }
 
     .chip-btn {
-      font-size: 11px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);
-      background: var(--surface-2); color: var(--text-muted); cursor: pointer;
+      font-size: 11.5px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.12s;
     }
-    .chip-btn:hover { color: var(--accent); border-color: var(--accent); }
+    .chip-btn:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
 
-    /* Score & Metrics */
-    .metrics-top { display: grid; grid-template-columns: 128px 1fr; gap: 12px; margin-bottom: 12px; }
+    /* Score & Metrics — High Contrast Focal Number, Subtle Supporting Bars */
+    .metrics-top { display: grid; grid-template-columns: 140px 1fr; gap: 14px; margin-bottom: 16px; }
     .score-ring {
-      background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px;
     }
-    .score-num { font-size: 29px; font-weight: 800; color: var(--accent); line-height: 1.1; }
+    .score-num { font-size: 34px; font-weight: 800; color: var(--text); line-height: 1.05; letter-spacing: -1px; }
     .dim-bars {
-      background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px;
-      padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px;
     }
-    .dim-head { display: flex; justify-content: space-between; margin-bottom: 3px; color: var(--text-muted); font-size: 11.5px; }
-    .bar-bg { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; background: var(--accent); border-radius: 99px; }
+    .dim-head { display: flex; justify-content: space-between; margin-bottom: 4px; color: var(--text-muted); font-size: 12px; }
+    .dim-head strong { color: var(--text); }
+    .bar-bg { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--text-2); border-radius: 99px; }
 
-    .banner { padding: 8px 12px; border-radius: 9px; font-size: 12px; margin-bottom: 11px; border: 1px solid transparent; }
-    .banner.safe { background: var(--accent-soft); border-color: rgba(0,190,189,0.3); color: var(--accent); }
-    .banner.caution { background: var(--warn-soft); border-color: rgba(245,158,11,0.35); color: var(--warn); }
-    .banner.veto { background: var(--danger-soft); border-color: rgba(244,63,94,0.4); color: var(--danger); font-weight: 600; }
+    /* Semantic Status Banners — Quiet when Safe, Clear when Warning/Veto */
+    .banner { padding: 9px 13px; border-radius: 8px; font-size: 12.5px; margin-bottom: 14px; border: 1px solid transparent; }
+    .banner.safe { background: var(--ok-soft); border-color: rgba(5,150,105,0.2); color: var(--ok); }
+    .banner.caution { background: var(--warn-soft); border-color: rgba(180,83,9,0.25); color: var(--warn); }
+    .banner.veto { background: var(--danger-soft); border-color: rgba(220,38,38,0.28); color: var(--danger); font-weight: 600; }
 
-    .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; flex-wrap: wrap; }
+    .sub-tabs { display: flex; gap: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 0; flex-wrap: wrap; }
     .sub-tab {
-      padding: 5px 10px; border-radius: 7px; border: 1px solid transparent;
-      background: transparent; color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer;
+      padding: 8px 2px 10px; border: none; border-bottom: 2px solid transparent; border-radius: 0;
+      background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; cursor: pointer;
     }
-    .sub-tab.active { background: var(--accent-soft); color: var(--accent); border-color: rgba(0,190,189,0.35); }
+    .sub-tab:hover { color: var(--text); }
+    .sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: transparent; }
 
-    .kw-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
-    .kw-tag { font-size: 11px; padding: 2px 8px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface-2); }
-    .kw-tag.hit { background: var(--accent-soft); color: var(--accent); border-color: rgba(0,190,189,0.35); }
-    .kw-tag.miss { background: var(--warn-soft); color: var(--warn); border-color: rgba(245,158,11,0.35); }
+    .kw-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .kw-tag { font-size: 11.5px; padding: 2px 8px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); }
+    .kw-tag.hit { background: var(--ok-soft); color: var(--ok); border-color: rgba(5,150,105,0.25); font-weight: 600; }
+    .kw-tag.miss { background: var(--warn-soft); color: var(--warn); border-color: rgba(180,83,9,0.25); }
 
     .info-box {
-      background: var(--surface-3); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 13px; margin-bottom: 10px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 9px; padding: 12px 14px; margin-bottom: 12px;
     }
-    .info-box ul { padding-left: 16px; }
-    .info-box li { margin-bottom: 4px; }
+    .info-box ul { padding-left: 18px; }
+    .info-box li { margin-bottom: 4px; color: var(--text-2); }
 
     .qa-card {
-      background: var(--surface-3); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 13px; margin-bottom: 8px;
+      background: var(--surface-2); border: 1px solid var(--border);
+      border-radius: 9px; padding: 12px 14px; margin-bottom: 10px;
     }
-    .qa-q { font-weight: 700; color: var(--text); margin-bottom: 3px; }
-    .qa-intent { font-size: 11.5px; color: var(--warn); margin-bottom: 4px; }
-    .qa-ans { font-size: 12px; color: var(--text-muted); }
+    .qa-q { font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .qa-intent { font-size: 12px; color: var(--warn); margin-bottom: 4px; }
+    .qa-ans { font-size: 12.5px; color: var(--text-2); }
 
-    /* Recruiter Simulator Mockups */
-    .recruiter-layout { display: grid; grid-template-columns: 4fr 8fr; gap: 16px; align-items: start; }
-    .sim-screens-grid { display: grid; grid-template-columns: 350px 1fr; gap: 16px; align-items: start; }
+    /* Recruiter Simulator Mockups (Isolated Authentic BOSS App Palette inside Device Frame only) */
+    .recruiter-layout { display: grid; grid-template-columns: 4fr 8fr; gap: 20px; align-items: start; }
+    .sim-screens-grid { display: grid; grid-template-columns: 350px 1fr; gap: 18px; align-items: start; }
     @media (max-width: 1080px) { .recruiter-layout, .sim-screens-grid { grid-template-columns: 1fr; } }
 
     .phone-frame {
-      background: #ffffff; color: #1f2329; border-radius: 24px;
-      border: 6px solid #1e293b; overflow: hidden; box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+      background: #ffffff; color: #1f2329; border-radius: 22px;
+      border: 5px solid #1f2937; overflow: hidden; box-shadow: 0 10px 28px rgba(15,23,42,0.12);
     }
     .boss-app-bar {
-      background: linear-gradient(90deg, #00bebd, #00a6a7); color: #ffffff;
-      padding: 13px 15px 11px; display: flex; justify-content: space-between; align-items: center; font-weight: 700;
+      background: #00a6a7; color: #ffffff;
+      padding: 12px 15px 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 700;
     }
     .boss-sub-filter {
       background: #f7f8fa; padding: 6px 14px; font-size: 11.5px; color: #666;
       border-bottom: 1px solid #eceef2; display: flex; gap: 14px;
     }
     .boss-msg-row { display: flex; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #f2f3f5; align-items: center; background: #fff; }
-    .boss-msg-row.me-highlight { background: #f0fafa; border-left: 4px solid #00bebd; padding-left: 9px; }
+    .boss-msg-row.me-highlight { background: #f0fafa; border-left: 3px solid #00a6a7; padding-left: 10px; }
     .boss-avatar {
-      width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #475569;
-      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13.5px; flex-shrink: 0; position: relative;
+      width: 38px; height: 38px; border-radius: 50%; background: #e5e7eb; color: #4b5563;
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; position: relative;
     }
-    .boss-avatar.me { background: linear-gradient(135deg, #00bebd, #0284c7); color: #fff; }
+    .boss-avatar.me { background: #00a6a7; color: #fff; }
     .unread-badge {
-      position: absolute; top: -2px; right: -2px; background: #ff4d4f; color: #fff;
+      position: absolute; top: -2px; right: -2px; background: #ef4444; color: #fff;
       font-size: 10px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
     }
     .boss-msg-body { flex: 1; min-width: 0; }
@@ -252,121 +308,124 @@
     .boss-cand-role { font-size: 11px; color: #86909c; margin-left: 4px; }
     .boss-msg-time { font-size: 10.5px; color: #999; }
     .boss-msg-snip { font-size: 12px; color: #646a73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .boss-msg-row.me-highlight .boss-msg-snip { color: #111827; font-weight: 600; }
+    .boss-msg-row.me-highlight .boss-msg-snip { color: #111827; font-weight: 700; }
 
-    .talent-feed-wrap { background: #f4f6f9; color: #1f2329; border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
+    .talent-feed-wrap { background: #f3f4f6; color: #1f2329; border-radius: 14px; padding: 16px; border: 1px solid var(--border); }
     .talent-feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .boss-talent-card {
-      background: #ffffff; border-radius: 13px; padding: 14px 16px;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.06); border: 1.5px solid #00bebd; margin-bottom: 12px;
+      background: #ffffff; border-radius: 12px; padding: 15px 17px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #d1d5db; margin-bottom: 12px;
     }
     .tc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 7px; }
     .tc-name-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .tc-name { font-size: 15.5px; font-weight: 800; color: #1f2329; }
-    .tc-online { font-size: 11px; color: #00a6a7; background: #e6f8f8; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+    .tc-online { font-size: 11px; color: #008c8d; background: #e6f8f8; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
     .tc-meta { font-size: 11.5px; color: #646a73; margin-top: 2px; }
-    .tc-salary { font-size: 14px; font-weight: 700; color: #00a6a7; }
-    .tc-exp-list { font-size: 11.5px; color: #4e5969; margin: 8px 0; padding: 7px 10px; background: #f8fafb; border-radius: 8px; line-height: 1.6; }
-    .tc-adv-box { font-size: 12px; color: #333; line-height: 1.55; border-top: 1px dashed #e5e7eb; padding-top: 8px; }
-    .kw-red { color: #e11d48; background: #ffe4e6; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+    .tc-salary { font-size: 14px; font-weight: 700; color: #008c8d; }
+    .tc-exp-list { font-size: 11.5px; color: #4e5969; margin: 8px 0; padding: 8px 10px; background: #f8fafb; border-radius: 7px; line-height: 1.6; }
+    .tc-adv-box { font-size: 12px; color: #333; line-height: 1.58; border-top: 1px dashed #e5e7eb; padding-top: 8px; }
+    .kw-red { color: #dc2626; background: #fee2e2; padding: 0 3px; border-radius: 3px; font-weight: 700; }
     .tc-folded-hint { color: #9ca3af; font-size: 11px; }
-    .chat-open-card { background: #ffffff; border-radius: 12px; padding: 12px 14px; border: 1px solid #e5e7eb; }
-    .chat-bubble { background: #e8fbfb; border: 1px solid #bceeee; color: #1f2329; padding: 9px 12px; border-radius: 4px 12px 12px 12px; font-size: 12.5px; margin-top: 6px; }
+    .chat-open-card { background: #ffffff; border-radius: 11px; padding: 12px 14px; border: 1px solid #e5e7eb; }
+    .chat-bubble { background: #f0fdfa; border: 1px solid #ccfbf1; color: #1f2329; padding: 9px 12px; border-radius: 4px 11px 11px 11px; font-size: 12.5px; margin-top: 6px; }
 
-    /* Pipeline Steps & Analytics */
+    /* Pipeline Steps & Analytics — Monochrome Numbers + Single-Hue Chart */
     .pipeline-steps {
-      display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 16px;
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 18px;
     }
     @media (max-width: 1100px) { .pipeline-steps { grid-template-columns: repeat(4, 1fr); } }
     .p-step {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 11px;
-      padding: 10px; text-align: center; font-size: 11.5px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
+      padding: 9px 8px; text-align: center; font-size: 12px; color: var(--text-2);
     }
-    .p-step strong { display: block; color: var(--accent); font-size: 12px; margin-bottom: 2px; }
+    .p-step strong { display: block; color: var(--text-muted); font-size: 11px; font-weight: 600; margin-bottom: 2px; }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 18px; }
     @media (max-width: 1050px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
     .kpi-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow);
     }
-    .kpi-val { font-size: 22px; font-weight: 800; margin-top: 3px; color: var(--text); }
+    .kpi-val { font-size: 25px; font-weight: 800; margin: 4px 0 2px; color: var(--text); letter-spacing: -0.5px; }
 
-    .funnel-row { display: grid; grid-template-columns: 175px 1fr 115px; align-items: center; gap: 12px; margin-bottom: 9px; font-size: 12px; }
-    .funnel-track { height: 20px; background: var(--surface-3); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+    .funnel-row { display: grid; grid-template-columns: 170px 1fr 105px; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 12.5px; }
+    .funnel-track { height: 20px; background: var(--surface-3); border-radius: 5px; overflow: hidden; }
     .funnel-bar {
-      height: 100%; background: linear-gradient(90deg, #00bebd, #0284c7);
+      height: 100%; background: var(--accent);
       display: flex; align-items: center; padding-left: 8px; color: #fff; font-weight: 700; font-size: 11px; min-width: 28px;
     }
 
     /* Kanban & Tables */
-    .kanban-summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 14px; }
+    .kanban-summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
     .stage-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 11px 14px; cursor: pointer; transition: border-color 0.15s;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+      padding: 12px 16px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow);
     }
-    .stage-card:hover, .stage-card.active { border-color: var(--accent); }
-    .stage-num { font-size: 21px; font-weight: 800; margin-top: 2px; }
+    .stage-card:hover { border-color: var(--border-strong); }
+    .stage-card.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+    .stage-num { font-size: 24px; font-weight: 800; margin-top: 3px; color: var(--text); }
 
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    th { text-align: left; padding: 9px 10px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface-3); }
-    td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+    th { text-align: left; padding: 10px 12px; font-size: 11.5px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface-2); }
+    td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-2); }
     tr:hover td { background: var(--surface-2); }
 
     .badge { font-size: 11px; padding: 2px 7px; border-radius: 5px; font-weight: 600; display: inline-block; }
-    .badge.ok { background: var(--accent-soft); color: var(--accent); }
+    .badge.ok { background: var(--ok-soft); color: var(--ok); }
     .badge.warn { background: var(--warn-soft); color: var(--warn); }
     .badge.err { background: var(--danger-soft); color: var(--danger); }
-    .badge.info { background: var(--info-soft); color: var(--info); }
-    .badge.neutral { background: var(--surface-2); color: var(--text-muted); }
+    .badge.info { background: var(--accent-soft); color: var(--accent); }
+    .badge.neutral { background: var(--surface-3); color: var(--text-2); }
 
-    /* Chat Boxes (Feishu Bot & Mock Interview) */
+    /* Chat Boxes */
     .chat-stream {
-      background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px;
-      height: 340px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
+      height: 340px; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
     }
-    .msg-bubble { max-width: 86%; padding: 9px 12px; border-radius: 11px; font-size: 12.5px; white-space: pre-wrap; }
-    .msg-bot { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); }
+    .msg-bubble { max-width: 86%; padding: 9px 13px; border-radius: 10px; font-size: 13px; white-space: pre-wrap; }
+    .msg-bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
     .msg-user { align-self: flex-end; background: var(--accent); color: #fff; }
     .coach-note {
-      font-size: 11.5px; background: var(--warn-soft); border-left: 3px solid var(--warn);
-      padding: 7px 10px; border-radius: 6px; color: var(--text); margin-top: 4px;
+      font-size: 12px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+      padding: 8px 11px; border-radius: 6px; color: var(--text-2); margin-top: 5px;
     }
 
-    /* Floating Live Terminal Drawer */
+    /* Compact Unobtrusive Terminal Drawer */
     .term-drawer {
-      position: fixed; bottom: 0; right: 20px; width: 540px; max-width: calc(100vw - 40px);
-      background: #090e1a; color: #cbd5e1; border: 1px solid #263552; border-bottom: none;
-      border-radius: 12px 12px 0 0; z-index: 80; box-shadow: 0 -8px 30px rgba(0,0,0,0.45);
+      position: fixed; bottom: 0; right: 24px; width: 260px; max-width: calc(100vw - 40px);
+      background: #181b1f; color: #d1d5db; border: 1px solid #2a2f36; border-bottom: none;
+      border-radius: 10px 10px 0 0; z-index: 80; box-shadow: 0 -4px 18px rgba(0,0,0,0.18); transition: width 0.18s;
     }
+    .term-drawer.expanded { width: 540px; }
     .term-head {
-      padding: 7px 13px; background: #131c2e; border-radius: 12px 12px 0 0;
-      display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 12px; font-weight: 600;
+      padding: 7px 13px; background: #1f2328; border-radius: 10px 10px 0 0;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 12px; font-weight: 600; color: #e5e7eb;
     }
     .term-body {
       height: 210px; overflow-y: auto; padding: 10px 12px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; line-height: 1.5; display: none;
     }
     .term-drawer.expanded .term-body { display: block; }
-    .log-INFO { color: #94a3b8; }
+    .log-INFO { color: #9ca3af; }
     .log-WARN { color: #fbbf24; }
-    .log-ERROR { color: #fb7185; }
+    .log-ERROR { color: #f87171; }
 
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.68); z-index: 90;
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(2px); z-index: 90;
       display: none; align-items: center; justify-content: center; padding: 20px;
     }
     .modal-backdrop.open { display: flex; }
     .modal-box {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
-      max-width: 760px; width: 100%; max-height: 82vh; display: flex; flex-direction: column;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      max-width: 740px; width: 100%; max-height: 84vh; display: flex; flex-direction: column;
+      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
     }
     .modal-body { padding: 18px; overflow-y: auto; white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
 
     .toast {
-      position: fixed; bottom: 48px; left: 24px; z-index: 100;
-      background: var(--accent); color: #fff; font-weight: 600;
-      padding: 9px 16px; border-radius: 10px; box-shadow: var(--shadow);
-      opacity: 0; transform: translateY(12px); pointer-events: none; transition: all 0.2s;
+      position: fixed; bottom: 28px; left: 24px; z-index: 100;
+      background: #18181b; color: #fff; font-weight: 600; font-size: 12.5px;
+      padding: 9px 16px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+      opacity: 0; transform: translateY(10px); pointer-events: none; transition: all 0.2s;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .hidden { display: none !important; }
@@ -380,28 +439,27 @@
       <div class="brand">
         <div class="brand-logo">HL</div>
         <div>
-          <div class="brand-title">HireLens 聘镜 <span class="badge ok">v3.0 全链路终极版</span></div>
-          <div class="brand-sub">四平台巡航 · 双层排雷 · 招聘端模拟 · 飞书双向同步 · 全景统计 · 双向 PII 脱敏</div>
+          <div class="brand-title">HireLens 聘镜</div>
         </div>
       </div>
 
       <div class="nav-tabs">
-        <button class="nav-tab active" data-view="studio" onclick="switchMainView('studio')">🎯 诊断与话术台</button>
-        <button class="nav-tab" data-view="recruiter" onclick="switchMainView('recruiter')">👀 招聘端实时模拟页</button>
-        <button class="nav-tab" data-view="pipeline" onclick="switchMainView('pipeline')">🛸 全链路巡航指挥台</button>
-        <button class="nav-tab" data-view="kanban" onclick="switchMainView('kanban')">📋 求职看板 (<span id="nav-total-cnt">0</span>)</button>
-        <button class="nav-tab" data-view="analytics" onclick="switchMainView('analytics')">📈 数据统计大盘</button>
-        <button class="nav-tab" data-view="feishu" onclick="switchMainView('feishu')">💬 飞书协同 & 配置</button>
-        <button class="nav-tab" data-view="mock" onclick="switchMainView('mock')">🥊 模拟面试营</button>
+        <button class="nav-tab active" data-view="studio" onclick="switchMainView('studio')">诊断与话术台</button>
+        <button class="nav-tab" data-view="recruiter" onclick="switchMainView('recruiter')">招聘端实时模拟页</button>
+        <button class="nav-tab" data-view="pipeline" onclick="switchMainView('pipeline')">全链路巡航指挥台</button>
+        <button class="nav-tab" data-view="kanban" onclick="switchMainView('kanban')">求职看板 (<span id="nav-total-cnt">0</span>)</button>
+        <button class="nav-tab" data-view="analytics" onclick="switchMainView('analytics')">数据统计大盘</button>
+        <button class="nav-tab" data-view="feishu" onclick="switchMainView('feishu')">飞书协同 & 配置</button>
+        <button class="nav-tab" data-view="mock" onclick="switchMainView('mock')">模拟面试营</button>
       </div>
 
-      <div class="status-strip">
-        <button class="btn btn-ghost" onclick="resetForm()">➕ 新建</button>
-        <span class="pill"><span id="pipe-dot" class="dot-ok"></span><span id="stat-pipe">就绪</span></span>
-        <button type="button" class="pill" id="stat-llm" onclick="openLLMModal()" style="cursor:pointer; border-color:var(--accent); color:var(--accent); font-weight:600;" title="点击切换或接入任意大模型 API">🔌 LLM: 检测中 ▾</button>
-        <span class="pill" id="stat-tokens">算力: ¥0.000</span>
-        <span class="pill" id="stat-quota">今日: 0/35</span>
-        <button class="btn btn-ghost" onclick="toggleTheme()" title="切换深浅主题">🌓</button>
+      <div class="status-strip" style="gap:4px;">
+        <button class="btn btn-ghost" onclick="resetForm()">+ 新建</button>
+        <span class="pill" style="padding:3px 6px;"><span id="pipe-dot" class="dot-ok"></span><span id="stat-pipe">就绪</span></span>
+        <span class="pill" style="padding:3px 6px;" id="stat-quota">0/35</span>
+        <span class="pill" style="padding:3px 6px;" id="stat-tokens">¥0.00</span>
+        <button type="button" class="pill pill-btn" style="padding:4px 9px;" id="stat-llm" onclick="openLLMModal()" title="点击切换或接入任意大模型 API">LLM ▾</button>
+        <button class="btn btn-ghost" onclick="toggleTheme()" title="切换浅色/深色主题">深浅色</button>
       </div>
     </div>
   </header>
@@ -415,34 +473,28 @@
         <!-- Left: Multi-Modal Job Entry -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">⚡ 多源岗位极速采集（截图 OCR / 粘贴拆解 / 预设）</div>
+            <div class="card-title">岗位采集与录入</div>
             <div style="display:flex; gap:5px; flex-wrap:wrap;">
-              <button type="button" class="chip-btn" onclick="fillPreset('ai_pm')">示例: AI产品/Agent</button>
-              <button type="button" class="chip-btn" onclick="fillPreset('hk_ai')">示例: 香港双语岗</button>
-              <button type="button" class="chip-btn" onclick="fillPreset('ai_ops')">示例: AI项目运营</button>
-              <button type="button" class="chip-btn" onclick="fillPreset('admin')">示例: 高管行政</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('ai_pm')">示例: AI产品</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('hk_ai')">示例: 香港双语</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('ai_ops')">示例: 项目运营</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('admin')">示例: 综合行政</button>
             </div>
           </div>
 
-          <!-- Screenshot OCR / VL Fast Entry -->
-          <div class="shot-dropzone" id="shot-dropzone">
-            <div>
-              <strong style="font-size:12px; color:var(--info);">🖼️ 截图一键识岗（支持微信内推图 / BOSS手机长截图）</strong>
-              <div style="font-size:11px; color:var(--text-muted);">直接在本页按 <code>Cmd+V</code> 粘贴剪贴板截图，或点右侧上传图片（默认本机 Apple Vision 离线零成本秒级识别）</div>
+          <!-- Unified Clean Quick Import Box -->
+          <div class="quick-paste" id="shot-dropzone">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+              <div>
+                <strong style="font-size:12.5px; color:var(--text);">快速导入（支持网页整段粘贴 或 直接按 Cmd+V 粘贴截图）</strong>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <input type="file" id="shot-file-input" accept="image/*" class="hidden" onchange="handleImageFile(this.files[0])" />
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11.5px;" id="btn-shot-upload" onclick="document.getElementById('shot-file-input').click()">上传截图识别</button>
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11.5px;" onclick="smartParseRaw()">拆解文本 ↓</button>
+              </div>
             </div>
-            <div>
-              <input type="file" id="shot-file-input" accept="image/*" class="hidden" onchange="handleImageFile(this.files[0])" />
-              <button type="button" class="btn btn-secondary" id="btn-shot-upload" onclick="document.getElementById('shot-file-input').click()">📷 选择截图识别</button>
-            </div>
-          </div>
-
-          <!-- Messy Text Paste -->
-          <div class="quick-paste">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
-              <strong style="font-size:12px; color:var(--accent);">✨ 整段杂乱网页文字一键拆解（BOSS / 猎聘 / 51 / 智联 / JobsDB）</strong>
-              <button type="button" class="btn btn-secondary" style="padding:3px 9px; font-size:11.5px;" onclick="smartParseRaw()">自动拆解 ↓</button>
-            </div>
-            <textarea id="raw_paste_box" rows="2" placeholder="在招聘网页全选复制整段文字粘到这里，点「自动拆解」自动填入下方字段..."></textarea>
+            <textarea id="raw_paste_box" rows="2" placeholder="可选：粘贴招聘网页乱序文字点「拆解文本」，或直接在本页按 Cmd+V 粘贴岗位截图..."></textarea>
           </div>
 
           <form id="analyze-form" onsubmit="event.preventDefault(); submitAnalyze();">
@@ -522,7 +574,7 @@
             </div>
 
             <button type="submit" id="btn-submit" class="btn btn-primary btn-full">
-              🔭 双层排雷 + 生成重点前置破冰语 + BOSS「个人优势」+ 定制简历
+              开始诊断并生成前置破冰语、个人优势与定制简历
             </button>
           </form>
         </div>
@@ -530,16 +582,16 @@
         <!-- Right: Diagnosis, Copy, Company Intel & Artifacts -->
         <div class="card">
           <div class="card-header">
-            <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
-              <span class="card-title">🎯 聘镜深度诊断与投递武器库</span>
-              <span id="active-job-pill" class="badge ok hidden"></span>
+            <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="card-title">诊断结果与投递文案</span>
+              <span id="active-job-pill" class="badge neutral hidden"></span>
               <span id="grade-pill" class="badge info hidden"></span>
               <span id="pii-audit-pill" class="badge neutral hidden"></span>
             </div>
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
-              <button type="button" id="btn-jump-sim" class="btn btn-primary hidden" onclick="jumpToRecruiterView()">👀 招聘端模拟预览 ↗</button>
-              <button type="button" id="btn-gen-artifacts" class="btn btn-secondary hidden" onclick="renderJobArtifactsNow()">🖨️ 生成PDF/图片简历</button>
-              <button type="button" id="btn-push-feishu" class="btn btn-ghost hidden" onclick="pushCurrentJobToFeishu()">📨 推飞书卡片</button>
+              <button type="button" id="btn-jump-sim" class="btn btn-secondary hidden" onclick="jumpToRecruiterView()">招聘端模拟预览 ↗</button>
+              <button type="button" id="btn-gen-artifacts" class="btn btn-secondary hidden" onclick="renderJobArtifactsNow()">生成 PDF / 图片简历</button>
+              <button type="button" id="btn-push-feishu" class="btn btn-ghost hidden" onclick="pushCurrentJobToFeishu()">推飞书卡片</button>
               <button type="button" id="btn-view-master" class="btn btn-ghost hidden" onclick="openMasterResumeModal()">查看母本</button>
             </div>
           </div>
@@ -1058,19 +1110,19 @@
           <div class="stage-num" id="st-all">0</div>
         </div>
         <div class="stage-card" onclick="filterKanban('pending_review', this)">
-          <div style="font-size:12px; color:var(--warn);">🟡 待投递放行</div>
+          <div style="font-size:12px; color:var(--text-muted);">待投递放行</div>
           <div class="stage-num" id="st-pending">0</div>
         </div>
         <div class="stage-card" onclick="filterKanban('delivered', this)">
-          <div style="font-size:12px; color:var(--info);">🔵 已投递跟进</div>
+          <div style="font-size:12px; color:var(--text-muted);">已投递跟进</div>
           <div class="stage-num" id="st-delivered">0</div>
         </div>
         <div class="stage-card" onclick="filterKanban('interviewing', this)">
-          <div style="font-size:12px; color:var(--purple);">🟣 约面推进中</div>
+          <div style="font-size:12px; color:var(--text-muted);">约面推进中</div>
           <div class="stage-num" id="st-interview">0</div>
         </div>
         <div class="stage-card" onclick="filterKanban('offer', this)">
-          <div style="font-size:12px; color:var(--accent);">🟢 录用 Offer</div>
+          <div style="font-size:12px; color:var(--text-muted);">录用 Offer</div>
           <div class="stage-num" id="st-offer">0</div>
         </div>
       </div>
@@ -1245,8 +1297,8 @@
 
     <!-- ==================== VIEW 6: FEISHU HUB & SYSTEM SETTINGS ==================== -->
     <section id="view-feishu" class="view-panel">
-      <div class="banner veto" style="font-size:12.5px;">
-        🛡️ <strong>防在职泄密最高安全铁律：</strong>严禁接入【当前在职雇主公司】的企业飞书租户（企业管理员后台可审计云文档与机器人记录）！请务必使用个人手机号免费注册的<strong>独立飞书个人版/个人新建团队</strong>接入。
+      <div class="banner caution" style="font-size:12.5px;">
+        <strong>账号隐私提醒：</strong>请使用个人手机号注册的<strong>独立飞书个人版/新建团队</strong>接入，切勿使用当前在职雇主的企业飞书租户（企业管理员后台可查看云文档与机器人日志）。
       </div>
 
       <div class="grid-2">
@@ -1576,7 +1628,7 @@
           </div>
         </div>
 
-        <div id="m-provider-hint" style="font-size:11.5px; color:var(--info); margin-bottom:10px;"></div>
+        <div id="m-provider-hint" style="font-size:12px; color:var(--text-muted); margin-bottom:10px;"></div>
 
         <div class="form-group">
           <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1729,10 +1781,10 @@
       const root = document.documentElement;
       const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
       root.setAttribute("data-theme", next);
-      localStorage.setItem("hl_theme", next);
+      localStorage.setItem("hl_theme_v3", next);
     }
     (function initTheme() {
-      const saved = localStorage.getItem("hl_theme");
+      const saved = localStorage.getItem("hl_theme_v3");
       if (saved) document.documentElement.setAttribute("data-theme", saved);
     })();
 
@@ -1872,9 +1924,9 @@
         if (!res.ok) return;
         const d = await res.json();
         document.getElementById("nav-total-cnt").innerText = d.total_jobs;
-        document.getElementById("stat-llm").innerText = d.has_llm ? `🔌 LLM: ${d.model} ▾` : "🔌 LLM: 本地离线引擎 ▾";
-        document.getElementById("stat-tokens").innerText = `算力: ¥${(d.tokens?.total_cost_cny || 0).toFixed(3)}`;
-        document.getElementById("stat-quota").innerText = `今日: ${d.delivered_today}/${d.daily_limit}`;
+        document.getElementById("stat-llm").innerText = d.has_llm ? `${d.model} ▾` : "离线引擎 ▾";
+        document.getElementById("stat-tokens").innerText = `¥${(d.tokens?.total_cost_cny || 0).toFixed(2)}`;
+        document.getElementById("stat-quota").innerText = `投递 ${d.delivered_today}/${d.daily_limit}`;
         document.getElementById("stat-pipe").innerText = d.pipeline_running ? `运行中(${d.pipeline_stage})` : "就绪";
         document.getElementById("pipe-dot").className = d.pipeline_running ? "dot-run" : "dot-ok";
 
@@ -2684,12 +2736,12 @@
       const tok = d.tokens.summary;
 
       document.getElementById("ana-kpi-grid").innerHTML = `
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">总采集岗位池</div><div class="kpi-val">${k.total_jobs}</div><div style="font-size:11px; color:var(--danger);">排雷拦截 ${k.vetoed_jobs} 条</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">S / A 级高匹配</div><div class="kpi-val" style="color:var(--accent);">${k.sa_grade_jobs}</div><div style="font-size:11px; color:var(--text-muted);">全局均分 ${k.avg_match_score}</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">定制 PDF 简历数</div><div class="kpi-val">${k.tailored_pdfs}</div><div style="font-size:11px; color:var(--info);">飞书同步 ${k.feishu_synced} 条</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">已投递触达</div><div class="kpi-val" style="color:var(--info);">${k.delivered_jobs}</div><div style="font-size:11px; color:var(--text-muted);">约面推进 ${k.interview_jobs}</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">投递 → 约面率</div><div class="kpi-val" style="color:var(--purple);">${k.delivery_to_interview_rate}%</div><div style="font-size:11px; color:var(--accent);">Offer ${k.offer_jobs} 个</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">大模型累计账单</div><div class="kpi-val">¥${tok.total_cost_cny.toFixed(3)}</div><div style="font-size:11px; color:var(--text-muted);">${tok.total_tokens} Tokens (${tok.total_calls}次)</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">总采集岗位池</div><div class="kpi-val">${k.total_jobs}</div><div style="font-size:11.5px; color:var(--text-muted);">排雷拦截 ${k.vetoed_jobs} 条</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">S / A 级高匹配</div><div class="kpi-val">${k.sa_grade_jobs}</div><div style="font-size:11.5px; color:var(--text-muted);">全局均分 ${k.avg_match_score}</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">定制 PDF 简历数</div><div class="kpi-val">${k.tailored_pdfs}</div><div style="font-size:11.5px; color:var(--text-muted);">飞书已同步 ${k.feishu_synced} 条</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">已投递触达</div><div class="kpi-val">${k.delivered_jobs}</div><div style="font-size:11.5px; color:var(--text-muted);">约面推进 ${k.interview_jobs}</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">投递 → 约面率</div><div class="kpi-val">${k.delivery_to_interview_rate}%</div><div style="font-size:11.5px; color:var(--ok);">Offer ${k.offer_jobs} 个</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">大模型累计账单</div><div class="kpi-val">¥${tok.total_cost_cny.toFixed(3)}</div><div style="font-size:11.5px; color:var(--text-muted);">${tok.total_tokens} Tokens (${tok.total_calls}次)</div></div>
       `;
 
       document.getElementById("ana-funnel-box").innerHTML = (d.funnel || []).map(f => `
@@ -2698,7 +2750,7 @@
           <div class="funnel-track">
             <div class="funnel-bar" style="width:${Math.max(6, f.rate_from_top)}%;">${f.count}</div>
           </div>
-          <div style="text-align:right; color:var(--text-muted); font-size:11px;">总占比 ${f.rate_from_top}%</div>
+          <div style="text-align:right; color:var(--text-muted); font-size:11.5px;">${f.rate_from_top}%</div>
         </div>
       `).join("");
 
@@ -2712,17 +2764,18 @@
         const hCap = Math.round((t.captured / maxVal) * (svgH - padB - padT));
         const hDel = Math.round((t.delivered / maxVal) * (svgH - padB - padT));
         return `
-          <rect x="${x}" y="${svgH - padB - hCap}" width="11" height="${hCap}" rx="3" fill="#0284c7" opacity="0.85"><title>${t.date} 采集: ${t.captured}</title></rect>
-          <rect x="${x + 13}" y="${svgH - padB - hDel}" width="11" height="${hDel}" rx="3" fill="#00bebd"><title>${t.date} 投递: ${t.delivered}</title></rect>
-          <text x="${x + 11}" y="${svgH - 8}" font-size="9.5" fill="#94a3b8" text-anchor="middle">${t.short_date}</text>
+          <rect x="${x}" y="${svgH - padB - hCap}" width="11" height="${hCap}" rx="2.5" fill="#93c5fd"><title>${t.date} 采集: ${t.captured}</title></rect>
+          <rect x="${x + 13}" y="${svgH - padB - hDel}" width="11" height="${hDel}" rx="2.5" fill="#2563eb"><title>${t.date} 投递: ${t.delivered}</title></rect>
+          <text x="${x + 11}" y="${svgH - 8}" font-size="9.5" fill="#6b7280" text-anchor="middle">${t.short_date}</text>
         `;
       }).join("");
       document.getElementById("ana-trend-svg-box").innerHTML = `
-        <div style="display:flex; gap:16px; font-size:11.5px; color:var(--text-muted); margin-bottom:6px;">
-          <span>🟦 每日新采集入库</span><span>🟩 每日完成投递</span>
+        <div style="display:flex; gap:18px; font-size:12px; color:var(--text-muted); margin-bottom:6px;">
+          <span><span style="display:inline-block;width:9px;height:9px;background:#93c5fd;border-radius:2px;margin-right:4px;"></span>每日采集入库</span>
+          <span><span style="display:inline-block;width:9px;height:9px;background:#2563eb;border-radius:2px;margin-right:4px;"></span>每日完成投递</span>
         </div>
         <svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%; height:auto; overflow:visible;">
-          <line x1="0" y1="${svgH - padB}" x2="${svgW}" y2="${svgH - padB}" stroke="#263552" stroke-width="1" />
+          <line x1="0" y1="${svgH - padB}" x2="${svgW}" y2="${svgH - padB}" stroke="var(--border)" stroke-width="1" />
           ${barsSvg}
         </svg>
       `;
