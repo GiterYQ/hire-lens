@@ -1,305 +1,527 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="light">
+<html lang="zh-CN" data-theme="light" data-density="editorial">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HireLens 聘镜 · 招聘端视角全链路 AI 求职系统</title>
+  <title>HireLens 聘镜 · 招聘端视角全链路求职工作台</title>
   <style>
     /*
-     * 视觉层级与色彩克制规范 (60-30-10 Editorial Hierarchy):
-     * - 60% 柔和纸感底色与纯白卡片（消除深蓝眩光与多层套盒压迫感）
-     * - 30% 四级中性墨色字重梯度（主标题/正文/表头/弱辅助说明分明）
-     * - 10% 单一主行动色（克制深蓝 #2563EB 仅用于当前视图唯一核心按钮；红/琥珀/绿仅用于真实状态预警）
+     * Editorial Design System — Inspired by Anthropic Claude
+     * - Surface Hierarchy: Parchment (#f5f4ed) canvas → Ivory (#faf9f5) cards → Cream (#f0eee6) insets → Warm Sand (#e8e6dc) controls
+     * - Typography Split: Literary Serif (weight 500) for mastheads, card titles & focal metrics + Humanist Sans for dense UI & tables
+     * - Elevation: 0 0 0 1px ring borders + ultra-diffuse warm ambient shadow (zero heavy drop-shadows, zero rainbow callout borders)
+     * - Chromatic Discipline: Single Terracotta (#c96442 / #d97757) primary CTA; Accessibility Focus Blue (#3898ec) strictly on :focus
      */
+    :root {
+      --font-serif: "Iowan Old Style", "Palatino Linotype", "New York", "Georgia", "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      --focus-ring: #3898ec;
+      --focus-halo: rgba(56, 152, 236, 0.26);
+    }
+
     :root[data-theme="light"] {
-      --bg: #f5f6f8;
-      --surface: #ffffff;
-      --surface-2: #f8f9fb;
-      --surface-3: #f1f3f6;
+      --bg: #f5f4ed;
+      --topbar-bg: rgba(245, 244, 237, 0.88);
+      --surface: #faf9f5;
+      --surface-2: #f0eee6;
+      --surface-3: #e8e6dc;
+      --surface-hover: #e3e0d3;
       --input-bg: #ffffff;
-      --border: #e5e7eb;
-      --border-strong: #d1d5db;
-      --text: #111827;
-      --text-2: #374151;
-      --text-muted: #6b7280;
-      --text-faint: #9ca3af;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --accent-soft: #eff6ff;
-      --ok: #059669;
-      --ok-soft: #ecfdf5;
-      --warn: #b45309;
-      --warn-soft: #fffbeb;
-      --danger: #dc2626;
-      --danger-soft: #fef2f2;
-      --highlight-bg: #fef3c7;
-      --highlight-ink: #111827;
-      --shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
-      --tab-active-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+      --border: #e8e6dc;
+      --border-strong: #d1cfc5;
+      --border-deep: #b8b5a9;
+      --text: #141413;
+      --text-2: #3d3d3a;
+      --text-muted: #5e5d59;
+      --text-faint: #87867f;
+      --accent: #c96442;
+      --accent-hover: #b55636;
+      --accent-ink: #faf9f5;
+      --accent-soft: rgba(201, 100, 66, 0.10);
+      --ok: #556f44;
+      --ok-soft: #eaf0e5;
+      --warn: #946121;
+      --warn-soft: #f6ede0;
+      --danger: #b53333;
+      --danger-soft: #f8e9e9;
+      --highlight-bg: #f4e2d8;
+      --highlight-ink: #7a3118;
+      --chart-secondary: #d5d2c6;
+      --ring-card: 0 0 0 1px #e6e4da, 0 4px 24px rgba(20, 20, 19, 0.035);
+      --ring-input: 0 0 0 1px #d1cfc5;
+      --ring-btn-sec: 0 0 0 1px #d1cfc5;
+      --tab-active-shadow: 0 0 0 1px rgba(20, 20, 19, 0.06), 0 1px 3px rgba(20, 20, 19, 0.06);
     }
 
     :root[data-theme="dark"] {
-      --bg: #111315;
-      --surface: #181b1f;
-      --surface-2: #1f2328;
-      --surface-3: #14171a;
-      --input-bg: #14171a;
-      --border: #2a2f36;
-      --border-strong: #3a414a;
-      --text: #f3f4f6;
-      --text-2: #d1d5db;
-      --text-muted: #9ca3af;
-      --text-faint: #6b7280;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-soft: rgba(59, 130, 246, 0.14);
-      --ok: #34d399;
-      --ok-soft: rgba(16, 185, 129, 0.14);
-      --warn: #fbbf24;
-      --warn-soft: rgba(245, 158, 11, 0.14);
-      --danger: #f87171;
-      --danger-soft: rgba(239, 68, 68, 0.14);
-      --highlight-bg: rgba(251, 191, 36, 0.22);
-      --highlight-ink: #fef3c7;
-      --shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
-      --tab-active-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+      --bg: #141413;
+      --topbar-bg: rgba(20, 20, 19, 0.88);
+      --surface: #1f1e1c;
+      --surface-2: #272623;
+      --surface-3: #30302e;
+      --surface-hover: #3a3936;
+      --input-bg: #181715;
+      --border: #30302e;
+      --border-strong: #3f3e3a;
+      --border-deep: #57554f;
+      --text: #faf9f5;
+      --text-2: #dad8ce;
+      --text-muted: #b0aea5;
+      --text-faint: #7d7b73;
+      --accent: #d97757;
+      --accent-hover: #c96442;
+      --accent-ink: #141413;
+      --accent-soft: rgba(217, 119, 87, 0.15);
+      --ok: #93b07a;
+      --ok-soft: rgba(120, 140, 93, 0.18);
+      --warn: #dfa55d;
+      --warn-soft: rgba(212, 154, 82, 0.16);
+      --danger: #e27474;
+      --danger-soft: rgba(181, 51, 51, 0.20);
+      --highlight-bg: rgba(217, 119, 87, 0.24);
+      --highlight-ink: #fce8df;
+      --chart-secondary: #45443f;
+      --ring-card: 0 0 0 1px #30302e, 0 10px 30px rgba(0, 0, 0, 0.30);
+      --ring-input: 0 0 0 1px #3f3e3a;
+      --ring-btn-sec: 0 0 0 1px #3f3e3a;
+      --tab-active-shadow: 0 0 0 1px #3f3e3a, 0 1px 4px rgba(0, 0, 0, 0.35);
+    }
+
+    :root[data-density="editorial"] {
+      --container-pad: 28px 28px 92px;
+      --card-pad: 24px 26px;
+      --card-gap: 22px;
+      --hero-mb: 22px;
+    }
+
+    :root[data-density="compact"] {
+      --container-pad: 16px 20px 80px;
+      --card-pad: 17px 19px;
+      --card-gap: 15px;
+      --hero-mb: 14px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      font-family: var(--font-sans);
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
       font-size: 13.5px;
-      line-height: 1.6;
+      line-height: 1.62;
       -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      transition: background-color 0.18s ease, color 0.18s ease;
     }
     button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+    code {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      background: var(--surface-3);
+      color: var(--text-2);
+      padding: 1.5px 5px;
+      border-radius: 5px;
+    }
 
-    /* Top Header — Clean, Quiet Segmented Navigation */
+    /* Top Navigation — Translucent Parchment Bar */
     .topbar {
-      position: sticky; top: 0; z-index: 40;
-      background: var(--surface); border-bottom: 1px solid var(--border);
-      padding: 8px 20px;
+      position: sticky; top: 0; z-index: 45;
+      background: var(--topbar-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 24px;
     }
     .topbar-inner {
-      max-width: 1460px; margin: 0 auto;
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px;
+      max-width: 1440px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
     }
-    .brand { display: flex; align-items: center; gap: 8px; }
-    .brand-logo {
-      width: 28px; height: 28px; border-radius: 7px;
-      background: var(--text); color: var(--surface);
-      font-weight: 800; font-size: 12px; letter-spacing: -0.5px;
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark {
+      width: 30px; height: 30px; border-radius: 9px;
+      background: var(--surface-2);
+      box-shadow: 0 0 0 1px var(--border-strong);
       display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
     }
-    .brand-title { font-size: 14.5px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; white-space: nowrap; }
-    .brand-sub { font-size: 11.5px; color: var(--text-muted); }
+    .brand-title {
+      font-family: var(--font-serif);
+      font-size: 16.5px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.015em;
+      white-space: nowrap;
+    }
 
     .nav-tabs {
       display: flex; flex-wrap: wrap; gap: 2px;
-      background: var(--surface-3); padding: 3px; border-radius: 8px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      padding: 3px;
+      border-radius: 10px;
     }
     .nav-tab {
-      padding: 5px 10px; border-radius: 6px; border: none; background: transparent;
-      color: var(--text-muted); font-weight: 500; font-size: 12px; cursor: pointer; white-space: nowrap;
-      transition: all 0.12s;
+      padding: 5.5px 11px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 12.5px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.14s, background 0.14s;
     }
     .nav-tab:hover { color: var(--text); }
     .nav-tab.active {
       background: var(--surface);
       color: var(--text);
-      font-weight: 700;
+      font-weight: 600;
       box-shadow: var(--tab-active-shadow);
     }
 
-    .status-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12px; }
+    .status-strip {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+      font-size: 12px; position: relative;
+    }
     .pill {
-      padding: 4px 10px; border-radius: 7px; background: transparent;
-      border: 1px solid transparent; color: var(--text-muted); display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 9px; border-radius: 8px;
+      color: var(--text-muted);
+      display: inline-flex; align-items: center; gap: 6px;
+      font-variant-numeric: tabular-nums;
     }
     .pill-btn {
-      background: var(--surface); border: 1px solid var(--border-strong); color: var(--text-2);
-      font-weight: 600; cursor: pointer; transition: border-color 0.15s;
+      background: var(--surface);
+      box-shadow: var(--ring-btn-sec);
+      border: none;
+      color: var(--text-2);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.14s, box-shadow 0.14s;
     }
-    .pill-btn:hover { border-color: var(--text); color: var(--text); }
+    .pill-btn:hover { background: var(--surface-2); box-shadow: 0 0 0 1px var(--border-deep); color: var(--text); }
     .dot-ok { width: 6px; height: 6px; border-radius: 50%; background: var(--ok); display: inline-block; }
-    .dot-run { width: 6px; height: 6px; border-radius: 50%; background: var(--warn); display: inline-block; animation: pulse 1s infinite; }
+    .dot-run { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: inline-block; animation: pulse 1.1s infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
 
-    .container { max-width: 1440px; margin: 0 auto; padding: 20px 24px 80px; }
-    .view-panel { display: none; }
-    .view-panel.active { display: block; }
+    /* Claude Design Tweaks Popover */
+    .tweaks-popover {
+      position: absolute; top: calc(100% + 8px); right: 0; width: 248px;
+      background: var(--surface);
+      box-shadow: var(--ring-card), 0 12px 32px rgba(20, 20, 19, 0.12);
+      border-radius: 14px; padding: 14px 16px; z-index: 70;
+    }
+    .tweaks-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+      color: var(--text-faint); text-transform: uppercase; margin-bottom: 6px;
+    }
+    .seg-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4px;
+      background: var(--surface-2); padding: 3px; border-radius: 9px; margin-bottom: 12px;
+    }
+    .seg-row:last-child { margin-bottom: 0; }
+    .seg-opt {
+      border: none; background: transparent; padding: 5px 8px; border-radius: 6px;
+      font-size: 12px; color: var(--text-muted); cursor: pointer; font-weight: 500;
+    }
+    .seg-opt.active {
+      background: var(--surface); color: var(--text); font-weight: 600;
+      box-shadow: var(--tab-active-shadow);
+    }
 
-    .studio-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 20px; align-items: start; }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+    /* Main Container & Editorial Mastheads */
+    .container { max-width: 1420px; margin: 0 auto; padding: var(--container-pad); }
+    .view-panel { display: none; }
+    .view-panel.active { display: block; animation: fadeView 0.18s ease-out; }
+    @keyframes fadeView { from { opacity: 0.65; transform: translateY(2px); } to { opacity: 1; transform: translateY(0); } }
+
+    .view-hero {
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      margin-bottom: var(--hero-mb);
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .view-kicker {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-faint);
+      margin-bottom: 4px;
+    }
+    .view-heading {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 500;
+      line-height: 1.24;
+      letter-spacing: -0.015em;
+      color: var(--text);
+    }
+    .view-sub {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      max-width: 760px;
+    }
+
+    .studio-grid { display: grid; grid-template-columns: 5fr 7fr; gap: var(--card-gap); align-items: start; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--card-gap); align-items: start; }
     .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
     @media (max-width: 1060px) { .studio-grid, .grid-2, .grid-3 { grid-template-columns: 1fr; } }
 
+    /* Cards — Ivory Surface + 1px Ring Border */
     .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px 22px; box-shadow: var(--shadow); margin-bottom: 18px;
+      background: var(--surface);
+      border: none;
+      border-radius: 16px;
+      padding: var(--card-pad);
+      box-shadow: var(--ring-card);
+      margin-bottom: var(--card-gap);
     }
     .card-header {
       display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
-      padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border);
+      padding-bottom: 14px; margin-bottom: 18px;
+      border-bottom: 1px solid var(--border);
     }
-    .card-title { font-size: 15px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 6px; }
-    .section-divider {
-      font-size: 12px; font-weight: 700; color: var(--text-2);
-      padding: 8px 0 6px; margin: 12px 0 8px; border-bottom: 1px solid var(--border);
-      letter-spacing: 0.2px;
+    .card-title {
+      font-family: var(--font-serif);
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      display: flex; align-items: center; gap: 8px;
     }
 
-    /* Form Controls — Clear Input Contrast */
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-size: 12px; font-weight: 600; color: var(--text-2); margin-bottom: 5px; }
+    /* Form Controls — Crisp Input Canvas + Accessibility Blue Focus Ring */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .form-group { margin-bottom: 16px; }
+    label {
+      display: block; font-size: 12px; font-weight: 500;
+      color: var(--text-2); margin-bottom: 6px;
+    }
     input[type="text"], input[type="password"], input[type="number"], select, textarea {
-      width: 100%; background: var(--input-bg); border: 1px solid var(--border-strong);
-      border-radius: 8px; padding: 8px 11px; color: var(--text); outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+      width: 100%;
+      background: var(--input-bg);
+      border: none;
+      box-shadow: var(--ring-input);
+      border-radius: 10px;
+      padding: 8.5px 12px;
+      color: var(--text);
+      outline: none;
+      transition: box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+    input::placeholder, textarea::placeholder { color: var(--text-faint); }
+    input:hover, select:hover, textarea:hover {
+      box-shadow: 0 0 0 1px var(--border-deep);
     }
     input:focus, select:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-soft);
+      box-shadow: 0 0 0 2px var(--focus-ring), 0 0 0 4px var(--focus-halo);
     }
-    textarea { resize: vertical; line-height: 1.6; }
+    textarea { resize: vertical; line-height: 1.62; }
+    input[type="checkbox"] { accent-color: var(--accent); width: 14px; height: 14px; }
 
-    /* Strict 3-Tier Button Hierarchy */
+    /* Claude 3-Tier Button Hierarchy: Terracotta CTA → Warm Sand Secondary → Quiet Ghost */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 8px 14px; border-radius: 8px; border: 1px solid transparent;
-      font-weight: 600; font-size: 12.5px; cursor: pointer; transition: all 0.14s; text-decoration: none;
+      padding: 8px 15px; border-radius: 10px; border: none;
+      font-weight: 500; font-size: 12.5px; cursor: pointer;
+      transition: background 0.14s ease, box-shadow 0.14s ease, transform 0.08s ease;
+      text-decoration: none; white-space: nowrap;
     }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    /* Tier 1: Primary Focal Action (1 per panel) */
-    .btn-primary { background: var(--accent); color: #ffffff; }
-    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
-    /* Tier 2: Crisp Neutral Outline */
-    .btn-secondary { background: var(--surface); border-color: var(--border-strong); color: var(--text-2); }
-    .btn-secondary:hover:not(:disabled) { background: var(--surface-2); border-color: var(--text-muted); color: var(--text); }
-    /* Destructive */
-    .btn-danger { background: var(--surface); border-color: rgba(220,38,38,0.35); color: var(--danger); }
-    .btn-danger:hover:not(:disabled) { background: var(--danger-soft); }
-    /* Tier 3: Quiet Auxiliary Link/Action */
-    .btn-ghost { background: transparent; border-color: transparent; color: var(--text-muted); padding: 5px 9px; font-size: 12px; font-weight: 500; }
-    .btn-ghost:hover { background: var(--surface-3); color: var(--text); }
-    .btn-full { width: 100%; padding: 10px 14px; font-size: 13.5px; }
+    .btn:active:not(:disabled) { transform: translateY(0.5px); }
+    .btn:disabled { opacity: 0.52; cursor: not-allowed; }
 
-    /* Unified Quiet Import Box & Helper Notes (Zero Rainbow Borders) */
-    .quick-paste, .shot-dropzone {
-      background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 9px; padding: 11px 13px; margin-bottom: 12px;
+    .btn-primary {
+      background: var(--accent);
+      color: var(--accent-ink);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(20, 20, 19, 0.10);
     }
-    .shot-dropzone {
-      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+    .btn-secondary {
+      background: var(--surface-3);
+      color: var(--text-2);
+      box-shadow: var(--ring-btn-sec);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background: var(--surface-hover);
+      color: var(--text);
+      box-shadow: 0 0 0 1px var(--border-deep);
+    }
+
+    .btn-danger {
+      background: var(--danger-soft);
+      color: var(--danger);
+      box-shadow: 0 0 0 1px rgba(181, 51, 51, 0.25);
+    }
+    .btn-danger:hover:not(:disabled) { box-shadow: 0 0 0 1px var(--danger); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-muted);
+      padding: 5.5px 10px;
+      font-size: 12px;
+    }
+    .btn-ghost:hover { background: var(--surface-2); color: var(--text); }
+    .btn-full { width: 100%; padding: 11px 16px; font-size: 13.5px; border-radius: 11px; }
+
+    /* Composer Dropzone & Editorial Notes (Zero Left-Border Callout Slop) */
+    .quick-paste {
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 13px 15px;
+      margin-bottom: 16px;
     }
     .mechanism-tip {
-      border-left: 2px solid var(--border-strong);
-      padding: 2px 0 2px 10px;
+      background: var(--surface-2);
+      border-radius: 9px;
+      padding: 8px 12px;
       font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 8px;
-      line-height: 1.55;
+      margin-bottom: 9px;
+      line-height: 1.58;
     }
     .mechanism-tip strong { color: var(--text-2); font-weight: 600; }
     .live-cut-bar {
-      background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
-      padding: 7px 11px; font-size: 12px; margin-top: 6px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 9px;
+      padding: 8px 12px;
+      font-size: 12px;
+      margin-top: 7px;
       display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
     }
     .exposed-txt {
       background: var(--highlight-bg);
       color: var(--highlight-ink);
-      padding: 1px 5px;
-      border-radius: 4px;
-      font-weight: 700;
+      padding: 1.5px 6px;
+      border-radius: 5px;
+      font-weight: 600;
     }
 
     .chip-btn {
-      font-size: 11.5px; padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border);
-      background: var(--surface); color: var(--text-muted); cursor: pointer; transition: all 0.12s;
+      font-size: 11.5px; padding: 3.5px 10px; border-radius: 999px;
+      border: none; box-shadow: 0 0 0 1px var(--border-strong);
+      background: var(--surface); color: var(--text-muted);
+      cursor: pointer; transition: all 0.14s;
     }
-    .chip-btn:hover { color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
+    .chip-btn:hover { color: var(--text); background: var(--surface-2); box-shadow: 0 0 0 1px var(--border-deep); }
 
-    /* Score & Metrics — High Contrast Focal Number, Subtle Supporting Bars */
-    .metrics-top { display: grid; grid-template-columns: 140px 1fr; gap: 14px; margin-bottom: 16px; }
+    /* Score & Metrics — Editorial Serif Focal Numerals */
+    .metrics-top { display: grid; grid-template-columns: 148px 1fr; gap: 14px; margin-bottom: 18px; }
     .score-ring {
-      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 14px;
     }
-    .score-num { font-size: 34px; font-weight: 800; color: var(--text); line-height: 1.05; letter-spacing: -1px; }
+    .score-num {
+      font-family: var(--font-serif);
+      font-size: 38px;
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      font-variant-numeric: lining-nums tabular-nums;
+      margin: 2px 0;
+    }
     .dim-bars {
-      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 20px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px 22px;
     }
-    .dim-head { display: flex; justify-content: space-between; margin-bottom: 4px; color: var(--text-muted); font-size: 12px; }
-    .dim-head strong { color: var(--text); }
-    .bar-bg { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; background: var(--text-2); border-radius: 99px; }
+    .dim-head { display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+    .dim-head strong { color: var(--text); font-weight: 600; }
+    .bar-bg { height: 5px; background: var(--surface-3); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--text-2); opacity: 0.78; border-radius: 99px; transition: width 0.3s ease; }
 
-    /* Semantic Status Banners — Quiet when Safe, Clear when Warning/Veto */
-    .banner { padding: 9px 13px; border-radius: 8px; font-size: 12.5px; margin-bottom: 14px; border: 1px solid transparent; }
-    .banner.safe { background: var(--ok-soft); border-color: rgba(5,150,105,0.2); color: var(--ok); }
-    .banner.caution { background: var(--warn-soft); border-color: rgba(180,83,9,0.25); color: var(--warn); }
-    .banner.veto { background: var(--danger-soft); border-color: rgba(220,38,38,0.28); color: var(--danger); font-weight: 600; }
+    /* Semantic Status Banners — Muted Earthy Sage / Ochre / Crimson */
+    .banner {
+      padding: 10px 14px; border-radius: 10px; font-size: 12.5px;
+      margin-bottom: 15px; line-height: 1.55;
+    }
+    .banner.safe { background: var(--ok-soft); color: var(--ok); box-shadow: inset 0 0 0 1px rgba(85, 111, 68, 0.20); }
+    .banner.caution { background: var(--warn-soft); color: var(--warn); box-shadow: inset 0 0 0 1px rgba(148, 97, 33, 0.22); }
+    .banner.veto { background: var(--danger-soft); color: var(--danger); box-shadow: inset 0 0 0 1px rgba(181, 51, 51, 0.25); font-weight: 600; }
 
-    .sub-tabs { display: flex; gap: 16px; margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 0; flex-wrap: wrap; }
+    .sub-tabs {
+      display: flex; gap: 18px; margin-bottom: 18px;
+      border-bottom: 1px solid var(--border); padding-bottom: 0; flex-wrap: wrap;
+    }
     .sub-tab {
       padding: 8px 2px 10px; border: none; border-bottom: 2px solid transparent; border-radius: 0;
-      background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; cursor: pointer;
+      background: transparent; color: var(--text-muted); font-weight: 500; font-size: 13px; cursor: pointer;
+      transition: color 0.14s, border-color 0.14s;
     }
     .sub-tab:hover { color: var(--text); }
-    .sub-tab.active { color: var(--accent); border-bottom-color: var(--accent); background: transparent; }
+    .sub-tab.active { color: var(--text); font-weight: 600; border-bottom-color: var(--accent); }
 
-    .kw-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-    .kw-tag { font-size: 11.5px; padding: 2px 8px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--text-2); }
-    .kw-tag.hit { background: var(--ok-soft); color: var(--ok); border-color: rgba(5,150,105,0.25); font-weight: 600; }
-    .kw-tag.miss { background: var(--warn-soft); color: var(--warn); border-color: rgba(180,83,9,0.25); }
+    .kw-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .kw-tag {
+      font-size: 11.5px; padding: 2.5px 9px; border-radius: 6px;
+      background: var(--surface); box-shadow: 0 0 0 1px var(--border-strong); color: var(--text-2);
+    }
+    .kw-tag.hit { background: var(--ok-soft); color: var(--ok); box-shadow: 0 0 0 1px rgba(85, 111, 68, 0.25); font-weight: 600; }
+    .kw-tag.miss { background: var(--warn-soft); color: var(--warn); box-shadow: 0 0 0 1px rgba(148, 97, 33, 0.24); }
 
     .info-box {
-      background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 9px; padding: 12px 14px; margin-bottom: 12px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 13px 15px;
+      margin-bottom: 12px;
     }
     .info-box ul { padding-left: 18px; }
     .info-box li { margin-bottom: 4px; color: var(--text-2); }
 
     .qa-card {
-      background: var(--surface-2); border: 1px solid var(--border);
-      border-radius: 9px; padding: 12px 14px; margin-bottom: 10px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 11px;
+      padding: 13px 15px;
+      margin-bottom: 10px;
     }
-    .qa-q { font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .qa-intent { font-size: 12px; color: var(--warn); margin-bottom: 4px; }
+    .qa-q { font-family: var(--font-serif); font-size: 14.5px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+    .qa-intent { font-size: 12px; color: var(--warn); margin-bottom: 5px; }
     .qa-ans { font-size: 12.5px; color: var(--text-2); }
 
-    /* Recruiter Simulator Mockups (Isolated Authentic BOSS App Palette inside Device Frame only) */
-    .recruiter-layout { display: grid; grid-template-columns: 4fr 8fr; gap: 20px; align-items: start; }
+    /* Recruiter Simulator Mockups (Authentic BOSS App Specimen Isolated Inside Warm Device Bezel) */
+    .recruiter-layout { display: grid; grid-template-columns: 4fr 8fr; gap: var(--card-gap); align-items: start; }
     .sim-screens-grid { display: grid; grid-template-columns: 350px 1fr; gap: 18px; align-items: start; }
     @media (max-width: 1080px) { .recruiter-layout, .sim-screens-grid { grid-template-columns: 1fr; } }
 
+    .specimen-caption {
+      font-size: 12px; font-weight: 600; color: var(--text-2);
+      margin-bottom: 9px; display: flex; align-items: center; justify-content: space-between;
+    }
     .phone-frame {
       background: #ffffff; color: #1f2329; border-radius: 22px;
-      border: 5px solid #1f2937; overflow: hidden; box-shadow: 0 10px 28px rgba(15,23,42,0.12);
+      border: 6px solid #262522; overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border-strong), 0 14px 32px rgba(20, 20, 19, 0.10);
     }
     .boss-app-bar {
       background: #00a6a7; color: #ffffff;
-      padding: 12px 15px 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 700;
+      padding: 12px 15px 10px; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 13px;
     }
     .boss-sub-filter {
       background: #f7f8fa; padding: 6px 14px; font-size: 11.5px; color: #666;
       border-bottom: 1px solid #eceef2; display: flex; gap: 14px;
     }
     .boss-msg-row { display: flex; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #f2f3f5; align-items: center; background: #fff; }
-    .boss-msg-row.me-highlight { background: #f0fafa; border-left: 3px solid #00a6a7; padding-left: 10px; }
+    .boss-msg-row.me-highlight { background: #f2fbfb; box-shadow: inset 3px 0 0 #00a6a7; }
     .boss-avatar {
-      width: 38px; height: 38px; border-radius: 50%; background: #e5e7eb; color: #4b5563;
-      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; position: relative;
+      width: 38px; height: 38px; border-radius: 50%; background: #eaecef; color: #4b5563;
+      display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0; position: relative;
     }
     .boss-avatar.me { background: #00a6a7; color: #fff; }
     .unread-badge {
-      position: absolute; top: -2px; right: -2px; background: #ef4444; color: #fff;
+      position: absolute; top: -2px; right: -2px; background: #e5484d; color: #fff;
       font-size: 10px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
     }
     .boss-msg-body { flex: 1; min-width: 0; }
@@ -308,124 +530,179 @@
     .boss-cand-role { font-size: 11px; color: #86909c; margin-left: 4px; }
     .boss-msg-time { font-size: 10.5px; color: #999; }
     .boss-msg-snip { font-size: 12px; color: #646a73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .boss-msg-row.me-highlight .boss-msg-snip { color: #111827; font-weight: 700; }
+    .boss-msg-row.me-highlight .boss-msg-snip { color: #141413; font-weight: 700; }
 
-    .talent-feed-wrap { background: #f3f4f6; color: #1f2329; border-radius: 14px; padding: 16px; border: 1px solid var(--border); }
+    .talent-feed-wrap {
+      background: var(--surface-2); color: #1f2329;
+      border-radius: 16px; padding: 16px;
+      box-shadow: inset 0 0 0 1px var(--border-strong);
+    }
     .talent-feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .boss-talent-card {
       background: #ffffff; border-radius: 12px; padding: 15px 17px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #d1d5db; margin-bottom: 12px;
+      box-shadow: 0 0 0 1px #e2e0d8, 0 2px 8px rgba(20, 20, 19, 0.04); margin-bottom: 12px;
     }
     .tc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 7px; }
     .tc-name-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-    .tc-name { font-size: 15.5px; font-weight: 800; color: #1f2329; }
+    .tc-name { font-size: 15px; font-weight: 700; color: #1f2329; }
     .tc-online { font-size: 11px; color: #008c8d; background: #e6f8f8; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
     .tc-meta { font-size: 11.5px; color: #646a73; margin-top: 2px; }
     .tc-salary { font-size: 14px; font-weight: 700; color: #008c8d; }
-    .tc-exp-list { font-size: 11.5px; color: #4e5969; margin: 8px 0; padding: 8px 10px; background: #f8fafb; border-radius: 7px; line-height: 1.6; }
-    .tc-adv-box { font-size: 12px; color: #333; line-height: 1.58; border-top: 1px dashed #e5e7eb; padding-top: 8px; }
-    .kw-red { color: #dc2626; background: #fee2e2; padding: 0 3px; border-radius: 3px; font-weight: 700; }
-    .tc-folded-hint { color: #9ca3af; font-size: 11px; }
-    .chat-open-card { background: #ffffff; border-radius: 11px; padding: 12px 14px; border: 1px solid #e5e7eb; }
-    .chat-bubble { background: #f0fdfa; border: 1px solid #ccfbf1; color: #1f2329; padding: 9px 12px; border-radius: 4px 11px 11px 11px; font-size: 12.5px; margin-top: 6px; }
+    .tc-exp-list { font-size: 11.5px; color: #4e5969; margin: 8px 0; padding: 8px 10px; background: #f8f8f6; border-radius: 8px; line-height: 1.6; }
+    .tc-adv-box { font-size: 12px; color: #333; line-height: 1.58; border-top: 1px dashed #e5e4dc; padding-top: 8px; }
+    .kw-red { color: #b53333; background: #fae6e6; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+    .tc-folded-hint { color: #87867f; font-size: 11px; }
+    .chat-open-card { background: #ffffff; border-radius: 11px; padding: 12px 14px; box-shadow: 0 0 0 1px #e2e0d8; }
+    .chat-bubble { background: #f2fbfb; border: 1px solid #d3f2f2; color: #1f2329; padding: 9px 12px; border-radius: 4px 11px 11px 11px; font-size: 12.5px; margin-top: 6px; }
 
-    /* Pipeline Steps & Analytics — Monochrome Numbers + Single-Hue Chart */
+    /* Pipeline Steps & Analytics — Editorial Serif KPIs + Terracotta/Sand Charts */
     .pipeline-steps {
-      display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 18px;
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: var(--card-gap);
     }
     @media (max-width: 1100px) { .pipeline-steps { grid-template-columns: repeat(4, 1fr); } }
     .p-step {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 9px;
-      padding: 9px 8px; text-align: center; font-size: 12px; color: var(--text-2);
+      background: var(--surface); box-shadow: var(--ring-card); border-radius: 11px;
+      padding: 10px 8px; text-align: center; font-size: 12px; color: var(--text-2);
     }
-    .p-step strong { display: block; color: var(--text-muted); font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+    .p-step strong {
+      display: block; font-family: var(--font-mono);
+      color: var(--text-faint); font-size: 10.5px; font-weight: 500;
+      letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 3px;
+    }
 
-    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; margin-bottom: 18px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; margin-bottom: var(--card-gap); }
     @media (max-width: 1050px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
     .kpi-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; box-shadow: var(--shadow);
+      background: var(--surface); box-shadow: var(--ring-card);
+      border-radius: 14px; padding: 16px 18px;
     }
-    .kpi-val { font-size: 25px; font-weight: 800; margin: 4px 0 2px; color: var(--text); letter-spacing: -0.5px; }
+    .kpi-val {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 500;
+      margin: 4px 0 3px;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
 
-    .funnel-row { display: grid; grid-template-columns: 170px 1fr 105px; align-items: center; gap: 12px; margin-bottom: 10px; font-size: 12.5px; }
-    .funnel-track { height: 20px; background: var(--surface-3); border-radius: 5px; overflow: hidden; }
+    .funnel-row { display: grid; grid-template-columns: 175px 1fr 90px; align-items: center; gap: 12px; margin-bottom: 11px; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    .funnel-track { height: 22px; background: var(--surface-2); border-radius: 6px; overflow: hidden; }
     .funnel-bar {
       height: 100%; background: var(--accent);
-      display: flex; align-items: center; padding-left: 8px; color: #fff; font-weight: 700; font-size: 11px; min-width: 28px;
+      display: flex; align-items: center; padding-left: 9px;
+      color: var(--accent-ink); font-weight: 600; font-size: 11px; min-width: 28px; border-radius: 6px;
+    }
+    .funnel-bar.zero {
+      background: var(--surface-3);
+      color: var(--text-muted);
+      font-weight: 500;
+      width: 28px !important;
+      justify-content: center;
+      padding-left: 0;
     }
 
-    /* Kanban & Tables */
-    .kanban-summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 16px; }
+    /* Kanban & Editorial Tables */
+    .kanban-summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 18px; }
+    @media (max-width: 900px) { .kanban-summary { grid-template-columns: repeat(2, 1fr); } }
     .stage-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-      padding: 12px 16px; cursor: pointer; transition: all 0.15s; box-shadow: var(--shadow);
+      background: var(--surface); box-shadow: var(--ring-card); border-radius: 14px;
+      padding: 14px 18px; cursor: pointer; transition: all 0.15s;
     }
-    .stage-card:hover { border-color: var(--border-strong); }
-    .stage-card.active { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
-    .stage-num { font-size: 24px; font-weight: 800; margin-top: 3px; color: var(--text); }
+    .stage-card:hover { box-shadow: 0 0 0 1px var(--border-deep); }
+    .stage-card.active {
+      background: var(--surface);
+      box-shadow: 0 0 0 1.5px var(--accent), 0 4px 16px var(--accent-soft);
+    }
+    .stage-num {
+      font-family: var(--font-serif);
+      font-size: 26px; font-weight: 500; margin-top: 2px;
+      color: var(--text); font-variant-numeric: lining-nums tabular-nums;
+    }
 
-    table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-    th { text-align: left; padding: 10px 12px; font-size: 11.5px; font-weight: 600; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface-2); }
-    td { padding: 11px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-2); }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+    th {
+      text-align: left; padding: 10px 12px; font-size: 11.5px; font-weight: 600;
+      color: var(--text-muted); border-bottom: 1px solid var(--border-strong);
+      background: var(--surface-2);
+    }
+    th:first-child { border-top-left-radius: 8px; }
+    th:last-child { border-top-right-radius: 8px; }
+    td { padding: 12px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text-2); }
+    tr:last-child td { border-bottom: none; }
     tr:hover td { background: var(--surface-2); }
 
-    .badge { font-size: 11px; padding: 2px 7px; border-radius: 5px; font-weight: 600; display: inline-block; }
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 6px; font-weight: 600; display: inline-block; }
     .badge.ok { background: var(--ok-soft); color: var(--ok); }
     .badge.warn { background: var(--warn-soft); color: var(--warn); }
     .badge.err { background: var(--danger-soft); color: var(--danger); }
     .badge.info { background: var(--accent-soft); color: var(--accent); }
     .badge.neutral { background: var(--surface-3); color: var(--text-2); }
 
-    /* Chat Boxes */
+    /* Chat Streams — Claude Warm Conversational Bubbles */
     .chat-stream {
-      background: var(--surface-2); border: 1px solid var(--border); border-radius: 10px;
-      height: 340px; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+      background: var(--surface-2);
+      box-shadow: inset 0 0 0 1px var(--border);
+      border-radius: 14px;
+      height: 340px; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 12px; margin-bottom: 12px;
     }
-    .msg-bubble { max-width: 86%; padding: 9px 13px; border-radius: 10px; font-size: 13px; white-space: pre-wrap; }
-    .msg-bot { align-self: flex-start; background: var(--surface); border: 1px solid var(--border); color: var(--text); }
-    .msg-user { align-self: flex-end; background: var(--accent); color: #fff; }
+    .msg-bubble { max-width: 86%; padding: 10px 14px; border-radius: 12px; font-size: 13px; white-space: pre-wrap; line-height: 1.62; }
+    .msg-bot { align-self: flex-start; background: var(--surface); box-shadow: 0 0 0 1px var(--border); color: var(--text); }
+    .msg-user { align-self: flex-end; background: var(--surface-3); color: var(--text); box-shadow: 0 0 0 1px var(--border-strong); }
     .coach-note {
-      font-size: 12px; background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent);
-      padding: 8px 11px; border-radius: 6px; color: var(--text-2); margin-top: 5px;
+      font-size: 12px;
+      background: var(--surface);
+      box-shadow: 0 0 0 1px var(--border);
+      padding: 10px 13px; border-radius: 10px;
+      color: var(--text-2); margin-top: 6px; line-height: 1.58;
     }
 
-    /* Compact Unobtrusive Terminal Drawer */
+    /* Warm Charcoal Terminal Drawer */
     .term-drawer {
-      position: fixed; bottom: 0; right: 24px; width: 260px; max-width: calc(100vw - 40px);
-      background: #181b1f; color: #d1d5db; border: 1px solid #2a2f36; border-bottom: none;
-      border-radius: 10px 10px 0 0; z-index: 80; box-shadow: 0 -4px 18px rgba(0,0,0,0.18); transition: width 0.18s;
+      position: fixed; bottom: 0; right: 24px; width: 256px; max-width: calc(100vw - 40px);
+      background: #1c1b19; color: #dad8ce;
+      box-shadow: 0 0 0 1px #353430, 0 -6px 24px rgba(0, 0, 0, 0.22);
+      border-radius: 12px 12px 0 0; z-index: 80; transition: width 0.18s ease;
     }
     .term-drawer.expanded { width: 540px; }
     .term-head {
-      padding: 7px 13px; background: #1f2328; border-radius: 10px 10px 0 0;
-      display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 12px; font-weight: 600; color: #e5e7eb;
+      padding: 8px 14px; background: #252421; border-radius: 12px 12px 0 0;
+      display: flex; justify-content: space-between; align-items: center;
+      cursor: pointer; font-size: 12px; font-weight: 500; color: #faf9f5;
+      font-variant-numeric: tabular-nums;
     }
     .term-body {
-      height: 210px; overflow-y: auto; padding: 10px 12px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; line-height: 1.5; display: none;
+      height: 210px; overflow-y: auto; padding: 10px 13px;
+      font-family: var(--font-mono); font-size: 11.5px; line-height: 1.55; display: none;
     }
     .term-drawer.expanded .term-body { display: block; }
-    .log-INFO { color: #9ca3af; }
-    .log-WARN { color: #fbbf24; }
-    .log-ERROR { color: #f87171; }
+    .log-INFO { color: #b0aea5; }
+    .log-WARN { color: #dfa55d; }
+    .log-ERROR { color: #e27474; }
 
+    /* Modals */
     .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.45); backdrop-filter: blur(2px); z-index: 90;
+      position: fixed; inset: 0; background: rgba(20, 20, 19, 0.45); backdrop-filter: blur(3px); z-index: 90;
       display: none; align-items: center; justify-content: center; padding: 20px;
     }
     .modal-backdrop.open { display: flex; }
     .modal-box {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-      max-width: 740px; width: 100%; max-height: 84vh; display: flex; flex-direction: column;
-      box-shadow: 0 20px 45px rgba(15, 23, 42, 0.18);
+      background: var(--surface); box-shadow: var(--ring-card), 0 24px 56px rgba(20, 20, 19, 0.24);
+      border-radius: 18px; max-width: 740px; width: 100%; max-height: 86vh;
+      display: flex; flex-direction: column;
     }
-    .modal-body { padding: 18px; overflow-y: auto; white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+    .modal-body {
+      padding: 20px 22px; overflow-y: auto; white-space: pre-wrap;
+      font-family: var(--font-mono); font-size: 12px; line-height: 1.6; color: var(--text-2);
+    }
 
     .toast {
       position: fixed; bottom: 28px; left: 24px; z-index: 100;
-      background: #18181b; color: #fff; font-weight: 600; font-size: 12.5px;
-      padding: 9px 16px; border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
-      opacity: 0; transform: translateY(10px); pointer-events: none; transition: all 0.2s;
+      background: #1f1e1c; color: #faf9f5; box-shadow: 0 0 0 1px #3a3934, 0 10px 28px rgba(0, 0, 0, 0.22);
+      font-weight: 500; font-size: 12.5px;
+      padding: 10px 16px; border-radius: 10px;
+      opacity: 0; transform: translateY(8px); pointer-events: none; transition: all 0.2s ease;
     }
     .toast.show { opacity: 1; transform: translateY(0); }
     .hidden { display: none !important; }
@@ -437,13 +714,16 @@
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand">
-        <div class="brand-logo">HL</div>
-        <div>
-          <div class="brand-title">HireLens 聘镜</div>
+        <div class="brand-mark" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="none">
+            <circle cx="12" cy="12" r="3.2" fill="var(--accent)" />
+            <path d="M12 2.5v4.2M12 17.3v4.2M2.5 12h4.2M17.3 12h4.2M5.3 5.3l2.9 2.9M15.8 15.8l2.9 2.9M18.7 5.3l-2.9 2.9M8.2 15.8l-2.9 2.9" stroke="var(--text)" stroke-width="1.65" stroke-linecap="round" />
+          </svg>
         </div>
+        <div class="brand-title">HireLens 聘镜</div>
       </div>
 
-      <div class="nav-tabs">
+      <nav class="nav-tabs" aria-label="主功能导航">
         <button class="nav-tab active" data-view="studio" onclick="switchMainView('studio')">诊断与话术台</button>
         <button class="nav-tab" data-view="recruiter" onclick="switchMainView('recruiter')">招聘端实时模拟页</button>
         <button class="nav-tab" data-view="pipeline" onclick="switchMainView('pipeline')">全链路巡航指挥台</button>
@@ -451,15 +731,29 @@
         <button class="nav-tab" data-view="analytics" onclick="switchMainView('analytics')">数据统计大盘</button>
         <button class="nav-tab" data-view="feishu" onclick="switchMainView('feishu')">飞书协同 & 配置</button>
         <button class="nav-tab" data-view="mock" onclick="switchMainView('mock')">模拟面试营</button>
-      </div>
+      </nav>
 
-      <div class="status-strip" style="gap:4px;">
-        <button class="btn btn-ghost" onclick="resetForm()">+ 新建</button>
-        <span class="pill" style="padding:3px 6px;"><span id="pipe-dot" class="dot-ok"></span><span id="stat-pipe">就绪</span></span>
-        <span class="pill" style="padding:3px 6px;" id="stat-quota">0/35</span>
-        <span class="pill" style="padding:3px 6px;" id="stat-tokens">¥0.00</span>
-        <button type="button" class="pill pill-btn" style="padding:4px 9px;" id="stat-llm" onclick="openLLMModal()" title="点击切换或接入任意大模型 API">LLM ▾</button>
-        <button class="btn btn-ghost" onclick="toggleTheme()" title="切换浅色/深色主题">深浅色</button>
+      <div class="status-strip">
+        <button class="btn btn-ghost" onclick="resetForm()">+ 新建岗位</button>
+        <span class="pill"><span id="pipe-dot" class="dot-ok"></span><span id="stat-pipe">就绪</span></span>
+        <span class="pill" id="stat-quota">投递 0/35</span>
+        <span class="pill" id="stat-tokens">¥0.00</span>
+        <button type="button" class="pill pill-btn" id="stat-llm" onclick="openLLMModal()" title="切换或接入自定义大模型 API">LLM ▾</button>
+        <button type="button" class="pill pill-btn" id="btn-tweaks" onclick="toggleTweaksPopover(event)" title="调整界面色调与排版密度">外观 ▾</button>
+
+        <!-- Claude Design Tweaks Popover -->
+        <div id="tweaks-popover" class="tweaks-popover hidden" onclick="event.stopPropagation()">
+          <div class="tweaks-label">纸张色调 · Theme</div>
+          <div class="seg-row">
+            <button type="button" class="seg-opt active" id="tw-theme-light" onclick="setThemeMode('light')">羊皮纸浅色</button>
+            <button type="button" class="seg-opt" id="tw-theme-dark" onclick="setThemeMode('dark')">曜石暖黑</button>
+          </div>
+          <div class="tweaks-label">排版密度 · Density</div>
+          <div class="seg-row">
+            <button type="button" class="seg-opt active" id="tw-den-editorial" onclick="setDensityMode('editorial')">舒展阅读</button>
+            <button type="button" class="seg-opt" id="tw-den-compact" onclick="setDensityMode('compact')">紧凑工作台</button>
+          </div>
+        </div>
       </div>
     </div>
   </header>
@@ -468,6 +762,14 @@
 
     <!-- ==================== VIEW 1: STUDIO ==================== -->
     <section id="view-studio" class="view-panel active">
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">01 · Editorial Diagnostic Studio</div>
+          <h1 class="view-heading">岗位深度排雷与首屏破冰台</h1>
+          <p class="view-sub">基于本机双层排雷与双向隐私脱敏，将核心硬实力顶在招聘端消息截断线前 17 字，并同步产出净版定制简历。</p>
+        </div>
+      </div>
+
       <div class="studio-grid">
 
         <!-- Left: Multi-Modal Job Entry -->
@@ -475,23 +777,23 @@
           <div class="card-header">
             <div class="card-title">岗位采集与录入</div>
             <div style="display:flex; gap:5px; flex-wrap:wrap;">
-              <button type="button" class="chip-btn" onclick="fillPreset('ai_pm')">示例: AI产品</button>
-              <button type="button" class="chip-btn" onclick="fillPreset('hk_ai')">示例: 香港双语</button>
-              <button type="button" class="chip-btn" onclick="fillPreset('ai_ops')">示例: 项目运营</button>
-              <button type="button" class="chip-btn" onclick="fillPreset('admin')">示例: 综合行政</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('ai_pm')">示例 · AI产品</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('hk_ai')">示例 · 香港双语</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('ai_ops')">示例 · 项目运营</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('admin')">示例 · 综合行政</button>
             </div>
           </div>
 
           <!-- Unified Clean Quick Import Box -->
           <div class="quick-paste" id="shot-dropzone">
-            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:8px;">
               <div>
-                <strong style="font-size:12.5px; color:var(--text);">快速导入（支持网页整段粘贴 或 直接按 Cmd+V 粘贴截图）</strong>
+                <strong style="font-size:12.5px; color:var(--text); font-weight:600;">快速导入（支持网页整段粘贴 或 直接按 Cmd+V 粘贴截图）</strong>
               </div>
               <div style="display:flex; gap:6px;">
                 <input type="file" id="shot-file-input" accept="image/*" class="hidden" onchange="handleImageFile(this.files[0])" />
-                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11.5px;" id="btn-shot-upload" onclick="document.getElementById('shot-file-input').click()">上传截图识别</button>
-                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11.5px;" onclick="smartParseRaw()">拆解文本 ↓</button>
+                <button type="button" class="btn btn-secondary" style="padding:5px 11px; font-size:11.5px;" id="btn-shot-upload" onclick="document.getElementById('shot-file-input').click()">上传截图识别</button>
+                <button type="button" class="btn btn-secondary" style="padding:5px 11px; font-size:11.5px;" onclick="smartParseRaw()">拆解文本 ↓</button>
               </div>
             </div>
             <textarea id="raw_paste_box" rows="2" placeholder="可选：粘贴招聘网页乱序文字点「拆解文本」，或直接在本页按 Cmd+V 粘贴岗位截图..."></textarea>
@@ -501,11 +803,11 @@
             <div class="form-row">
               <div>
                 <label>职位名称 *</label>
-                <input type="text" id="job_title" required placeholder="如: AI 产品经理 / AI Agent 应用工程师" />
+                <input type="text" id="job_title" required placeholder="如：AI 产品经理 / AI Agent 应用工程师" />
               </div>
               <div>
                 <label>公司名称</label>
-                <input type="text" id="company_name" placeholder="如: 深圳某 AI 应用团队" />
+                <input type="text" id="company_name" placeholder="如：深圳某 AI 应用团队" />
               </div>
             </div>
 
@@ -516,7 +818,7 @@
               </div>
               <div>
                 <label>城市 / HR活跃度</label>
-                <div style="display:flex; gap:5px;">
+                <div style="display:flex; gap:6px;">
                   <input type="text" id="city" value="深圳" style="width:45%;" />
                   <input type="text" id="hr_active_status" value="今日活跃" style="width:55%;" />
                 </div>
@@ -547,7 +849,7 @@
               <div>
                 <label>母本路由策略</label>
                 <select id="preferred_track">
-                  <option value="">🤖 AI 自动匹配最佳母本（推荐）</option>
+                  <option value="">自动匹配最佳母本（推荐）</option>
                   <option value="track_ai_builder">强制：AI 产品经理 / Agent 开发</option>
                   <option value="track_ai_ops">强制：项目运营 / 数字化工作流</option>
                   <option value="track_admin">强制：行政综合 / 专职联络</option>
@@ -566,8 +868,8 @@
               <textarea id="jd_text" rows="5" required placeholder="粘贴岗位描述正文..."></textarea>
             </div>
 
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:12px;">
-              <label style="margin:0; display:flex; align-items:center; gap:6px; cursor:pointer;">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; font-size:12px;">
+              <label style="margin:0; display:flex; align-items:center; gap:7px; cursor:pointer; color:var(--text-muted);">
                 <input type="checkbox" id="auto_render_pdf" checked />
                 分析后同步静默生成「一页净版 A4 PDF + BOSS 高清图片简历」
               </label>
@@ -591,26 +893,32 @@
             <div style="display:flex; gap:6px; flex-wrap:wrap;">
               <button type="button" id="btn-jump-sim" class="btn btn-secondary hidden" onclick="jumpToRecruiterView()">招聘端模拟预览 ↗</button>
               <button type="button" id="btn-gen-artifacts" class="btn btn-secondary hidden" onclick="renderJobArtifactsNow()">生成 PDF / 图片简历</button>
-              <button type="button" id="btn-push-feishu" class="btn btn-ghost hidden" onclick="pushCurrentJobToFeishu()">推飞书卡片</button>
+              <button type="button" id="btn-push-feishu" class="btn btn-ghost hidden" onclick="pushCurrentJobToFeishu()">推送飞书卡片</button>
               <button type="button" id="btn-view-master" class="btn btn-ghost hidden" onclick="openMasterResumeModal()">查看母本</button>
             </div>
           </div>
 
-          <div id="eval-empty" style="text-align:center; padding:66px 20px; color:var(--text-muted);">
-            <div style="font-size:34px; margin-bottom:10px;">🔭</div>
-            <div style="font-weight:600; color:var(--text); margin-bottom:6px;">等待载入或粘贴目标岗位</div>
-            <div>支持直接按 <code>Cmd+V</code> 粘贴招聘截图，或前往「🛸 全链路巡航指挥台」一键启动四平台批量巡航。</div>
+          <div id="eval-empty" style="text-align:center; padding:72px 24px; color:var(--text-muted);">
+            <div style="margin-bottom:16px; display:inline-flex; align-items:center; justify-content:center; width:56px; height:56px; border-radius:16px; background:var(--surface-2); box-shadow:inset 0 0 0 1px var(--border);">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+                <circle cx="13" cy="13" r="8.5" stroke="var(--text-2)" stroke-width="1.4" />
+                <circle cx="13" cy="13" r="3" fill="var(--accent)" />
+                <path d="M19.5 19.5L24.5 24.5" stroke="var(--text-2)" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </div>
+            <div style="font-family:var(--font-serif); font-size:18px; font-weight:500; color:var(--text); margin-bottom:8px;">等待载入或粘贴目标岗位</div>
+            <div style="max-width:420px; margin:0 auto; line-height:1.65;">支持直接按 <code>Cmd+V</code> 粘贴招聘截图离线识图，或前往「全链路巡航指挥台」启动四平台批量清洗。</div>
           </div>
 
           <div id="eval-panel" class="hidden">
             <div id="veto-banner" class="banner safe"></div>
 
             <!-- Artifacts Bar -->
-            <div id="artifact-bar" class="info-box hidden" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-              <span style="font-size:12px;">📄 <strong>本岗专属定制简历产物已就绪</strong>（基于核验母本插槽微调，零虚构指标）：</span>
+            <div id="artifact-bar" class="info-box hidden" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <span style="font-size:12px; color:var(--text-2);"><strong>本岗专属定制简历产物已就绪</strong>（基于核验母本插槽微调，零虚构指标）</span>
               <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <a id="link-dl-pdf" href="#" target="_blank" class="btn btn-secondary" style="padding:4px 10px;">⬇️ 下载 A4 PDF 简历</a>
-                <a id="link-dl-png" href="#" target="_blank" class="btn btn-secondary" style="padding:4px 10px;">🖼️ 查看 BOSS 高清图片简历</a>
+                <a id="link-dl-pdf" href="#" target="_blank" class="btn btn-secondary" style="padding:5px 11px; font-size:12px;">下载 A4 PDF 简历</a>
+                <a id="link-dl-png" href="#" target="_blank" class="btn btn-secondary" style="padding:5px 11px; font-size:12px;">查看 BOSS 图片简历</a>
                 <button type="button" class="btn btn-ghost" onclick="openTailoredResumePage()">在线微调打印台 ↗</button>
               </div>
             </div>
@@ -642,92 +950,92 @@
             </div>
 
             <div class="sub-tabs">
-              <button class="sub-tab active" onclick="switchSubTab('copy', this)">💬 破冰语 & BOSS个人优势</button>
-              <button class="sub-tab" onclick="switchSubTab('intel', this)">🏢 企业背调与排雷核实</button>
-              <button class="sub-tab" onclick="switchSubTab('prep', this)">🎤 考官押题包 (Grill-Me)</button>
-              <button class="sub-tab" onclick="switchSubTab('notes', this)">📝 漏斗状态 & 复盘笔记</button>
+              <button class="sub-tab active" onclick="switchSubTab('copy', this)">破冰语与个人优势</button>
+              <button class="sub-tab" onclick="switchSubTab('intel', this)">企业背调与排雷核实</button>
+              <button class="sub-tab" onclick="switchSubTab('prep', this)">考官押题包 (Grill-Me)</button>
+              <button class="sub-tab" onclick="switchSubTab('notes', this)">漏斗状态与复盘笔记</button>
             </div>
 
             <!-- SubTab 1: Copy -->
             <div id="sub-copy">
               <div class="info-box">
                 <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
-                  <strong style="font-size:12px;">🧬 ATS 搜索命中词（将在 BOSS 牛人推荐卡标红高亮）</strong>
-                  <div style="display:flex; gap:5px; align-items:center;">
-                    <select id="regen-lang" style="width:auto; padding:3px 7px; font-size:11.5px;">
+                  <strong style="font-size:12px; color:var(--text);">ATS 搜索命中词（将在 BOSS 牛人推荐卡标红高亮）</strong>
+                  <div style="display:flex; gap:6px; align-items:center;">
+                    <select id="regen-lang" style="width:auto; padding:4px 8px; font-size:11.5px;">
                       <option value="zh-CN">简体</option>
                       <option value="zh-HK">繁體</option>
                       <option value="en">English</option>
                     </select>
-                    <select id="regen-track" style="width:auto; padding:3px 7px; font-size:11.5px;">
+                    <select id="regen-track" style="width:auto; padding:4px 8px; font-size:11.5px;">
                       <option value="">自动赛道</option>
                       <option value="track_ai_builder">AI产品/Agent</option>
                       <option value="track_ai_ops">AI项目运营</option>
                       <option value="track_admin">行政综合</option>
                       <option value="track_media_pr">品牌编导</option>
                     </select>
-                    <button type="button" id="btn-regen" class="btn btn-ghost" onclick="regenerateCurrentJob()">🔄 切换重算</button>
+                    <button type="button" id="btn-regen" class="btn btn-ghost" onclick="regenerateCurrentJob()">切换重算</button>
                   </div>
                 </div>
                 <div class="kw-list" id="ats-keywords"></div>
-                <div id="ats-bridge" style="font-size:11.5px; color:var(--text-muted); margin-top:6px;"></div>
+                <div id="ats-bridge" style="font-size:11.5px; color:var(--text-muted); margin-top:7px;"></div>
               </div>
 
               <!-- 1. 打招呼破冰语 -->
               <div class="form-group">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                  <label style="margin:0; color:var(--text);">① 打招呼短破冰语（重点绝对前置）</label>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label style="margin:0; color:var(--text); font-weight:600;">1. 打招呼短破冰语（重点前置）</label>
                   <div style="display:flex; gap:8px; align-items:center;">
-                    <span id="greeting-len" style="font-size:11px; color:var(--text-muted);">0 字</span>
-                    <button type="button" class="btn btn-ghost" onclick="copyField('greeting-box', '已复制破冰语')">📋 复制破冰语</button>
+                    <span id="greeting-len" style="font-size:11px; color:var(--text-muted); font-variant-numeric:tabular-nums;">0 字</span>
+                    <button type="button" class="btn btn-ghost" onclick="copyField('greeting-box', '已复制破冰语')">复制破冰语</button>
                   </div>
                 </div>
                 <div class="mechanism-tip">
-                  💡 <strong>为什么要把重点顶在第 1 个字？</strong>很多公司招聘消息列表在未点开前<strong>只显示前 15~18 个字</strong>，后面全部消失为 <code>...</code>！开头写“您好，看到贵司招聘…”会与几十条路人消息撞脸沉底。
+                  <strong>为什么要把重点顶在第 1 个字？</strong>招聘端消息列表在未点开前<strong>仅外露前 15~18 个字</strong>，后续内容全部折叠为省略号。开头寒暄“您好，看到贵司招聘…”会与数十条群发消息撞脸沉底。
                 </div>
                 <textarea id="greeting-box" rows="3" oninput="onCopyTextInput()"></textarea>
                 <div class="live-cut-bar">
                   <div>
-                    <span style="color:var(--text-muted);">📱 HR 未点开消息列表只看到：</span>
+                    <span style="color:var(--text-muted);">HR 未点开消息列表只看到：</span>
                     <span id="greeting-exposed-preview" class="exposed-txt"></span><span style="color:var(--text-muted);">...</span>
                   </div>
-                  <span id="greeting-hook-check" class="badge ok">✓ 硬实力已前置</span>
+                  <span id="greeting-hook-check" class="badge ok">硬实力已前置</span>
                 </div>
               </div>
 
               <!-- 2. BOSS 个人优势 -->
               <div class="form-group">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                  <label style="margin:0; color:var(--text);">② BOSS 直聘「个人优势」（人才推荐页曝光卡片）</label>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                  <label style="margin:0; color:var(--text); font-weight:600;">2. BOSS 直聘「个人优势」（人才推荐页曝光卡片）</label>
                   <div style="display:flex; gap:8px; align-items:center;">
-                    <span id="advantage-len" style="font-size:11px; color:var(--text-muted);">0 / 140 字</span>
-                    <button type="button" class="btn btn-ghost" onclick="copyField('advantage-box', '已复制个人优势')">📋 复制个人优势</button>
+                    <span id="advantage-len" style="font-size:11px; color:var(--text-muted); font-variant-numeric:tabular-nums;">0 / 140 字</span>
+                    <button type="button" class="btn btn-ghost" onclick="copyField('advantage-box', '已复制个人优势')">复制个人优势</button>
                   </div>
                 </div>
                 <div class="mechanism-tip">
-                  💡 <strong>为什么要专门写好「个人优势」？</strong>BOSS 直聘会把求职者的「个人优势」直接推在招聘端的<strong>「推荐牛人」人才推荐页卡片</strong>上！默认只露<strong>前 2 行（约 52 字）</strong>，命中 HR 搜索词会<strong>标红高亮</strong>。
+                  <strong>为什么要专门打磨「个人优势」？</strong>BOSS 直聘会将求职者的「个人优势」直接展示在招聘端的<strong>「推荐牛人」信息流卡片</strong>上，默认仅露出<strong>前两行（约 52 字）</strong>，命中 HR 搜索词即会标红高亮。
                 </div>
                 <textarea id="advantage-box" rows="3" maxlength="160" oninput="onCopyTextInput()"></textarea>
                 <div class="live-cut-bar">
                   <div>
-                    <span style="color:var(--text-muted);">🪪 牛人推荐卡片外露前两行：</span>
+                    <span style="color:var(--text-muted);">牛人推荐卡片外露前两行：</span>
                     <span id="adv-exposed-preview" class="exposed-txt"></span><span style="color:var(--text-muted);">...</span>
                   </div>
                   <button type="button" class="chip-btn" onclick="jumpToRecruiterView()">去招聘端模拟页看真实卡片 ↗</button>
                 </div>
               </div>
 
-              <details style="margin-bottom:10px;">
+              <details style="margin-bottom:14px;">
                 <summary style="cursor:pointer; font-size:12px; font-weight:600; color:var(--text-muted);">
-                  展开查看：③ 邮件 / JobsDB 自荐信 & 3 条真实胜任依据
+                  展开查看：3. 邮件 / JobsDB 自荐信与 3 条真实胜任依据
                 </summary>
-                <div style="margin-top:8px;">
+                <div style="margin-top:10px;">
                   <div class="info-box">
-                    <strong style="font-size:12px; display:block; margin-bottom:4px;">📌 核心胜任依据：</strong>
+                    <strong style="font-size:12px; display:block; margin-bottom:5px; color:var(--text);">核心胜任依据：</strong>
                     <ul id="fit-reasons-list"></ul>
                   </div>
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                    <label style="margin:0;">📧 邮件 / JobsDB / LinkedIn 自荐信正文</label>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <label style="margin:0;">邮件 / JobsDB / LinkedIn 自荐信正文</label>
                     <button type="button" class="btn btn-ghost" onclick="copyField('cover-box', '已复制自荐信')">复制自荐信</button>
                   </div>
                   <textarea id="cover-box" rows="4"></textarea>
@@ -735,9 +1043,9 @@
               </details>
 
               <div style="display:flex; flex-wrap:wrap; gap:8px;">
-                <button type="button" class="btn btn-secondary" onclick="saveCurrentCopy()">💾 保存文案</button>
-                <button type="button" id="btn-deliver" class="btn btn-primary" style="flex:1;" onclick="deliverCurrentJob()">🚀 批准放行 · 多平台拟人投递（含简历产物）</button>
-                <button type="button" class="btn btn-ghost" onclick="jumpToMockForCurrent()">🥊 去模拟面试对练</button>
+                <button type="button" class="btn btn-secondary" onclick="saveCurrentCopy()">保存文案</button>
+                <button type="button" id="btn-deliver" class="btn btn-primary" style="flex:1;" onclick="deliverCurrentJob()">批准放行 · 多平台拟人投递（含简历产物）</button>
+                <button type="button" class="btn btn-ghost" onclick="jumpToMockForCurrent()">模拟面试对练</button>
                 <button type="button" class="btn btn-ghost" onclick="setJobStatus('rejected')">跳过归档</button>
               </div>
               <div id="deliver-msg" style="margin-top:8px; font-size:12px;" class="hidden"></div>
@@ -745,18 +1053,18 @@
 
             <!-- SubTab 2: Company Intel -->
             <div id="sub-intel" class="hidden">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
                 <span style="font-size:12px; color:var(--text-muted);">结合联网摘要（可选）与 JD 组织特征，研判业务阶段、潜在工时外包雷区及 3 个一面必核底线问题</span>
-                <button type="button" id="btn-gen-intel" class="btn btn-primary" onclick="generateCompanyIntel()">🔍 生成/刷新企业背调卡</button>
+                <button type="button" id="btn-gen-intel" class="btn btn-primary" onclick="generateCompanyIntel()">生成 / 刷新企业背调卡</button>
               </div>
               <div id="intel-container"></div>
             </div>
 
             <!-- SubTab 3: Interview Prep -->
             <div id="sub-prep" class="hidden">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <span style="font-size:12px; color:var(--text-muted);">生成「30秒口语自我介绍 + 简历排布微调 + 考官最可能追问的3道尖锐题」</span>
-                <button type="button" id="btn-gen-prep" class="btn btn-primary" onclick="generateInterviewPrep()">⚡ 生成/刷新面试急救包</button>
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+                <span style="font-size:12px; color:var(--text-muted);">生成「30秒口语自我介绍 + 简历排布微调 + 考官最可能追问的 3 道尖锐题」</span>
+                <button type="button" id="btn-gen-prep" class="btn btn-primary" onclick="generateInterviewPrep()">生成 / 刷新面试急救包</button>
               </div>
               <div id="prep-container"></div>
             </div>
@@ -767,20 +1075,20 @@
                 <div>
                   <label>当前求职漏斗阶段</label>
                   <select id="job-stage-select" onchange="setJobStatus(this.value)">
-                    <option value="pending_review">🟡 待评估 / 待投递</option>
-                    <option value="delivered">🔵 已投递 / 已打招呼</option>
-                    <option value="interviewing">🟣 沟通反馈 / 约面中</option>
-                    <option value="offer">🟢 拿到 Offer</option>
-                    <option value="rejected">⚪ 已跳过 / 归档</option>
-                    <option value="failed">🔴 自动发送受阻</option>
+                    <option value="pending_review">待评估 / 待投递</option>
+                    <option value="delivered">已投递 / 已打招呼</option>
+                    <option value="interviewing">沟通反馈 / 约面中</option>
+                    <option value="offer">拿到 Offer</option>
+                    <option value="rejected">已跳过 / 归档</option>
+                    <option value="failed">自动发送受阻</option>
                   </select>
                 </div>
                 <div>
                   <label>人机协同审批状态（同步飞书多维表格）</label>
                   <select id="job-approval-select" onchange="setJobApproval(this.value)">
-                    <option value="waiting_approval">⏳ 待人工审批</option>
-                    <option value="approved">✅ 已批准放行投递</option>
-                    <option value="rejected">🚫 已否决跳过</option>
+                    <option value="waiting_approval">待人工审批</option>
+                    <option value="approved">已批准放行投递</option>
+                    <option value="rejected">已否决跳过</option>
                   </select>
                 </div>
               </div>
@@ -788,7 +1096,7 @@
                 <label>HR 沟通反馈、薪资报价与面试复盘笔记（双向同步至飞书多维表格「跟进备注」列）</label>
                 <textarea id="job-notes-box" rows="5" placeholder="记录 HR 回复内容、约面时间、面试真题或薪资沟通细节..."></textarea>
               </div>
-              <button type="button" class="btn btn-primary" onclick="saveCurrentNotes()">💾 保存跟进笔记</button>
+              <button type="button" class="btn btn-primary" onclick="saveCurrentNotes()">保存跟进笔记</button>
             </div>
           </div>
         </div>
@@ -797,14 +1105,22 @@
 
     <!-- ==================== VIEW 2: RECRUITER LIVE SIMULATOR + ONLINE RESUME SYNC ==================== -->
     <section id="view-recruiter" class="view-panel">
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">02 · Recruiter Viewport Simulator</div>
+          <h1 class="view-heading">招聘端真实屏幕实时预演</h1>
+          <p class="view-sub">直观还原 HR 手机消息截断列表、BOSS「推荐牛人」两行折叠卡片与搜索关键词标红逻辑，并提供四平台在线简历安全映射。</p>
+        </div>
+      </div>
+
       <div class="recruiter-layout">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">✍️ 实时改字实验台（右侧招聘端屏幕即时同步）</div>
+            <div class="card-title">实时改字实验台</div>
           </div>
-          <div style="margin-bottom:10px; display:flex; gap:6px; flex-wrap:wrap;">
-            <button type="button" class="chip-btn" onclick="loadBadExample()">❌ 体验普通求职者错误写法</button>
-            <button type="button" class="chip-btn" onclick="restoreGoodExample()">✅ 恢复重点前置高转化写法</button>
+          <div style="margin-bottom:12px; display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="chip-btn" onclick="loadBadExample()">对比：普通寒暄写法</button>
+            <button type="button" class="chip-btn" onclick="restoreGoodExample()">恢复：重点前置高转化写法</button>
           </div>
           <div class="form-group">
             <label>模拟应聘岗位名称</label>
@@ -816,28 +1132,31 @@
           </div>
           <div class="form-group">
             <div style="display:flex; justify-content:space-between;">
-              <label>① 你的打招呼破冰语</label>
-              <span id="sim-greet-count" style="font-size:11px; color:var(--text-muted);">0 字</span>
+              <label>1. 你的打招呼破冰语</label>
+              <span id="sim-greet-count" style="font-size:11px; color:var(--text-muted); font-variant-numeric:tabular-nums;">0 字</span>
             </div>
             <textarea id="sim-greeting-input" rows="3" oninput="syncFromSimInputs()"></textarea>
           </div>
           <div class="form-group">
             <div style="display:flex; justify-content:space-between;">
-              <label>② 你的 BOSS「个人优势」（推荐牛人卡片摘要）</label>
-              <span id="sim-adv-count" style="font-size:11px; color:var(--text-muted);">0 / 140 字</span>
+              <label>2. 你的 BOSS「个人优势」（推荐牛人卡片摘要）</label>
+              <span id="sim-adv-count" style="font-size:11px; color:var(--text-muted); font-variant-numeric:tabular-nums;">0 / 140 字</span>
             </div>
             <textarea id="sim-adv-input" rows="4" oninput="syncFromSimInputs()"></textarea>
           </div>
           <div style="display:flex; gap:8px;">
-            <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveCurrentCopy()">💾 同步保存到当前岗位</button>
-            <button type="button" class="btn btn-secondary" onclick="copyField('sim-adv-input', '已复制个人优势')">📋 复制优势</button>
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveCurrentCopy()">同步保存到当前岗位</button>
+            <button type="button" class="btn btn-secondary" onclick="copyField('sim-adv-input', '已复制个人优势')">复制优势</button>
           </div>
         </div>
 
         <div class="sim-screens-grid">
           <!-- Screen A: Mobile Inbox -->
           <div>
-            <div style="margin-bottom:8px; font-weight:700; font-size:13px;">📱 视角一：HR 手机消息列表（未点开截断状态）</div>
+            <div class="specimen-caption">
+              <span>视角一 · HR 手机消息列表（未点开截断状态）</span>
+              <span style="color:var(--text-faint); font-weight:400;">18 字截断阈值</span>
+            </div>
             <div class="phone-frame">
               <div class="boss-app-bar">
                 <span>沟通 · 新招呼 (99+)</span>
@@ -892,16 +1211,19 @@
                 </div>
               </div>
             </div>
-            <div id="mock-inbox-verdict" class="banner safe" style="margin-top:10px;"></div>
+            <div id="mock-inbox-verdict" class="banner safe" style="margin-top:12px;"></div>
           </div>
 
           <!-- Screen B + C: Talent Recommendation Feed & Opened Chat -->
           <div>
-            <div style="margin-bottom:8px; font-weight:700; font-size:13px;">🪪 视角二：BOSS「推荐牛人」卡片流（展示个人优势 + 搜索标红）</div>
+            <div class="specimen-caption">
+              <span>视角二 · BOSS「推荐牛人」卡片流（个人优势曝光与标红）</span>
+              <span style="color:var(--text-faint); font-weight:400;">前两行外露</span>
+            </div>
             <div class="talent-feed-wrap">
               <div class="talent-feed-header">
-                <span style="font-size:12px; font-weight:700; color:#00a6a7;">🔍 推荐牛人 · 按匹配度排序</span>
-                <span id="mock-kw-hit-badge" style="font-size:11.5px; color:#e11d48; font-weight:700;">命中 0 个搜索词</span>
+                <span style="font-size:12px; font-weight:700; color:#008c8d;">推荐牛人 · 按匹配度排序</span>
+                <span id="mock-kw-hit-badge" style="font-size:11.5px; color:#b53333; font-weight:600;">命中 0 个搜索词</span>
               </div>
               <div class="boss-talent-card">
                 <div class="tc-head">
@@ -919,15 +1241,15 @@
                   <div id="mock-cand-exp-2">• 2022–2024 &nbsp; 大型科技与企服机构 · 跨部门项目统筹与数字化工作流</div>
                 </div>
                 <div class="tc-adv-box">
-                  <span style="font-size:11px; font-weight:700; color:#00a6a7; margin-right:4px;">[个人优势]</span>
+                  <span style="font-size:11px; font-weight:700; color:#008c8d; margin-right:4px;">[个人优势]</span>
                   <span id="mock-card-adv-visible"></span><span id="mock-card-adv-folded" class="tc-folded-hint"></span>
                 </div>
               </div>
-              <div style="margin:10px 0 5px; font-weight:700; font-size:12px; color:#1f2329;">💬 视角三：点开会话第一屏阅读压力检测</div>
+              <div style="margin:12px 0 6px; font-weight:600; font-size:12px; color:var(--text-2);">视角三 · 点开会话第一屏阅读密度检测</div>
               <div class="chat-open-card">
                 <div style="font-size:11px; color:#86909c; display:flex; justify-content:space-between;">
                   <span id="mock-cand-chat-label">候选人 正在沟通你发布的职位</span>
-                  <span id="mock-bubble-diag" style="color:#00a6a7; font-weight:600;">篇幅适中</span>
+                  <span id="mock-bubble-diag" style="color:#008c8d; font-weight:600;">篇幅适中</span>
                 </div>
                 <div class="chat-bubble" id="mock-chat-bubble"></div>
               </div>
@@ -939,7 +1261,7 @@
       <!-- Safe Online Resume Multi-Platform Diff & Sync -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🔄 四平台「在线简历」结构化映射与安全同步助手（带基础联系方式防覆写锁）</div>
+          <div class="card-title">四平台「在线简历」结构化映射与防覆写同步助手</div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
             <select id="sync-plat" style="width:auto;" onchange="loadOnlineResumePreview()">
               <option value="boss">BOSS直聘（限140字优势）</option>
@@ -953,7 +1275,7 @@
               <option value="track_admin">赛道：行政综合 / 专职联络</option>
               <option value="track_media_pr">赛道：品牌物料 / 视频编导</option>
             </select>
-            <button type="button" class="btn btn-secondary" onclick="openPlatformResumePage()">🌐 在独立登录浏览器打开该平台在线简历页</button>
+            <button type="button" class="btn btn-secondary" onclick="openPlatformResumePage()">在独立浏览器打开该平台在线简历页 ↗</button>
           </div>
         </div>
         <div id="online-resume-box"></div>
@@ -962,32 +1284,40 @@
 
     <!-- ==================== VIEW 3: PIPELINE COMMAND CENTER ==================== -->
     <section id="view-pipeline" class="view-panel">
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">03 · Autonomous Cruise & Gatekeeper</div>
+          <h1 class="view-heading">全链路巡航与人机协同审批台</h1>
+          <p class="view-sub">低频安全巡航四平台岗位，串联双层排雷、四赛道母本路由、无头 PDF 渲染与人工审批放行闸门。</p>
+        </div>
+      </div>
+
       <div class="pipeline-steps">
-        <div class="p-step"><strong>Step 1</strong>四平台低频巡航</div>
-        <div class="p-step"><strong>Step 2</strong>Tier1+2 双层排雷</div>
-        <div class="p-step"><strong>Step 3</strong>4赛道定级 S/A/B</div>
-        <div class="p-step"><strong>Step 4</strong>重点前置话术生成</div>
-        <div class="p-step"><strong>Step 5</strong>无头A4 PDF+图片</div>
-        <div class="p-step"><strong>Step 6</strong>飞书多维表同步</div>
-        <div class="p-step"><strong>Step 7</strong>桌面/手机审批闸门</div>
-        <div class="p-step"><strong>Step 8</strong>拟人带简历投递</div>
+        <div class="p-step"><strong>Step 01</strong>四平台低频巡航</div>
+        <div class="p-step"><strong>Step 02</strong>双层排雷漏斗</div>
+        <div class="p-step"><strong>Step 03</strong>四赛道定级</div>
+        <div class="p-step"><strong>Step 04</strong>重点前置话术</div>
+        <div class="p-step"><strong>Step 05</strong>无头 PDF 与图片</div>
+        <div class="p-step"><strong>Step 06</strong>飞书多维表同步</div>
+        <div class="p-step"><strong>Step 07</strong>桌面 / 手机审批</div>
+        <div class="p-step"><strong>Step 08</strong>拟人带简历投递</div>
       </div>
 
       <div class="grid-2">
         <!-- Cruise Launcher -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🛸 启动多平台自动巡航与清洗流水线</div>
+            <div class="card-title">多平台自动巡航与清洗流水线</div>
             <span class="badge info" id="pipe-live-badge">当前空闲</span>
           </div>
 
           <div class="form-group">
             <label>勾选巡航目标平台</label>
-            <div style="display:flex; gap:14px; flex-wrap:wrap; padding:6px 0;">
-              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="boss" checked /> BOSS直聘</label>
-              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="liepin" checked /> 猎聘</label>
-              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="51job" checked /> 前程无忧(51job)</label>
-              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="zhilian" checked /> 智联招聘</label>
+            <div style="display:flex; gap:16px; flex-wrap:wrap; padding:6px 0;">
+              <label style="display:inline-flex; align-items:center; gap:6px; color:var(--text);"><input type="checkbox" class="plat-chk" value="boss" checked /> BOSS直聘</label>
+              <label style="display:inline-flex; align-items:center; gap:6px; color:var(--text);"><input type="checkbox" class="plat-chk" value="liepin" checked /> 猎聘</label>
+              <label style="display:inline-flex; align-items:center; gap:6px; color:var(--text);"><input type="checkbox" class="plat-chk" value="51job" checked /> 前程无忧(51job)</label>
+              <label style="display:inline-flex; align-items:center; gap:6px; color:var(--text);"><input type="checkbox" class="plat-chk" value="zhilian" checked /> 智联招聘</label>
             </div>
           </div>
 
@@ -1010,8 +1340,8 @@
             <div>
               <label>运行模式</label>
               <select id="cruise-sim-mode">
-                <option value="true">🛡️ 安全沙盒巡航预演（零弹窗·秒级实测双层排雷与PDF生成）</option>
-                <option value="false">🌐 本机持久化浏览器实盘巡航（需先在右侧扫码保存登录态）</option>
+                <option value="true">安全沙盒巡航预演（零弹窗 · 秒级实测双层排雷与 PDF 生成）</option>
+                <option value="false">本机持久化浏览器实盘巡航（需先在右侧扫码保存登录态）</option>
               </select>
             </div>
             <div>
@@ -1024,28 +1354,28 @@
           </div>
 
           <div style="display:flex; gap:10px; margin-top:8px;">
-            <button type="button" id="btn-run-pipe" class="btn btn-primary" style="flex:1;" onclick="startPipelineRun()">🚀 一键启动全链路巡航流水线</button>
-            <button type="button" class="btn btn-danger" onclick="abortPipelineRun()">🛑 紧急中止</button>
+            <button type="button" id="btn-run-pipe" class="btn btn-primary" style="flex:1;" onclick="startPipelineRun()">启动全链路巡航流水线</button>
+            <button type="button" class="btn btn-danger" onclick="abortPipelineRun()">紧急中止</button>
           </div>
         </div>
 
         <!-- Browser Login Profile Manager & Batch Delivery -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🔐 四平台独立登录态管理 & 批量放行投递</div>
-            <button type="button" class="btn btn-ghost" onclick="loadBrowserProfiles()">刷新检测 🔄</button>
+            <div class="card-title">四平台独立登录态管理与批量放行</div>
+            <button type="button" class="btn btn-ghost" onclick="loadBrowserProfiles()">刷新检测</button>
           </div>
           <div class="mechanism-tip">
-            💡 <strong>防封与反验证码准则：</strong>每个平台拥有独立的本地持久化 Cookie 目录，扫码一次长期有效。一旦平台弹出滑块或验证码，系统<strong>绝不强行破解绕过</strong>，将立即安全挂起并通知您手动确认。
+            <strong>防封与反验证码准则：</strong>每个平台使用独立的本地持久化 Cookie 目录，扫码一次长期有效。一旦页面出现滑块或人机验证，系统<strong>绝不尝试绕过</strong>，立即安全挂起等待人工处理。
           </div>
-          <div id="profiles-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;"></div>
+          <div id="profiles-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;"></div>
 
           <div class="info-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:0;">
             <div>
-              <strong>🚀 批量投递审批闸门队列</strong>
+              <strong style="color:var(--text);">批量投递已批准队列</strong>
               <div style="font-size:11.5px; color:var(--text-muted);">仅投递已在下方或飞书手机端标记为「已批准」的岗位（遵循每日上限与 Dry-Run 开关）</div>
             </div>
-            <button type="button" class="btn btn-primary" onclick="batchDeliverApproved()">⚡ 批量投递全部已批准岗位</button>
+            <button type="button" class="btn btn-primary" onclick="batchDeliverApproved()">批量投递已批准岗位</button>
           </div>
         </div>
       </div>
@@ -1053,10 +1383,10 @@
       <!-- Approval Gate Queue -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">🚦 人机协同审批闸门（待审批 / 已就绪高匹配岗位）</div>
+          <div class="card-title">人机协同审批闸门（待审批 / 已就绪高匹配岗位）</div>
           <div style="display:flex; gap:8px;">
-            <button type="button" class="btn btn-secondary" onclick="approveAllGradeSA()">✅ 一键批准全部 S/A 级岗位</button>
-            <button type="button" class="btn btn-ghost" onclick="loadPipelineCenter()">刷新队列 🔄</button>
+            <button type="button" class="btn btn-secondary" onclick="approveAllGradeSA()">一键批准全部 S / A 级岗位</button>
+            <button type="button" class="btn btn-ghost" onclick="loadPipelineCenter()">刷新队列</button>
           </div>
         </div>
         <div style="overflow-x:auto;">
@@ -1081,7 +1411,7 @@
       <!-- Historical Runs -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">📜 历史巡航批次记录</div>
+          <div class="card-title">历史巡航批次记录</div>
         </div>
         <div style="overflow-x:auto;">
           <table>
@@ -1104,6 +1434,14 @@
 
     <!-- ==================== VIEW 4: KANBAN CRM ==================== -->
     <section id="view-kanban" class="view-panel">
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">04 · Application Lifecycle Ledger</div>
+          <h1 class="view-heading">本地求职全生命周期台账</h1>
+          <p class="view-sub">统一追踪从采集排雷、定制简历生成、投递触达到约面复盘的全部岗位资产，支持多维筛选与 CSV 归档导出。</p>
+        </div>
+      </div>
+
       <div class="kanban-summary">
         <div class="stage-card active" onclick="filterKanban('', this)">
           <div style="font-size:12px; color:var(--text-muted);">全部岗位资产</div>
@@ -1130,16 +1468,16 @@
       <div class="card">
         <div class="card-header">
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-            <span class="card-title">📋 本地岗位全生命周期台账</span>
-            <input type="text" id="search-kw" placeholder="搜索岗位 / 公司 / 笔记..." style="width:200px; padding:5px 9px;" oninput="loadJobs()" />
-            <select id="filter-track" style="width:155px; padding:5px 8px;" onchange="loadJobs()">
+            <span class="card-title">岗位明细列表</span>
+            <input type="text" id="search-kw" placeholder="搜索岗位 / 公司 / 笔记..." style="width:200px; padding:6px 10px;" oninput="loadJobs()" />
+            <select id="filter-track" style="width:155px; padding:6px 9px;" onchange="loadJobs()">
               <option value="">全部赛道母本</option>
               <option value="track_ai_builder">AI 产品 / Agent</option>
               <option value="track_ai_ops">AI 项目运营</option>
               <option value="track_admin">行政综合</option>
               <option value="track_media_pr">品牌宣传</option>
             </select>
-            <select id="filter-platform" style="width:135px; padding:5px 8px;" onchange="loadJobs()">
+            <select id="filter-platform" style="width:135px; padding:6px 9px;" onchange="loadJobs()">
               <option value="">全部来源渠道</option>
               <option value="boss">BOSS直聘</option>
               <option value="liepin">猎聘</option>
@@ -1148,7 +1486,7 @@
               <option value="vision_ocr">截图识岗</option>
               <option value="manual">手动录入</option>
             </select>
-            <select id="filter-grade" style="width:115px; padding:5px 8px;" onchange="loadJobs()">
+            <select id="filter-grade" style="width:115px; padding:6px 9px;" onchange="loadJobs()">
               <option value="">全部评级</option>
               <option value="S">S 级精选</option>
               <option value="A">A 级推荐</option>
@@ -1157,8 +1495,8 @@
             </select>
           </div>
           <div style="display:flex; gap:8px;">
-            <a href="/api/export/csv" class="btn btn-secondary">⬇️ 导出 CSV</a>
-            <button type="button" class="btn btn-ghost" onclick="loadJobs()">刷新 🔄</button>
+            <a href="/api/export/csv" class="btn btn-secondary">导出 CSV</a>
+            <button type="button" class="btn btn-ghost" onclick="loadJobs()">刷新</button>
           </div>
         </div>
 
@@ -1184,14 +1522,22 @@
 
     <!-- ==================== VIEW 5: FULL ANALYTICS DASHBOARD ==================== -->
     <section id="view-analytics" class="view-panel">
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">05 · Funnel & Cost Telemetry</div>
+          <h1 class="view-heading">求职转化漏斗与成本审计大盘</h1>
+          <p class="view-sub">量化追踪七阶求职转化率、近 14 日采集投递节奏、渠道质量 ROI 以及脱敏后大模型 Token 账单。</p>
+        </div>
+      </div>
+
       <div class="kpi-grid" id="ana-kpi-grid"></div>
 
       <div class="grid-2">
         <!-- Conversion Funnel -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🌪️ 全链路求职转化漏斗（采集 → 排雷 → 定制 → 投递 → 约面 → Offer）</div>
-            <button type="button" class="btn btn-ghost" onclick="loadAnalytics()">刷新 🔄</button>
+            <div class="card-title">全链路求职转化漏斗</div>
+            <button type="button" class="btn btn-ghost" onclick="loadAnalytics()">刷新</button>
           </div>
           <div id="ana-funnel-box"></div>
         </div>
@@ -1199,7 +1545,7 @@
         <!-- 14-Day SVG Trend Chart -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">📅 近 14 日岗位采集、有效排雷与投递趋势</div>
+            <div class="card-title">近 14 日岗位采集与投递趋势</div>
           </div>
           <div id="ana-trend-svg-box"></div>
         </div>
@@ -1209,7 +1555,7 @@
         <!-- Platform ROI Matrix -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">📡 多招聘渠道质量与转化 ROI 对比矩阵</div>
+            <div class="card-title">多招聘渠道质量与转化 ROI 对比</div>
           </div>
           <div style="overflow-x:auto;">
             <table>
@@ -1232,7 +1578,7 @@
         <!-- 4-Track Performance Matrix -->
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🧭 四大真实母本赛道投产表现对比</div>
+            <div class="card-title">四大母本赛道投产表现对比</div>
           </div>
           <div style="overflow-x:auto;">
             <table>
@@ -1255,12 +1601,12 @@
       <!-- LLM Token & Cost Audit Log -->
       <div class="card">
         <div class="card-header">
-          <div class="card-title">💰 大模型 Token 消耗与人民币成本精细化审计台账</div>
+          <div class="card-title">大模型 Token 消耗与人民币成本审计台账</div>
           <span id="ana-token-badge" class="badge ok">累计 ¥0.0000</span>
         </div>
         <div class="grid-2">
           <div>
-            <strong style="font-size:12px; display:block; margin-bottom:8px;">按功能模块成本拆解：</strong>
+            <strong style="font-size:12px; display:block; margin-bottom:8px; color:var(--text);">按功能模块成本拆解</strong>
             <table>
               <thead>
                 <tr>
@@ -1275,7 +1621,7 @@
             </table>
           </div>
           <div>
-            <strong style="font-size:12px; display:block; margin-bottom:8px;">最近 API 调用审计流水（自动物理脱敏后发出）：</strong>
+            <strong style="font-size:12px; display:block; margin-bottom:8px; color:var(--text);">最近 API 调用审计流水（物理脱敏后发出）</strong>
             <div style="max-height:240px; overflow-y:auto;">
               <table>
                 <thead>
@@ -1297,8 +1643,16 @@
 
     <!-- ==================== VIEW 6: FEISHU HUB & SYSTEM SETTINGS ==================== -->
     <section id="view-feishu" class="view-panel">
-      <div class="banner caution" style="font-size:12.5px;">
-        <strong>账号隐私提醒：</strong>请使用个人手机号注册的<strong>独立飞书个人版/新建团队</strong>接入，切勿使用当前在职雇主的企业飞书租户（企业管理员后台可查看云文档与机器人日志）。
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">06 · Feishu Sync & Runtime Configuration</div>
+          <h1 class="view-heading">飞书协同中枢与系统配置</h1>
+          <p class="view-sub">管理个人飞书多维表格双向同步、机器人指令交互、13 家大模型网关 BYOK 接入与本地排雷词库。</p>
+        </div>
+      </div>
+
+      <div class="banner caution">
+        <strong>账号隐私边界提醒：</strong>请使用个人手机号注册的<strong>独立飞书个人版或自建团队</strong>接入，切勿使用当前在职雇主的企业飞书租户（企业管理员后台可审计云文档与机器人调用日志）。
       </div>
 
       <div class="grid-2">
@@ -1306,35 +1660,35 @@
         <div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title">☁️ 飞书多维表格「零手工建表」与手机端双向同步</div>
-              <button type="button" class="btn btn-ghost" onclick="checkFeishuStatus()">连通性体检 🩺</button>
+              <div class="card-title">飞书多维表格零手工建表与双向同步</div>
+              <button type="button" class="btn btn-ghost" onclick="checkFeishuStatus()">连通性体检</button>
             </div>
             <div class="mechanism-tip">
-              ✨ <strong>零手工建表（Auto-Schema）：</strong>无需手动在飞书建立多张数据表并逐列核对字段名；填入应用凭证后一键自动生成标准多维表格与全部下拉选项列，并支持把手机飞书上的「批准投递/跳过」和「备注」双向同步回本地 SQLite。
+              <strong>自动建表机制（Auto-Schema）：</strong>填入自建应用凭证后可一键生成标准多维表格与全部下拉字段，并将手机飞书上的「批准投递 / 跳过」及「跟进备注」双向同步回本地数据库。
             </div>
             <div id="feishu-diag-box" class="info-box" style="font-size:12px;">点击右上角「连通性体检」查看飞书 Webhook 与开放平台自建应用状态。</div>
             <div style="display:flex; flex-wrap:wrap; gap:8px;">
-              <button type="button" class="btn btn-primary" onclick="autoInitFeishuBitable()">✨ 一键自动创建/校准飞书多维表格</button>
-              <button type="button" class="btn btn-secondary" onclick="feishuSyncPush()">⬆️ 本地推送至飞书多维表</button>
-              <button type="button" class="btn btn-secondary" onclick="feishuSyncPull()">⬇️ 从飞书拉取手机审批与备注</button>
-              <button type="button" class="btn btn-secondary" onclick="feishuPushReport()">📊 推送今日飞书战报卡片</button>
+              <button type="button" class="btn btn-primary" onclick="autoInitFeishuBitable()">一键创建 / 校准飞书多维表格</button>
+              <button type="button" class="btn btn-secondary" onclick="feishuSyncPush()">本地推送至飞书</button>
+              <button type="button" class="btn btn-secondary" onclick="feishuSyncPull()">从飞书拉取审批与备注</button>
+              <button type="button" class="btn btn-secondary" onclick="feishuPushReport()">推送今日战报卡片</button>
             </div>
           </div>
 
           <!-- Feishu Bot ChatOps Console -->
           <div class="card">
             <div class="card-header">
-              <div class="card-title">🤖 飞书机器人 ChatOps 实时指令交互台（本地直连可测）</div>
+              <div class="card-title">飞书机器人 ChatOps 指令交互台</div>
             </div>
-            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
-              <button type="button" class="chip-btn" onclick="sendBotCmd('状态')">📡 状态</button>
-              <button type="button" class="chip-btn" onclick="sendBotCmd('待批')">📋 待批岗位</button>
-              <button type="button" class="chip-btn" onclick="sendBotCmd('日报')">📊 14日战报</button>
-              <button type="button" class="chip-btn" onclick="sendBotCmd('巡航 深圳 AI产品经理')">🛸 巡航 深圳 AI产品</button>
-              <button type="button" class="chip-btn" onclick="sendBotCmd('帮助')">❓ 指令菜单</button>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;">
+              <button type="button" class="chip-btn" onclick="sendBotCmd('状态')">状态</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('待批')">待批岗位</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('日报')">14日战报</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('巡航 深圳 AI产品经理')">巡航 深圳 AI产品</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('帮助')">指令菜单</button>
             </div>
             <div class="chat-stream" id="feishu-bot-stream">
-              <div class="msg-bubble msg-bot">你好！我是 HireLens 飞书指令中枢。你可以直接点击上方快捷指令，或输入 `批准 #1`、`目前哪个赛道匹配分最高？` 测试与飞书机器人完全一致的响应逻辑。</div>
+              <div class="msg-bubble msg-bot">你好，我是 HireLens 飞书指令中枢。可直接点击上方快捷指令，或输入「批准 #1」「目前哪个赛道匹配分最高？」测试与飞书机器人一致的响应逻辑。</div>
             </div>
             <form onsubmit="event.preventDefault(); submitBotInput();" style="display:flex; gap:8px;">
               <input type="text" id="feishu-bot-input" placeholder="输入飞书指令（如：待批 / 批准 #1 / 统计摘要）..." />
@@ -1347,16 +1701,16 @@
         <div>
           <div class="card">
             <div class="card-header">
-              <div class="card-title">⚙️ 全系统热重载配置中心（密钥自动脱敏保护）</div>
-              <div style="display:flex; gap:6px;">
-                <button type="button" class="btn btn-secondary" onclick="openLLMModal()">🔌 厂商预设 & 测试连通性</button>
-                <button type="button" class="btn btn-primary" onclick="saveRuntimeSettings()">💾 保存配置并立即生效</button>
+              <div class="card-title">系统热重载配置中心</div>
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="btn btn-secondary" onclick="openLLMModal()">厂商预设与连通测试</button>
+                <button type="button" class="btn btn-primary" onclick="saveRuntimeSettings()">保存配置并生效</button>
               </div>
             </div>
 
             <div class="form-row">
               <div>
-                <label>大模型服务商预设（支持 13 家主流云端/中转站与免Key本地 Ollama）</label>
+                <label>大模型服务商预设（支持 13 家主流云端网关与免 Key 本地 Ollama）</label>
                 <select id="cfg-llm-provider" onchange="applyProviderToSettingsCard(this.value)">
                   <option value="deepseek">DeepSeek 官方</option>
                   <option value="siliconflow">硅基流动 SiliconFlow</option>
@@ -1374,10 +1728,10 @@
                 </select>
               </div>
               <div>
-                <label>大模型总开关（关闭则 100% 走本地零成本规则引擎）</label>
+                <label>大模型总开关（关闭则走本地零成本规则引擎）</label>
                 <select id="cfg-llm-enabled">
-                  <option value="true">🟢 启用大模型 API（推荐）</option>
-                  <option value="false">⚪ 仅使用本地离线规则引擎（零 Token）</option>
+                  <option value="true">启用大模型 API（推荐）</option>
+                  <option value="false">仅使用本地离线规则引擎（零 Token）</option>
                 </select>
               </div>
             </div>
@@ -1400,8 +1754,8 @@
               <div>
                 <label>截图识岗引擎策略</label>
                 <select id="cfg-vision-provider">
-                  <option value="apple_vision_first">🍎 优先本机 Apple Vision 原生离线 OCR（零成本推荐）</option>
-                  <option value="cloud_vl">☁️ 优先云端多模态视觉模型 (VISION_MODEL)</option>
+                  <option value="apple_vision_first">优先本机 Apple Vision 原生离线 OCR（零成本推荐）</option>
+                  <option value="cloud_vl">优先云端多模态视觉模型 (VISION_MODEL)</option>
                 </select>
               </div>
               <div>
@@ -1414,13 +1768,13 @@
             </div>
 
             <div class="form-group">
-              <label style="display:flex; align-items:center; gap:6px; color:var(--accent); cursor:pointer;">
+              <label style="display:flex; align-items:center; gap:7px; color:var(--text); cursor:pointer;">
                 <input type="checkbox" id="cfg-feishu-enabled" /> 启用飞书协同推送与多维表格同步
               </label>
             </div>
 
             <div class="form-group">
-              <label>飞书群自定义机器人 Webhook URL（1分钟极简卡片推送模式）</label>
+              <label>飞书群自定义机器人 Webhook URL（极简卡片推送模式）</label>
               <input type="text" id="cfg-feishu-webhook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
             </div>
 
@@ -1437,7 +1791,7 @@
 
             <div class="form-row">
               <div>
-                <label>多维表格 App Token（留空点「一键自动建表」可自动生成）</label>
+                <label>多维表格 App Token（留空点「一键创建」可自动生成）</label>
                 <input type="text" id="cfg-feishu-apptoken" placeholder="bascn... / 自动回填" />
               </div>
               <div>
@@ -1501,31 +1855,31 @@
           <!-- Veto Rules & Clipper -->
           <div class="card">
             <div class="card-header">
-              <div class="card-title">🛡️ Tier-1 本地排雷词库 & Chrome 剪藏插件</div>
-              <button type="button" class="btn btn-secondary" onclick="saveRules()">💾 保存词库</button>
+              <div class="card-title">Tier-1 本地排雷词库与浏览器剪藏插件</div>
+              <button type="button" class="btn btn-secondary" onclick="saveRules()">保存词库</button>
             </div>
             <div class="form-row">
               <div>
-                <label>⛔ 一票否决硬伤词</label>
+                <label>一票否决硬伤词</label>
                 <textarea id="rule-veto" rows="2"></textarea>
               </div>
               <div>
-                <label>⚠️ 警惕核实词（含沉睡 HR 标签）</label>
+                <label>警惕核实词（含沉睡 HR 标签）</label>
                 <textarea id="rule-caution" rows="2"></textarea>
               </div>
             </div>
             <div class="form-row">
               <div>
-                <label>✅ 正向加分信号词</label>
+                <label>正向加分信号词</label>
                 <textarea id="rule-green" rows="2"></textarea>
               </div>
               <div>
-                <label>🚫 企业黑名单（逗号分隔）</label>
+                <label>企业黑名单（逗号分隔）</label>
                 <textarea id="rule-blacklist" rows="2"></textarea>
               </div>
             </div>
             <div style="font-size:11.5px; color:var(--text-muted);">
-              🧩 <strong>HireLens Clipper 浏览器插件</strong>位于 <code>hire_lens/chrome_extension/</code>，支持在浏览 BOSS / 猎聘 / 51job / 智联 / JobsDB / LinkedIn 时零自动化指纹一键剪藏入库。
+              <strong>HireLens Clipper 浏览器插件</strong>位于 <code>hire_lens/chrome_extension/</code>，支持在浏览 BOSS / 猎聘 / 51job / 智联 / JobsDB / LinkedIn 时零自动化指纹一键剪藏入库。
             </div>
           </div>
         </div>
@@ -1534,32 +1888,40 @@
 
     <!-- ==================== VIEW 7: MULTI-TURN MOCK INTERVIEW CAMP ==================== -->
     <section id="view-mock" class="view-panel">
+      <div class="view-hero">
+        <div>
+          <div class="view-kicker">07 · Multi-Turn Interview Practice</div>
+          <h1 class="view-heading">多轮实战模拟面试营</h1>
+          <p class="view-sub">针对已入库目标岗位还原业务主管追问节奏，每轮回答同步附带场外教练点评与平实示范改写。</p>
+        </div>
+      </div>
+
       <div class="studio-grid">
         <div class="card">
           <div class="card-header">
-            <div class="card-title">🥊 多轮实战模拟面试考官设置（双向脱敏保护）</div>
+            <div class="card-title">模拟面试考官设置（双向脱敏保护）</div>
           </div>
           <div class="form-group">
             <label>选择要模拟对练的目标岗位</label>
             <select id="mock-job-select"></select>
           </div>
           <div style="display:flex; gap:8px; margin-bottom:14px;">
-            <button type="button" id="btn-mock-start" class="btn btn-primary" style="flex:1;" onclick="startMockSession()">🎙️ 开启新一轮考官拷打对练</button>
-            <button type="button" id="btn-mock-finish" class="btn btn-secondary" onclick="finishMockSession()">🏁 结束并出五维成绩单</button>
+            <button type="button" id="btn-mock-start" class="btn btn-primary" style="flex:1;" onclick="startMockSession()">开启新一轮考官对练</button>
+            <button type="button" id="btn-mock-finish" class="btn btn-secondary" onclick="finishMockSession()">结束并生成五维成绩单</button>
           </div>
           <div id="mock-scorecard-box"></div>
         </div>
 
         <div class="card">
           <div class="card-header">
-            <div class="card-title">💬 实时面试对练室（每轮回答即时附带场外教练点评与示范改写）</div>
+            <div class="card-title">实时面试对练室</div>
             <span id="mock-session-badge" class="badge neutral">尚未开场</span>
           </div>
           <div class="chat-stream" id="mock-chat-stream" style="height:410px;">
-            <div class="msg-bubble msg-bot">请在左侧选择任意一个入库岗位并点击「开启新一轮考官拷打对练」。我将扮演该企业一线业务主管对你进行针对性提问与追问，并在每一轮给出真实平实的改进示范。</div>
+            <div class="msg-bubble msg-bot">请在左侧选择任意一个入库岗位并点击「开启新一轮考官对练」。我将扮演该企业一线业务主管对你进行针对性提问与追问，并在每一轮给出真实平实的改进示范。</div>
           </div>
           <form onsubmit="event.preventDefault(); submitMockAnswer();" style="display:flex; gap:8px;">
-            <textarea id="mock-answer-input" rows="2" placeholder="用平时说话的口吻输入你的回答（说清具体做了什么、怎么控制边界）..."></textarea>
+            <textarea id="mock-answer-input" rows="2" placeholder="用平时说话的口吻输入你的回答（说清具体做了什么、如何控制边界）..."></textarea>
             <button type="submit" id="btn-mock-send" class="btn btn-primary" style="min-width:96px;">发送回答</button>
           </form>
         </div>
@@ -1571,7 +1933,7 @@
   <!-- Floating Live SSE / Polling Terminal Drawer -->
   <div id="term-drawer" class="term-drawer">
     <div class="term-head" onclick="toggleTerminalDrawer()">
-      <span>📡 实时全链路终端监控日志 (<span id="term-count">0</span>)</span>
+      <span>实时流水线终端日志 (<span id="term-count">0</span>)</span>
       <span id="term-toggle-label">展开 ▲</span>
     </div>
     <div id="term-body" class="term-body"></div>
@@ -1580,8 +1942,8 @@
   <!-- Master Resume Preview Modal -->
   <div id="resume-modal" class="modal-backdrop" onclick="if(event.target===this) closeResumeModal()">
     <div class="modal-box">
-      <div class="card-header" style="padding:14px 18px; margin:0;">
-        <strong id="modal-title">母本原文预览</strong>
+      <div class="card-header" style="padding:16px 22px; margin:0;">
+        <strong id="modal-title" style="font-family:var(--font-serif); font-size:16px; font-weight:500;">母本原文预览</strong>
         <button class="btn btn-ghost" onclick="closeResumeModal()">关闭 ✕</button>
       </div>
       <div id="modal-body" class="modal-body"></div>
@@ -1591,18 +1953,18 @@
   <!-- Universal BYOK LLM API Configurator Modal -->
   <div id="llm-modal" class="modal-backdrop" onclick="if(event.target===this) closeLLMModal()">
     <div class="modal-box" style="max-width:680px;">
-      <div class="card-header" style="padding:14px 18px; margin:0;">
-        <strong>🔌 接入自定义大模型 API (BYOK 全厂商/本地 Ollama 通用向导)</strong>
+      <div class="card-header" style="padding:16px 22px; margin:0;">
+        <strong style="font-family:var(--font-serif); font-size:17px; font-weight:500;">接入自定义大模型 API（全厂商与本地 Ollama 通用向导）</strong>
         <button class="btn btn-ghost" onclick="closeLLMModal()">关闭 ✕</button>
       </div>
-      <div style="padding:16px 18px; overflow-y:auto;">
-        <div class="mechanism-tip" style="margin-bottom:12px;">
-          🛡️ <strong>本地隐私与双向脱敏承诺：</strong>您填写的 API Key 仅加密/脱敏保存在您本机 <code>data/settings.json</code> 中，且发往任何云端模型前均经过 <code>PIIMasker</code> 物理替换姓名、电话、院校与敏感机构名称。
+      <div style="padding:18px 22px; overflow-y:auto;">
+        <div class="mechanism-tip" style="margin-bottom:14px;">
+          <strong>本地隐私与双向脱敏机制：</strong>您填写的 API Key 仅保存在本机 <code>data/settings.json</code> 中，发往任何云端模型前均经过 <code>PIIMasker</code> 物理替换姓名、电话、院校与敏感机构名称。
         </div>
 
         <div class="form-row">
           <div>
-            <label>① 选择大模型服务商（一键自动填入官方网关地址与单价）</label>
+            <label>1. 选择大模型服务商（自动填入官方网关地址与参考单价）</label>
             <select id="m-llm-provider" onchange="onModalProviderChange(this.value)">
               <option value="deepseek">DeepSeek 官方 (deepseek-chat / reasoner)</option>
               <option value="siliconflow">硅基流动 SiliconFlow (含免费额度模型)</option>
@@ -1614,50 +1976,50 @@
               <option value="anthropic">Anthropic Claude (原生 /v1/messages 协议)</option>
               <option value="gemini">Google Gemini (gemini-2.5-flash)</option>
               <option value="openrouter">OpenRouter 全球聚合网关</option>
-              <option value="ollama">💻 本地 Ollama (免 API Key · 100% 离线)</option>
-              <option value="lmstudio">💻 本地 LM Studio (免 API Key · 100% 离线)</option>
-              <option value="custom">⚙️ 自定义 OpenAI 兼容中转站 / 私有网关</option>
+              <option value="ollama">本地 Ollama (免 API Key · 离线运行)</option>
+              <option value="lmstudio">本地 LM Studio (免 API Key · 离线运行)</option>
+              <option value="custom">自定义 OpenAI 兼容中转站 / 私有网关</option>
             </select>
           </div>
           <div>
             <label>运行模式开关</label>
             <select id="m-llm-enabled">
-              <option value="true">🟢 启用上述大模型 API</option>
-              <option value="false">⚪ 停用云端，切回本地零成本启发式引擎</option>
+              <option value="true">启用上述大模型 API</option>
+              <option value="false">停用云端，切回本地零成本启发式引擎</option>
             </select>
           </div>
         </div>
 
-        <div id="m-provider-hint" style="font-size:12px; color:var(--text-muted); margin-bottom:10px;"></div>
+        <div id="m-provider-hint" style="font-size:12px; color:var(--text-muted); margin-bottom:12px;"></div>
 
         <div class="form-group">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <label id="m-key-label">② API Key 密钥（若显示 **** 代表已安全存储，不改可直接测试或保存）</label>
-            <button type="button" class="chip-btn" onclick="clearSavedLLMKey()">🗑️ 清空已存密钥</button>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <label id="m-key-label" style="margin:0;">2. API Key 密钥（若显示 **** 代表已安全存储，不改可直接测试或保存）</label>
+            <button type="button" class="chip-btn" onclick="clearSavedLLMKey()">清空已存密钥</button>
           </div>
           <input type="text" id="m-llm-key" placeholder="粘贴您的 sk-... 密钥（本地 Ollama / LM Studio 免填）" />
         </div>
 
         <div class="form-row">
           <div>
-            <label>③ API Base URL（自动兼容带或不带 /v1 后缀）</label>
+            <label>3. API Base URL（自动兼容带或不带 /v1 后缀）</label>
             <input type="text" id="m-llm-url" placeholder="https://api.deepseek.com" />
           </div>
           <div>
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <label>④ 模型名称 (Model ID)</label>
-              <button type="button" class="chip-btn" id="btn-fetch-models" onclick="fetchModelsForModal()">🔄 拉取模型列表</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+              <label style="margin:0;">4. 模型名称 (Model ID)</label>
+              <button type="button" class="chip-btn" id="btn-fetch-models" onclick="fetchModelsForModal()">拉取模型列表</button>
             </div>
-            <input type="text" id="m-llm-model" list="llm-model-datalist" placeholder="如: deepseek-chat / qwen-plus / gpt-4o-mini" />
+            <input type="text" id="m-llm-model" list="llm-model-datalist" placeholder="如：deepseek-chat / qwen-plus / gpt-4o-mini" />
             <datalist id="llm-model-datalist"></datalist>
           </div>
         </div>
 
-        <div id="m-model-chips" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;"></div>
+        <div id="m-model-chips" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px;"></div>
 
-        <details style="margin-bottom:12px;">
+        <details style="margin-bottom:14px;">
           <summary style="cursor:pointer; font-size:12px; color:var(--text-muted); font-weight:600;">
-            展开高级项：⑤ 自定义 Token 计费单价 & 云端多模态视觉识图 API（可选）
+            展开高级项：5. 自定义 Token 计费单价与云端多模态视觉识图 API（可选）
           </summary>
           <div style="margin-top:10px;">
             <div class="form-row">
@@ -1690,8 +2052,8 @@
         <div id="m-llm-test-res" class="banner safe hidden"></div>
 
         <div style="display:flex; gap:10px; margin-top:8px;">
-          <button type="button" id="btn-test-llm" class="btn btn-secondary" onclick="testModalLLMConnection()">⚡ 测试接口连通性与延迟</button>
-          <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveModalLLMSettings()">💾 保存大模型配置并全局生效</button>
+          <button type="button" id="btn-test-llm" class="btn btn-secondary" onclick="testModalLLMConnection()">测试接口连通性与延迟</button>
+          <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveModalLLMSettings()">保存大模型配置并全局生效</button>
         </div>
       </div>
     </div>
@@ -1777,15 +2139,41 @@
       setTimeout(() => el.classList.remove("show"), 2600);
     }
 
-    function toggleTheme() {
-      const root = document.documentElement;
-      const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      localStorage.setItem("hl_theme_v3", next);
+    // ==================== Claude Design Tweaks (Theme & Density) ====================
+    function toggleTweaksPopover(e) {
+      if (e) e.stopPropagation();
+      document.getElementById("tweaks-popover").classList.toggle("hidden");
     }
-    (function initTheme() {
-      const saved = localStorage.getItem("hl_theme_v3");
-      if (saved) document.documentElement.setAttribute("data-theme", saved);
+    document.addEventListener("click", () => {
+      document.getElementById("tweaks-popover")?.classList.add("hidden");
+    });
+
+    function setThemeMode(mode) {
+      const m = mode === "dark" ? "dark" : "light";
+      document.documentElement.setAttribute("data-theme", m);
+      localStorage.setItem("hl_claude_theme", m);
+      document.getElementById("tw-theme-light")?.classList.toggle("active", m === "light");
+      document.getElementById("tw-theme-dark")?.classList.toggle("active", m === "dark");
+    }
+
+    function setDensityMode(den) {
+      const d = den === "compact" ? "compact" : "editorial";
+      document.documentElement.setAttribute("data-density", d);
+      localStorage.setItem("hl_claude_density", d);
+      document.getElementById("tw-den-editorial")?.classList.toggle("active", d === "editorial");
+      document.getElementById("tw-den-compact")?.classList.toggle("active", d === "compact");
+    }
+
+    function toggleTheme() {
+      const cur = document.documentElement.getAttribute("data-theme");
+      setThemeMode(cur === "dark" ? "light" : "dark");
+    }
+
+    (function initAppearance() {
+      const savedTheme = localStorage.getItem("hl_claude_theme") || "light";
+      const savedDensity = localStorage.getItem("hl_claude_density") || "editorial";
+      setThemeMode(savedTheme);
+      setDensityMode(savedDensity);
     })();
 
     function switchMainView(view) {
@@ -1858,7 +2246,7 @@
       if (!file) return;
       const btn = document.getElementById("btn-shot-upload");
       btn.disabled = true;
-      btn.innerText = "⏳ 正在离线 OCR 识图中...";
+      btn.innerText = "正在离线 OCR 识图...";
       const reader = new FileReader();
       reader.onload = async () => {
         try {
@@ -1878,7 +2266,7 @@
             document.getElementById("platform").value = "vision_ocr";
             document.getElementById("jd_text").value = p.jd_text || data.raw_text || "";
             switchMainView("studio");
-            showToast(`✅ 截图识别成功 (${data.engine})！已自动填入表单`);
+            showToast(`截图识别完成 (${data.engine})，已自动填入表单`);
           } else {
             alert("截图识别提示：" + (data.detail || "未能提取文字"));
           }
@@ -1886,7 +2274,7 @@
           alert("识图请求异常：" + err.message);
         } finally {
           btn.disabled = false;
-          btn.innerText = "📷 选择截图识别";
+          btn.innerText = "上传截图识别";
         }
       };
       reader.readAsDataURL(file);
@@ -1953,7 +2341,7 @@
     async function submitAnalyze() {
       const btn = document.getElementById("btn-submit");
       btn.disabled = true;
-      btn.innerText = "⏳ 正在执行双层排雷、重点前置话术与定制简历渲染...";
+      btn.innerText = "正在执行双层排雷、重点前置话术与定制简历渲染...";
 
       const payload = {
         job_title: document.getElementById("job_title").value.trim(),
@@ -1980,7 +2368,7 @@
           renderEvaluation(data.job);
           fetchStats();
           loadJobs();
-          showToast("分析与简历生成完成！可随时预览招聘端真实屏幕效果");
+          showToast("诊断与定制简历已生成，可随时预览招聘端屏幕效果");
         } else {
           alert("分析提示：" + (data.detail || "未知错误"));
         }
@@ -1988,8 +2376,12 @@
         alert("请求失败：" + e.message);
       } finally {
         btn.disabled = false;
-        btn.innerText = "🔭 双层排雷 + 生成重点前置破冰语 + BOSS「个人优势」+ 定制简历";
+        btn.innerText = "开始诊断并生成前置破冰语、个人优势与定制简历";
       }
+    }
+
+    function stripLeadingEmoji(str) {
+      return String(str || "").replace(/^[\s✅⚠️⛔❌🔥💡📌🎯🛡️🔒]+/u, "").trim();
     }
 
     function renderEvaluation(job) {
@@ -2003,12 +2395,12 @@
       pill.classList.remove("hidden");
 
       const gPill = document.getElementById("grade-pill");
-      gPill.innerText = `评级: ${job.grade || "B"}`;
+      gPill.innerText = `评级 ${job.grade || "B"}`;
       gPill.classList.remove("hidden");
 
       const pii = job.pii_audit || {};
       const piiPill = document.getElementById("pii-audit-pill");
-      piiPill.innerText = `🛡️ 脱敏 ${pii.masked_count || 0} 处`;
+      piiPill.innerText = `已脱敏 ${pii.masked_count || 0} 处`;
       piiPill.classList.remove("hidden");
 
       ["btn-jump-sim", "btn-gen-artifacts", "btn-push-feishu", "btn-view-master"].forEach(id => {
@@ -2028,8 +2420,8 @@
       const risk = job.risk_level || veto.risk_level || "safe";
       const banner = document.getElementById("veto-banner");
       banner.className = "banner " + risk;
-      const greenExtra = (veto.green_hits && veto.green_hits.length) ? ` ｜ 加分项：${veto.green_hits.join("、")}` : "";
-      banner.innerText = (veto.advice || "✅ 双层排雷通过，未见外包或虚标陷阱") + greenExtra;
+      const greenExtra = (veto.green_hits && veto.green_hits.length) ? ` · 正向信号：${veto.green_hits.join("、")}` : "";
+      banner.innerText = stripLeadingEmoji(veto.advice || "双层排雷通过，未见外包或虚标陷阱") + greenExtra;
 
       document.getElementById("score-val").innerText = job.match_score ?? "--";
       document.getElementById("track-badge").innerText = TRACK_LABELS[job.selected_track] || job.selected_track;
@@ -2046,10 +2438,10 @@
       setBar("safe", job.tier2_score || dims.safety_score || veto.safety_score || 88);
 
       const ats = job.ats_matrix || {};
-      const hits = (ats.matched_keywords || []).map(k => `<span class="kw-tag hit">✓ ${escapeHtml(k)}</span>`);
-      const misses = (ats.missing_keywords || []).map(k => `<span class="kw-tag miss">△ 待补齐: ${escapeHtml(k)}</span>`);
+      const hits = (ats.matched_keywords || []).map(k => `<span class="kw-tag hit">命中 · ${escapeHtml(k)}</span>`);
+      const misses = (ats.missing_keywords || []).map(k => `<span class="kw-tag miss">待补 · ${escapeHtml(k)}</span>`);
       document.getElementById("ats-keywords").innerHTML = [...hits, ...misses].join("") || '<span class="kw-tag">通用综合要求</span>';
-      document.getElementById("ats-bridge").innerText = ats.bridge_strategy ? `💡 补位策略：${ats.bridge_strategy}` : "";
+      document.getElementById("ats-bridge").innerText = ats.bridge_strategy ? `补位建议：${ats.bridge_strategy}` : "";
 
       if (ats.matched_keywords && ats.matched_keywords.length) {
         document.getElementById("sim-search-kws").value = ats.matched_keywords.join(", ");
@@ -2082,14 +2474,14 @@
         renderIntelContent(job.company_intel);
       } else {
         document.getElementById("intel-container").innerHTML =
-          '<div style="padding:28px; text-align:center; color:var(--text-muted);">点击右上角「生成/刷新企业背调卡」，获取针对该企业的阶段研判与 3 个一面必问核实项。</div>';
+          '<div style="padding:28px; text-align:center; color:var(--text-muted);">点击右上角「生成 / 刷新企业背调卡」，获取针对该企业的阶段研判与 3 个一面必问核实项。</div>';
       }
 
       if (job.interview_prep && job.interview_prep.grill_questions) {
         renderPrepContent(job.interview_prep);
       } else {
         document.getElementById("prep-container").innerHTML =
-          '<div style="padding:28px; text-align:center; color:var(--text-muted);">点击右上角「生成/刷新面试急救包」，获取 30 秒口语介绍与考官必问 3 题。</div>';
+          '<div style="padding:28px; text-align:center; color:var(--text-muted);">点击右上角「生成 / 刷新面试急救包」，获取 30 秒口语介绍与考官必问 3 题。</div>';
       }
       document.getElementById("deliver-msg").classList.add("hidden");
     }
@@ -2109,10 +2501,10 @@
       const checkEl = document.getElementById("greeting-hook-check");
       if (isBadGreetingStart(g)) {
         checkEl.className = "badge warn";
-        checkEl.innerText = "⚠️ 前 16 字全是寒暄，列表会被埋没";
+        checkEl.innerText = "前 16 字为寒暄，列表易被淹没";
       } else {
         checkEl.className = "badge ok";
-        checkEl.innerText = "✓ 硬实力已前置";
+        checkEl.innerText = "硬实力已前置";
       }
       document.getElementById("sim-greeting-input").value = g;
       document.getElementById("sim-adv-input").value = adv;
@@ -2136,7 +2528,7 @@
       document.getElementById("sim-greeting-input").value = "您好，看到贵司正在招聘这个岗位，我觉得自己非常匹配，请问目前还在招人吗？希望能发一份简历给您看看！";
       document.getElementById("sim-adv-input").value = "本人性格开朗，为人诚恳，做事认真负责，吃苦耐劳，具有很强的抗压能力和团队合作精神，学习能力强，沟通能力好，希望能加入贵公司共同成长。";
       renderRecruiterMockups();
-      showToast("已切换为普通求职者错误示范——观察右侧截断与命中词变化！");
+      showToast("已切换为普通寒暄写法，可对比右侧截断与命中词差异");
     }
 
     function restoreGoodExample() {
@@ -2148,7 +2540,7 @@
         document.getElementById("sim-adv-input").value = DEFAULT_SIM_ADVANTAGE;
       }
       syncFromSimInputs();
-      showToast("已恢复重点前置 + 关键词标红高转化写法！");
+      showToast("已恢复重点前置与关键词标红写法");
     }
 
     function renderRecruiterMockups() {
@@ -2171,10 +2563,10 @@
         verdict.innerText = "请在左侧输入破冰语查看实时截断效果。";
       } else if (isBadGreetingStart(g)) {
         verdict.className = "banner veto";
-        verdict.innerText = `❌ 危险诊断：HR 未点开时只看到「${g.slice(0, 17)}...」，和上下两条路人消息完全撞脸，极易被划走忽略！`;
+        verdict.innerText = `截断预警：HR 未点开时仅看到「${g.slice(0, 17)}...」，与上下路人寒暄高度同质化，极易被划走。`;
       } else {
         verdict.className = "banner safe";
-        verdict.innerText = `✅ 第一眼吸睛：HR 在未点开列表直接看到「${g.slice(0, 17)}...」，与上下群发寒暄形成强烈反差！`;
+        verdict.innerText = `首屏清晰：HR 在未点开列表直接看到「${g.slice(0, 17)}...」，核心交付物一目了然。`;
       }
 
       const visibleAdv = adv.slice(0, 56);
@@ -2193,22 +2585,22 @@
       rawKws.forEach(kw => { if (kw && adv.toLowerCase().includes(kw.toLowerCase())) hitCount++; });
 
       const badge = document.getElementById("mock-kw-hit-badge");
-      badge.innerText = hitCount > 0 ? `🔥 命中 ${hitCount} 个 HR 搜索标红词` : `⚠️ 命中 0 个搜索词（推荐排名极低）`;
-      badge.style.color = hitCount > 0 ? "#e11d48" : "#d97706";
+      badge.innerText = hitCount > 0 ? `命中 ${hitCount} 个 HR 搜索标红词` : `命中 0 个搜索词（推荐权重偏低）`;
+      badge.style.color = hitCount > 0 ? "#b53333" : "#946121";
 
       document.getElementById("mock-card-adv-visible").innerHTML = highlightKeywords(visibleAdv);
       document.getElementById("mock-card-adv-folded").innerText = foldedAdv
-        ? `...（后续 ${foldedAdv.length} 字默认折叠，搜索仍可命中索引）`
+        ? `...（后续 ${foldedAdv.length} 字默认折叠，后台搜索仍可检索）`
         : "";
 
       document.getElementById("mock-chat-bubble").innerText = g || "（暂无内容）";
       const diag = document.getElementById("mock-bubble-diag");
       if (g.length > 115) {
-        diag.innerText = `⚠️ ${g.length}字偏长，超 5 行有阅读压力`;
-        diag.style.color = "#d97706";
+        diag.innerText = `${g.length} 字偏长，超 5 行存在阅读压力`;
+        diag.style.color = "#946121";
       } else {
-        diag.innerText = `✓ ${g.length}字黄金篇幅`;
-        diag.style.color = "#00a6a7";
+        diag.innerText = `${g.length} 字，阅读密度适中`;
+        diag.style.color = "#008c8d";
       }
     }
 
@@ -2228,23 +2620,23 @@
       `).join("");
 
       document.getElementById("online-resume-box").innerHTML = `
-        <div class="banner safe">🔒 <strong>联系方式防覆写安全锁已激活：</strong>${escapeHtml(d.contact_protection_lock.note)}</div>
+        <div class="banner safe"><strong>联系方式防覆写安全锁已启用：</strong>${escapeHtml(d.contact_protection_lock.note)}</div>
         <div class="grid-2">
           <div>
             <div class="info-box">
-              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-                <strong>① ${escapeHtml(adv.title)} (${adv.char_count}/${adv.max_limit} 字)</strong>
-                <button class="btn btn-ghost" onclick="navigator.clipboard.writeText(${JSON.stringify(adv.content).replace(/"/g, '&quot;')}).then(()=>showToast('已复制优势字段'))">📋 复制</button>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                <strong style="color:var(--text);">1. ${escapeHtml(adv.title)} (${adv.char_count}/${adv.max_limit} 字)</strong>
+                <button class="btn btn-ghost" onclick="navigator.clipboard.writeText(${JSON.stringify(adv.content).replace(/"/g, '&quot;')}).then(()=>showToast('已复制优势字段'))">复制</button>
               </div>
-              <div style="color:var(--text);">${escapeHtml(adv.content)}</div>
+              <div style="color:var(--text-2);">${escapeHtml(adv.content)}</div>
             </div>
             <div class="info-box">
-              <strong>② 核心工作履历摘要（已过滤黑话）：</strong>
-              <div style="margin-top:5px; white-space:pre-wrap; font-size:11.5px; color:var(--text-muted);">${escapeHtml(d.fields.work_experience)}</div>
+              <strong style="color:var(--text);">2. 核心工作履历摘要（已过滤空泛套话）</strong>
+              <div style="margin-top:6px; white-space:pre-wrap; font-size:12px; color:var(--text-muted);">${escapeHtml(d.fields.work_experience)}</div>
             </div>
           </div>
           <div>
-            <strong style="display:block; margin-bottom:6px;">③ 结构化项目经历卡片（可直接逐段粘贴至 ${escapeHtml(d.platform_label)}）：</strong>
+            <strong style="display:block; margin-bottom:8px; color:var(--text);">3. 结构化项目经历卡片（可逐段粘贴至 ${escapeHtml(d.platform_label)}）</strong>
             ${projs}
           </div>
         </div>
@@ -2275,7 +2667,7 @@
           cover_letter: document.getElementById("cover-box").value
         })
       });
-      showToast("破冰语、BOSS个人优势与自荐信均已保存！");
+      showToast("破冰语、个人优势与自荐信已保存");
       loadJobs();
     }
 
@@ -2283,7 +2675,7 @@
       if (!currentJob) return;
       const btn = document.getElementById("btn-gen-artifacts");
       btn.disabled = true;
-      btn.innerText = "⏳ 无头渲染中...";
+      btn.innerText = "无头渲染中...";
       try {
         const res = await fetch(`/api/jobs/${currentJob.id}/render-artifacts`, { method: "POST", headers: apiHeaders() });
         const d = await res.json();
@@ -2291,7 +2683,7 @@
         showToast(d.message || "生成完毕");
       } finally {
         btn.disabled = false;
-        btn.innerText = "🖨️ 生成PDF/图片简历";
+        btn.innerText = "生成 PDF / 图片简历";
       }
     }
 
@@ -2299,7 +2691,7 @@
       if (!currentJob) return;
       const res = await fetch(`/api/feishu/push-job/${currentJob.id}`, { method: "POST", headers: apiHeaders() });
       const d = await res.json();
-      showToast(d.success ? "✅ 已推送交互卡片到飞书！" : (d.message || "请先在「飞书协同」页配置 Webhook 或 App"));
+      showToast(d.success ? "已推送交互卡片至飞书" : (d.message || "请先在「飞书协同 & 配置」页填入 Webhook 或 App 凭证"));
     }
 
     async function regenerateCurrentJob() {
@@ -2325,7 +2717,7 @@
         }
       } finally {
         btn.disabled = false;
-        btn.innerText = "🔄 切换重算";
+        btn.innerText = "切换重算";
       }
     }
 
@@ -2333,7 +2725,7 @@
       if (!currentJob) return;
       const btn = document.getElementById("btn-gen-intel");
       btn.disabled = true;
-      btn.innerText = "⏳ 研判企业背景中...";
+      btn.innerText = "研判企业背景中...";
       try {
         const res = await fetch(`/api/jobs/${currentJob.id}/company-intel`, { method: "POST", headers: apiHeaders() });
         const d = await res.json();
@@ -2341,11 +2733,11 @@
           currentJob = d.job;
           renderIntelContent(d.company_intel);
           fetchStats();
-          showToast("企业背调研判完成！");
+          showToast("企业背调研判完成");
         }
       } finally {
         btn.disabled = false;
-        btn.innerText = "🔍 生成/刷新企业背调卡";
+        btn.innerText = "生成 / 刷新企业背调卡";
       }
     }
 
@@ -2353,25 +2745,25 @@
       const flags = (intel.red_flag_watch || []).map(f => `<li>${escapeHtml(f)}</li>`).join("");
       const qs = (intel.must_verify_questions || []).map(q => `<li>${escapeHtml(q)}</li>`).join("");
       document.getElementById("intel-container").innerHTML = `
-        <div class="banner safe" style="font-size:11.5px;">📡 情报来源声明：${escapeHtml(intel.provenance || "")}</div>
+        <div class="banner safe" style="font-size:11.5px;">情报来源说明：${escapeHtml(intel.provenance || "")}</div>
         <div class="info-box">
-          <strong>🏢 团队定位与阶段研判：</strong>
-          <p style="margin-top:4px;">${escapeHtml(intel.business_stage || "")}</p>
+          <strong style="color:var(--text);">团队定位与业务阶段研判</strong>
+          <p style="margin-top:4px; color:var(--text-2);">${escapeHtml(intel.business_stage || "")}</p>
         </div>
         <div class="info-box">
-          <strong>⏰ 工时、外包与协作信号：</strong>
-          <p style="margin-top:4px;">${escapeHtml(intel.culture_and_workload || "")}</p>
+          <strong style="color:var(--text);">工时、外包与协作信号</strong>
+          <p style="margin-top:4px; color:var(--text-2);">${escapeHtml(intel.culture_and_workload || "")}</p>
         </div>
         <div class="info-box">
-          <strong>🎯 最强切入抓手：</strong>
-          <p style="margin-top:4px;">${escapeHtml(intel.entry_leverage || "")}</p>
+          <strong style="color:var(--text);">核心切入抓手</strong>
+          <p style="margin-top:4px; color:var(--text-2);">${escapeHtml(intel.entry_leverage || "")}</p>
         </div>
         <div class="info-box">
-          <strong>⚠️ 重点留意风险项：</strong>
+          <strong style="color:var(--text);">重点留意风险项</strong>
           <ul style="margin-top:4px;">${flags}</ul>
         </div>
         <div class="info-box">
-          <strong>❓ 一面建议向 HR 核实的 3 个底线问题：</strong>
+          <strong style="color:var(--text);">一面建议向 HR 核实的 3 个底线问题</strong>
           <ul style="margin-top:4px;">${qs}</ul>
         </div>
       `;
@@ -2381,7 +2773,7 @@
       if (!currentJob) return;
       const btn = document.getElementById("btn-gen-prep");
       btn.disabled = true;
-      btn.innerText = "⏳ 考官推演中...";
+      btn.innerText = "考官推演中...";
       try {
         const res = await fetch(`/api/jobs/${currentJob.id}/interview-prep`, { method: "POST", headers: apiHeaders() });
         const data = await res.json();
@@ -2389,11 +2781,11 @@
           currentJob = data.job;
           renderPrepContent(data.interview_prep);
           fetchStats();
-          showToast("面试急救包已生成！");
+          showToast("面试急救包已生成");
         }
       } finally {
         btn.disabled = false;
-        btn.innerText = "⚡ 生成/刷新面试急救包";
+        btn.innerText = "生成 / 刷新面试急救包";
       }
     }
 
@@ -2401,17 +2793,17 @@
       const tweaks = (prep.resume_tweaks || []).map(t => `<li>${escapeHtml(t)}</li>`).join("");
       const qas = (prep.grill_questions || []).map((item, idx) => `
         <div class="qa-card">
-          <div class="qa-q">Q${idx + 1}：${escapeHtml(item.question)}</div>
-          <div class="qa-intent">🎯 考官真实顾虑：${escapeHtml(item.intent)}</div>
-          <div class="qa-ans">💡 务实回答提纲：${escapeHtml(item.answer_points)}</div>
+          <div class="qa-q">问题 ${idx + 1} · ${escapeHtml(item.question)}</div>
+          <div class="qa-intent">考官真实顾虑：${escapeHtml(item.intent)}</div>
+          <div class="qa-ans">务实回答提纲：${escapeHtml(item.answer_points)}</div>
         </div>
       `).join("");
       const askHr = (prep.questions_to_ask_hr || []).map(q => `<li>${escapeHtml(q)}</li>`).join("");
       document.getElementById("prep-container").innerHTML = `
-        <div class="info-box"><strong>🎙️ 30 秒口语化自我介绍：</strong><p style="margin-top:4px;">${escapeHtml(prep.elevator_pitch || "")}</p></div>
-        <div class="info-box"><strong>✂️ 简历靶向微调动作：</strong><ul style="margin-top:4px;">${tweaks}</ul></div>
-        <div style="margin-bottom:10px;"><strong style="display:block; margin-bottom:6px;">🔥 考官视角 Grill-Me 必问 3 题：</strong>${qas}</div>
-        <div class="info-box"><strong>🙋 反问面试官问题：</strong><ul style="margin-top:4px;">${askHr}</ul></div>
+        <div class="info-box"><strong style="color:var(--text);">30 秒口语化自我介绍</strong><p style="margin-top:4px; color:var(--text-2);">${escapeHtml(prep.elevator_pitch || "")}</p></div>
+        <div class="info-box"><strong style="color:var(--text);">简历靶向微调动作</strong><ul style="margin-top:4px;">${tweaks}</ul></div>
+        <div style="margin-bottom:12px;"><strong style="display:block; margin-bottom:8px; color:var(--text);">考官视角 Grill-Me 必问 3 题</strong>${qas}</div>
+        <div class="info-box"><strong style="color:var(--text);">反问面试官问题</strong><ul style="margin-top:4px;">${askHr}</ul></div>
       `;
     }
 
@@ -2459,19 +2851,19 @@
       await saveCurrentCopy();
       const btn = document.getElementById("btn-deliver");
       btn.disabled = true;
-      btn.innerText = "⏳ 正在执行多平台防封投递...";
+      btn.innerText = "正在执行多平台防封投递...";
       try {
         const res = await fetch(`/api/jobs/${currentJob.id}/deliver`, { method: "POST", headers: apiHeaders() });
         const data = await res.json();
         const msg = document.getElementById("deliver-msg");
         msg.classList.remove("hidden");
-        msg.style.color = data.success ? "var(--accent)" : "var(--danger)";
-        msg.innerText = (data.success ? "✅ " : "❌ ") + data.message;
+        msg.style.color = data.success ? "var(--ok)" : "var(--danger)";
+        msg.innerText = (data.success ? "投递完成：" : "投递受阻：") + stripLeadingEmoji(data.message);
         fetchStats();
         loadJobs();
       } finally {
         btn.disabled = false;
-        btn.innerText = "🚀 批准放行 · 多平台拟人投递（含简历产物）";
+        btn.innerText = "批准放行 · 多平台拟人投递（含简历产物）";
       }
     }
 
@@ -2483,8 +2875,8 @@
       const htmlCards = Object.entries(d).map(([plat, info]) => `
         <div class="info-box" style="margin:0; display:flex; justify-content:space-between; align-items:center;">
           <div>
-            <strong>${escapeHtml(info.name)}</strong>
-            <div style="font-size:11px; color:var(--text-muted);">${info.has_session_cookies ? "✅ 已有持久化 Cookie" : "⚪ 待首次扫码登录"}</div>
+            <strong style="color:var(--text);">${escapeHtml(info.name)}</strong>
+            <div style="font-size:11px; color:var(--text-muted); margin-top:2px;">${info.has_session_cookies ? "已存持久化 Cookie" : "待首次扫码登录"}</div>
           </div>
           <button class="btn btn-ghost" onclick="openPlatformLogin('${plat}')">扫码登录</button>
         </div>
@@ -2523,7 +2915,7 @@
 
     async function abortPipelineRun() {
       await fetch("/api/pipeline/abort", { method: "POST", headers: apiHeaders() });
-      showToast("🛑 已发送紧急中止指令");
+      showToast("已发送紧急中止指令");
     }
 
     async function loadPipelineCenter() {
@@ -2537,15 +2929,15 @@
         const runs = st.runs || [];
         document.getElementById("runs-tbody").innerHTML = runs.length ? runs.map(r => `
           <tr>
-            <td>#${r.id}</td>
+            <td style="font-family:var(--font-mono); color:var(--text-faint);">#${r.id}</td>
             <td>${escapeHtml(r.platforms)}</td>
             <td>${escapeHtml(r.keywords)} (${escapeHtml(r.city)})</td>
             <td><span class="badge ${r.mode==='simulate'?'info':'ok'}">${r.mode==='simulate'?'沙盒预演':'实盘登录'}</span></td>
             <td>发现 ${r.total_found} → 新增 ${r.deduplicated_new} → T1过 ${r.tier1_passed} → T2过 ${r.tier2_passed} → PDF ${r.tailored_count}</td>
             <td><span class="badge ${r.status==='completed'?'ok':'warn'}">${escapeHtml(r.status)}</span></td>
-            <td style="color:var(--text-muted);">${escapeHtml((r.started_at || "").slice(5, 16))}</td>
+            <td style="color:var(--text-muted); font-family:var(--font-mono); font-size:11.5px;">${escapeHtml((r.started_at || "").slice(5, 16))}</td>
           </tr>
-        `).join("") : '<tr><td colspan="7" style="text-align:center; padding:18px; color:var(--text-muted);">暂无巡航记录，点击上方「一键启动全链路巡航流水线」立即体验</td></tr>';
+        `).join("") : '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--text-muted);">暂无巡航记录，点击上方「启动全链路巡航流水线」即可体验</td></tr>';
       }
 
       if (jobsRes.ok) {
@@ -2556,18 +2948,18 @@
           const hasPdf = Boolean(j.tailored_pdf_path);
           const appSt = j.approval_status || "waiting_approval";
           const appBadge = appSt === "approved" || appSt === "auto_pass"
-            ? '<span class="badge ok">✓ 已批准待投</span>'
-            : '<span class="badge warn">⏳ 待审批</span>';
+            ? '<span class="badge ok">已批准待投</span>'
+            : '<span class="badge warn">待审批</span>';
           return `
             <tr>
-              <td>#${j.id}</td>
-              <td><span class="badge info">${escapeHtml(j.grade || 'B')}</span> <strong>${j.match_score}</strong>分</td>
+              <td style="font-family:var(--font-mono); color:var(--text-faint);">#${j.id}</td>
+              <td><span class="badge info">${escapeHtml(j.grade || 'B')}</span> <strong>${j.match_score}</strong> 分</td>
               <td>
-                <div style="font-weight:700;">${escapeHtml(j.job_title)}</div>
-                <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(j.company_name)} · ${escapeHtml(j.salary || '面议')}</div>
+                <div style="font-weight:600; color:var(--text);">${escapeHtml(j.job_title)}</div>
+                <div style="font-size:11.5px; color:var(--text-muted);">${escapeHtml(j.company_name)} · ${escapeHtml(j.salary || '面议')}</div>
               </td>
               <td>${escapeHtml(PLAT_LABELS[j.platform] || j.platform)}</td>
-              <td style="color:var(--accent); font-weight:600;">${escapeHtml(g)}...</td>
+              <td style="color:var(--accent); font-weight:500;">${escapeHtml(g)}...</td>
               <td>
                 ${hasPdf
                   ? `<a href="/api/jobs/${j.id}/artifact/pdf" target="_blank" class="chip-btn">PDF</a> <a href="/api/jobs/${j.id}/artifact/png" target="_blank" class="chip-btn">图片</a>`
@@ -2575,13 +2967,13 @@
               </td>
               <td>${appBadge}</td>
               <td style="text-align:right;">
-                <button class="btn btn-primary" style="padding:3px 9px; font-size:11.5px;" onclick="quickApprove(${j.id}, 'approved')">批准</button>
-                <button class="btn btn-secondary" style="padding:3px 9px; font-size:11.5px;" onclick="selectJob(${j.id})">精修</button>
-                <button class="btn btn-ghost" style="padding:3px 8px;" onclick="quickApprove(${j.id}, 'rejected')">跳过</button>
+                <button class="btn btn-primary" style="padding:4px 10px; font-size:11.5px;" onclick="quickApprove(${j.id}, 'approved')">批准</button>
+                <button class="btn btn-secondary" style="padding:4px 10px; font-size:11.5px;" onclick="selectJob(${j.id})">精修</button>
+                <button class="btn btn-ghost" style="padding:4px 8px;" onclick="quickApprove(${j.id}, 'rejected')">跳过</button>
               </td>
             </tr>
           `;
-        }).join("") : '<tr><td colspan="8" style="text-align:center; padding:22px; color:var(--text-muted);">当前暂无待审批岗位</td></tr>';
+        }).join("") : '<tr><td colspan="8" style="text-align:center; padding:24px; color:var(--text-muted);">当前暂无待审批岗位</td></tr>';
       }
     }
 
@@ -2600,7 +2992,7 @@
       showToast(`正在为 #${id} 静默生成 A4 PDF 与图片简历...`);
       await fetch(`/api/jobs/${id}/render-artifacts`, { method: "POST", headers: apiHeaders() });
       loadPipelineCenter();
-      showToast(`#${id} 定制简历已生成！`);
+      showToast(`#${id} 定制简历已生成`);
     }
 
     async function approveAllGradeSA() {
@@ -2619,7 +3011,7 @@
       }
       loadPipelineCenter();
       fetchStats();
-      showToast(`已一键批准 ${cnt} 个 S/A 级高匹配岗位！`);
+      showToast(`已批量批准 ${cnt} 个 S/A 级高匹配岗位`);
     }
 
     async function batchDeliverApproved() {
@@ -2662,7 +3054,7 @@
 
       const tbody = document.getElementById("jobs-tbody");
       if (!jobs.length) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:26px; color:var(--text-muted);">当前筛选下暂无岗位记录</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:28px; color:var(--text-muted);">当前筛选条件下暂无岗位记录</td></tr>';
         return;
       }
 
@@ -2670,7 +3062,7 @@
         pending_review: '<span class="badge warn">待放行</span>',
         delivered: '<span class="badge ok">已投递</span>',
         interviewing: '<span class="badge info">约面中</span>',
-        offer: '<span class="badge ok">Offer 🎉</span>',
+        offer: '<span class="badge ok">录用 Offer</span>',
         rejected: '<span class="badge neutral">已跳过</span>',
         failed: '<span class="badge err">受阻</span>'
       };
@@ -2682,22 +3074,22 @@
 
       tbody.innerHTML = jobs.map(j => `
         <tr>
-          <td style="color:var(--text-muted); font-family:monospace;">#${j.id}</td>
+          <td style="color:var(--text-faint); font-family:var(--font-mono); font-size:11.5px;">#${j.id}</td>
           <td>
-            <div style="font-weight:700;">${escapeHtml(j.job_title)}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(j.company_name)} · ${escapeHtml(j.city || "深圳")} · ${escapeHtml(j.salary || "面议")}</div>
+            <div style="font-weight:600; color:var(--text);">${escapeHtml(j.job_title)}</div>
+            <div style="font-size:11.5px; color:var(--text-muted);">${escapeHtml(j.company_name)} · ${escapeHtml(j.city || "深圳")} · ${escapeHtml(j.salary || "面议")}</div>
           </td>
           <td><span class="badge neutral">${escapeHtml(PLAT_LABELS[j.platform] || j.platform)}</span></td>
           <td><span class="badge neutral">${escapeHtml(TRACK_LABELS[j.selected_track] || j.selected_track)}</span></td>
-          <td><span class="badge info">${escapeHtml(j.grade || "B")}</span> <strong>${j.match_score}</strong>分 ${riskMap[j.risk_level || "safe"] || ""}</td>
+          <td><span class="badge info">${escapeHtml(j.grade || "B")}</span> <strong>${j.match_score}</strong> 分 ${riskMap[j.risk_level || "safe"] || ""}</td>
           <td>${stageMap[j.delivery_status] || j.delivery_status}</td>
           <td>
-            ${j.tailored_pdf_path ? `<a href="/api/jobs/${j.id}/artifact/pdf" target="_blank" class="badge ok" style="text-decoration:none;">PDF✓</a>` : '<span class="badge neutral">未生成</span>'}
-            ${j.feishu_record_id ? '<span class="badge info">飞书✓</span>' : ''}
+            ${j.tailored_pdf_path ? `<a href="/api/jobs/${j.id}/artifact/pdf" target="_blank" class="badge ok" style="text-decoration:none;">PDF 就绪</a>` : '<span class="badge neutral">未生成</span>'}
+            ${j.feishu_record_id ? '<span class="badge info">已同步飞书</span>' : ''}
           </td>
           <td style="text-align:right;">
-            <button class="btn btn-secondary" style="padding:4px 9px; font-size:11.5px;" onclick="selectJob(${j.id})">调取 🔍</button>
-            <button class="btn btn-ghost" style="padding:4px 7px;" onclick="deleteJobRow(${j.id})">✕</button>
+            <button class="btn btn-secondary" style="padding:4px 10px; font-size:11.5px;" onclick="selectJob(${j.id})">调取</button>
+            <button class="btn btn-ghost" style="padding:4px 8px;" onclick="deleteJobRow(${j.id})">删除</button>
           </td>
         </tr>
       `).join("");
@@ -2736,25 +3128,25 @@
       const tok = d.tokens.summary;
 
       document.getElementById("ana-kpi-grid").innerHTML = `
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">总采集岗位池</div><div class="kpi-val">${k.total_jobs}</div><div style="font-size:11.5px; color:var(--text-muted);">排雷拦截 ${k.vetoed_jobs} 条</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">S / A 级高匹配</div><div class="kpi-val">${k.sa_grade_jobs}</div><div style="font-size:11.5px; color:var(--text-muted);">全局均分 ${k.avg_match_score}</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">定制 PDF 简历数</div><div class="kpi-val">${k.tailored_pdfs}</div><div style="font-size:11.5px; color:var(--text-muted);">飞书已同步 ${k.feishu_synced} 条</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">已投递触达</div><div class="kpi-val">${k.delivered_jobs}</div><div style="font-size:11.5px; color:var(--text-muted);">约面推进 ${k.interview_jobs}</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">投递 → 约面率</div><div class="kpi-val">${k.delivery_to_interview_rate}%</div><div style="font-size:11.5px; color:var(--ok);">Offer ${k.offer_jobs} 个</div></div>
-        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">大模型累计账单</div><div class="kpi-val">¥${tok.total_cost_cny.toFixed(3)}</div><div style="font-size:11.5px; color:var(--text-muted);">${tok.total_tokens} Tokens (${tok.total_calls}次)</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">总采集岗位池</div><div class="kpi-val">${k.total_jobs}</div><div style="font-size:11.5px; color:var(--text-faint);">排雷拦截 ${k.vetoed_jobs} 条</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">S / A 级高匹配</div><div class="kpi-val">${k.sa_grade_jobs}</div><div style="font-size:11.5px; color:var(--text-faint);">全局均分 ${k.avg_match_score}</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">定制 PDF 简历数</div><div class="kpi-val">${k.tailored_pdfs}</div><div style="font-size:11.5px; color:var(--text-faint);">飞书已同步 ${k.feishu_synced} 条</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">已投递触达</div><div class="kpi-val">${k.delivered_jobs}</div><div style="font-size:11.5px; color:var(--text-faint);">约面推进 ${k.interview_jobs}</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">投递 → 约面率</div><div class="kpi-val">${k.delivery_to_interview_rate}%</div><div style="font-size:11.5px; color:var(--ok);">录用 Offer ${k.offer_jobs} 个</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:12px;">大模型累计账单</div><div class="kpi-val">¥${tok.total_cost_cny.toFixed(3)}</div><div style="font-size:11.5px; color:var(--text-faint);">${tok.total_tokens} Tokens (${tok.total_calls}次)</div></div>
       `;
 
       document.getElementById("ana-funnel-box").innerHTML = (d.funnel || []).map(f => `
         <div class="funnel-row">
-          <div style="font-weight:600;">${escapeHtml(f.label)}</div>
+          <div style="font-weight:500; color:${f.count > 0 ? 'var(--text-2)' : 'var(--text-faint)'};">${escapeHtml(f.label)}</div>
           <div class="funnel-track">
-            <div class="funnel-bar" style="width:${Math.max(6, f.rate_from_top)}%;">${f.count}</div>
+            <div class="funnel-bar ${f.count === 0 ? 'zero' : ''}" style="width:${f.count === 0 ? 0 : Math.max(6, f.rate_from_top)}%;">${f.count}</div>
           </div>
-          <div style="text-align:right; color:var(--text-muted); font-size:11.5px;">${f.rate_from_top}%</div>
+          <div style="text-align:right; color:${f.count > 0 ? 'var(--text-muted)' : 'var(--text-faint)'}; font-size:11.5px;">${f.rate_from_top}%</div>
         </div>
       `).join("");
 
-      // Render Pure Inline SVG 14-day Trend Bar Chart
+      // Warm Sand + Terracotta Inline SVG 14-day Trend Bar Chart
       const trends = d.daily_trends || [];
       const maxVal = Math.max(4, ...trends.map(t => Math.max(t.captured, t.delivered)));
       const svgW = 560, svgH = 190, padB = 28, padT = 16;
@@ -2764,25 +3156,25 @@
         const hCap = Math.round((t.captured / maxVal) * (svgH - padB - padT));
         const hDel = Math.round((t.delivered / maxVal) * (svgH - padB - padT));
         return `
-          <rect x="${x}" y="${svgH - padB - hCap}" width="11" height="${hCap}" rx="2.5" fill="#93c5fd"><title>${t.date} 采集: ${t.captured}</title></rect>
-          <rect x="${x + 13}" y="${svgH - padB - hDel}" width="11" height="${hDel}" rx="2.5" fill="#2563eb"><title>${t.date} 投递: ${t.delivered}</title></rect>
-          <text x="${x + 11}" y="${svgH - 8}" font-size="9.5" fill="#6b7280" text-anchor="middle">${t.short_date}</text>
+          <rect x="${x}" y="${svgH - padB - hCap}" width="11" height="${hCap}" rx="3" fill="var(--chart-secondary)"><title>${t.date} 采集: ${t.captured}</title></rect>
+          <rect x="${x + 13}" y="${svgH - padB - hDel}" width="11" height="${hDel}" rx="3" fill="var(--accent)"><title>${t.date} 投递: ${t.delivered}</title></rect>
+          <text x="${x + 11}" y="${svgH - 8}" font-size="9.5" fill="var(--text-faint)" text-anchor="middle">${t.short_date}</text>
         `;
       }).join("");
       document.getElementById("ana-trend-svg-box").innerHTML = `
-        <div style="display:flex; gap:18px; font-size:12px; color:var(--text-muted); margin-bottom:6px;">
-          <span><span style="display:inline-block;width:9px;height:9px;background:#93c5fd;border-radius:2px;margin-right:4px;"></span>每日采集入库</span>
-          <span><span style="display:inline-block;width:9px;height:9px;background:#2563eb;border-radius:2px;margin-right:4px;"></span>每日完成投递</span>
+        <div style="display:flex; gap:18px; font-size:12px; color:var(--text-muted); margin-bottom:8px;">
+          <span><span style="display:inline-block;width:9px;height:9px;background:var(--chart-secondary);border-radius:2px;margin-right:5px;"></span>每日采集入库</span>
+          <span><span style="display:inline-block;width:9px;height:9px;background:var(--accent);border-radius:2px;margin-right:5px;"></span>每日完成投递</span>
         </div>
         <svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%; height:auto; overflow:visible;">
-          <line x1="0" y1="${svgH - padB}" x2="${svgW}" y2="${svgH - padB}" stroke="var(--border)" stroke-width="1" />
+          <line x1="0" y1="${svgH - padB}" x2="${svgW}" y2="${svgH - padB}" stroke="var(--border-strong)" stroke-width="1" />
           ${barsSvg}
         </svg>
       `;
 
       document.getElementById("ana-plat-tbody").innerHTML = (d.platform_roi || []).map(p => `
         <tr>
-          <td><strong>${escapeHtml(p.label)}</strong></td>
+          <td><strong style="color:var(--text);">${escapeHtml(p.label)}</strong></td>
           <td>${p.total}</td>
           <td><span class="badge ${p.clean_rate>=80?'ok':'warn'}">${p.clean_rate}%</span></td>
           <td><strong>${p.avg_score}</strong></td>
@@ -2794,7 +3186,7 @@
 
       document.getElementById("ana-track-tbody").innerHTML = (d.track_matrix || []).map(t => `
         <tr>
-          <td><strong>${escapeHtml(t.label)}</strong></td>
+          <td><strong style="color:var(--text);">${escapeHtml(t.label)}</strong></td>
           <td>${t.total}</td>
           <td><strong>${t.avg_score}</strong></td>
           <td>${t.sa_count}</td>
@@ -2814,19 +3206,19 @@
             <td>¥${a.cost_cny.toFixed(4)}</td>
           </tr>
         `).join("")
-        : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:16px;">暂无云端 Token 消耗记录</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:18px;">暂无云端 Token 消耗记录</td></tr>';
 
       document.getElementById("ana-tok-logs-tbody").innerHTML = (d.tokens.recent_logs || []).length
         ? d.tokens.recent_logs.map(l => `
           <tr>
-            <td style="color:var(--text-muted);">${escapeHtml((l.created_at || "").slice(5, 16))}</td>
+            <td style="color:var(--text-muted); font-family:var(--font-mono); font-size:11px;">${escapeHtml((l.created_at || "").slice(5, 16))}</td>
             <td><span class="badge neutral">${escapeHtml(l.action)}</span></td>
             <td>${l.job_id ? `#${l.job_id} ${escapeHtml(l.company_name || "")}` : "-"}</td>
             <td>${l.total_tokens}</td>
             <td>¥${Number(l.estimated_cny || 0).toFixed(4)}</td>
           </tr>
         `).join("")
-        : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:16px;">暂无流水</td></tr>';
+        : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:18px;">暂无调用流水</td></tr>';
     }
 
     // ==================== Feishu Hub & Settings ====================
@@ -2836,7 +3228,7 @@
       const d = await res.json();
       document.getElementById("feishu-diag-box").innerHTML = `
         <div>• <strong>群机器人 Webhook</strong>：${d.webhook_configured ? '<span class="badge ok">已配置</span>' : '<span class="badge neutral">未配置</span>'}</div>
-        <div style="margin-top:4px;">• <strong>开放平台自建应用 (多维表格/机器人)</strong>：${d.app_configured ? (d.app_auth_ok ? `<span class="badge ok">鉴权成功</span> 租户：${escapeHtml(d.tenant_name)}` : `<span class="badge err">鉴权失败: ${escapeHtml(d.auth_error || '')}</span>`) : '<span class="badge neutral">待填入 AppID & Secret</span>'}</div>
+        <div style="margin-top:6px;">• <strong>开放平台自建应用（多维表格 / 机器人）</strong>：${d.app_configured ? (d.app_auth_ok ? `<span class="badge ok">鉴权成功</span> 租户：${escapeHtml(d.tenant_name)}` : `<span class="badge err">鉴权失败：${escapeHtml(d.auth_error || '')}</span>`) : '<span class="badge neutral">待填入 AppID 与 Secret</span>'}</div>
       `;
     }
 
@@ -2846,7 +3238,7 @@
       const d = await res.json();
       if (res.ok && d.success) {
         loadRuntimeSettings();
-        showToast("✅ 已自动创建/校准飞书多维表格与全部标准列！");
+        showToast("已创建并校准飞书多维表格与标准字段");
       } else {
         alert("飞书自动建表提示：" + (d.detail || "请先在右侧填入个人飞书自建应用的 App ID 与 App Secret"));
       }
@@ -2855,7 +3247,7 @@
     async function feishuSyncPush() {
       const res = await fetch("/api/feishu/sync-push", { method: "POST", headers: apiHeaders() });
       const d = await res.json();
-      if (res.ok && d.success) showToast(`☁️ 推送成功：新增 ${d.created} 条，更新 ${d.updated} 条`);
+      if (res.ok && d.success) showToast(`飞书推送完成：新增 ${d.created} 条，更新 ${d.updated} 条`);
       else alert("推送提示：" + (d.detail || "请先配置并初始化多维表格"));
     }
 
@@ -2865,7 +3257,7 @@
       if (res.ok && d.success) {
         fetchStats();
         loadJobs();
-        showToast(`⬇️ 拉取完成：更新本地 ${d.updated_local} 条，手机新批准 ${d.newly_approved_ids.length} 条`);
+        showToast(`拉取完成：更新本地 ${d.updated_local} 条，手机新批准 ${d.newly_approved_ids.length} 条`);
       } else {
         alert("拉取提示：" + (d.detail || "请先配置多维表格"));
       }
@@ -2874,7 +3266,7 @@
     async function feishuPushReport() {
       const res = await fetch("/api/feishu/push-report", { method: "POST", headers: apiHeaders() });
       const d = await res.json();
-      showToast(d.success ? "📊 飞书战报卡片已送达！" : (d.message || "未配置 Webhook，已在本地指令台可用"));
+      showToast(d.success ? "飞书战报卡片已送达" : (d.message || "未配置 Webhook，已在本地指令台可用"));
     }
 
     async function sendBotCmd(cmd) {
@@ -2941,7 +3333,7 @@
         document.getElementById("m-vis-url").value = s.vision_base_url || "https://dashscope.aliyuncs.com/compatible-mode/v1";
         document.getElementById("m-vis-model").value = s.vision_model || "qwen-vl-plus";
         const meta = LLM_PROVIDER_CATALOG[prov] || {};
-        document.getElementById("m-provider-hint").innerText = meta.key_hint ? `💡 ${meta.key_hint}` : "";
+        document.getElementById("m-provider-hint").innerText = meta.key_hint ? `接入说明：${meta.key_hint}` : "";
         renderModelChips(meta.models || [], "m-llm-model");
       }
       document.getElementById("m-llm-test-res").classList.add("hidden");
@@ -2960,7 +3352,7 @@
       if (meta.default_model) document.getElementById("m-llm-model").value = meta.default_model;
       document.getElementById("m-price-in").value = meta.price_in ?? 2.0;
       document.getElementById("m-price-out").value = meta.price_out ?? 8.0;
-      document.getElementById("m-provider-hint").innerText = meta.key_hint ? `💡 ${meta.key_hint}` : "";
+      document.getElementById("m-provider-hint").innerText = meta.key_hint ? `接入说明：${meta.key_hint}` : "";
       if (!meta.requires_key) {
         document.getElementById("m-llm-key").placeholder = "本地离线模型免填 API Key";
       } else {
@@ -2982,7 +3374,7 @@
 
     function clearSavedLLMKey() {
       document.getElementById("m-llm-key").value = "__CLEAR__";
-      showToast("已标记清空密钥，点击「保存大模型配置」即可擦除本地存储的 Key");
+      showToast("已标记清空密钥，点击「保存大模型配置」即可擦除本机已存 Key");
     }
 
     async function fetchModelsForModal() {
@@ -3003,13 +3395,13 @@
         const d = await res.json();
         if (d.models && d.models.length) {
           renderModelChips(d.models, "m-llm-model");
-          showToast(`✅ 已获取 ${d.models.length} 个可选模型，点击下方标签或下拉框即可选用`);
+          showToast(`已获取 ${d.models.length} 个可选模型，点击下方标签即可选用`);
         } else {
           showToast(d.message || "该网关未公开 /models 列表，请直接输入模型名");
         }
       } finally {
         btn.disabled = false;
-        btn.innerText = "🔄 拉取模型列表";
+        btn.innerText = "拉取模型列表";
       }
     }
 
@@ -3017,7 +3409,7 @@
       const btn = document.getElementById("btn-test-llm");
       const box = document.getElementById("m-llm-test-res");
       btn.disabled = true;
-      btn.innerText = "⏳ 正在握手实测...";
+      btn.innerText = "正在握手实测...";
       box.classList.remove("hidden");
       box.className = "banner caution";
       box.innerText = "正在向目标大模型网关发送轻量连通性探针...";
@@ -3034,13 +3426,13 @@
         });
         const d = await res.json();
         box.className = "banner " + (d.success ? "safe" : "veto");
-        box.innerText = (d.success ? "✅ " : "❌ ") + d.message;
+        box.innerText = (d.success ? "连通正常 · " : "连通失败 · ") + stripLeadingEmoji(d.message);
       } catch (e) {
         box.className = "banner veto";
-        box.innerText = "❌ 请求异常：" + e.message;
+        box.innerText = "请求异常：" + e.message;
       } finally {
         btn.disabled = false;
-        btn.innerText = "⚡ 测试接口连通性与延迟";
+        btn.innerText = "测试接口连通性与延迟";
       }
     }
 
@@ -3068,7 +3460,7 @@
         await loadRuntimeSettings();
         await fetchStats();
         closeLLMModal();
-        showToast("✅ 自定义大模型 API 配置已保存并立即生效！");
+        showToast("自定义大模型 API 配置已保存并生效");
       }
     }
 
@@ -3138,7 +3530,7 @@
       if (res.ok) {
         await loadRuntimeSettings();
         fetchStats();
-        if (!silent) showToast("✅ 系统配置已保存并即时热重载生效！");
+        if (!silent) showToast("系统配置已保存并热重载生效");
       }
     }
 
@@ -3165,7 +3557,7 @@
       if (!jid) { showToast("请先选择一个岗位"); return; }
       const btn = document.getElementById("btn-mock-start");
       btn.disabled = true;
-      btn.innerText = "⏳ 考官正在审阅简历开场...";
+      btn.innerText = "考官正在审阅简历开场...";
       try {
         const res = await fetch("/api/mock-interview/start", {
           method: "POST",
@@ -3176,19 +3568,19 @@
         if (d.success) {
           activeMockSessionId = d.session.id;
           document.getElementById("mock-session-badge").className = "badge ok";
-          document.getElementById("mock-session-badge").innerText = `对练会话 #${activeMockSessionId} 进行中`;
+          document.getElementById("mock-session-badge").innerText = `会话 #${activeMockSessionId} 进行中`;
           document.getElementById("mock-scorecard-box").innerHTML = "";
           renderMockMessages(d.session.messages);
           fetchStats();
         }
       } finally {
         btn.disabled = false;
-        btn.innerText = "🎙️ 开启新一轮考官拷打对练";
+        btn.innerText = "开启新一轮考官对练";
       }
     }
 
     async function submitMockAnswer() {
-      if (!activeMockSessionId) { showToast("请先点击左侧「开启新一轮考官拷打对练」"); return; }
+      if (!activeMockSessionId) { showToast("请先点击左侧「开启新一轮考官对练」"); return; }
       const inp = document.getElementById("mock-answer-input");
       const ans = inp.value.trim();
       if (!ans) return;
@@ -3217,7 +3609,7 @@
       const box = document.getElementById("mock-chat-stream");
       box.innerHTML = (msgs || []).map(m => {
         if (m.role === "interviewer") {
-          return `<div class="msg-bubble msg-bot"><strong>👔 面试官：</strong>${escapeHtml(m.content)}</div>`;
+          return `<div class="msg-bubble msg-bot"><strong style="color:var(--accent);">面试官 · </strong>${escapeHtml(m.content)}</div>`;
         }
         const cf = m.coach_feedback || {};
         return `
@@ -3225,10 +3617,10 @@
             <div class="msg-bubble msg-user" style="max-width:100%;">${escapeHtml(m.content)}</div>
             ${cf.turn_score ? `
               <div class="coach-note">
-                <strong>🎯 场外教练单轮评分：${cf.turn_score} 分</strong><br/>
-                ✓ 亮点：${escapeHtml(cf.strength || "")}<br/>
-                △ 提升：${escapeHtml(cf.improvement || "")}<br/>
-                💡 示范表达：${escapeHtml(cf.sample_upgrade || "")}
+                <div style="margin-bottom:4px;"><span class="badge info">场外教练评分 · ${cf.turn_score} 分</span></div>
+                <div><strong>亮点：</strong>${escapeHtml(cf.strength || "")}</div>
+                <div><strong>改进：</strong>${escapeHtml(cf.improvement || "")}</div>
+                <div style="margin-top:3px; color:var(--text);"><strong>平实示范：</strong>${escapeHtml(cf.sample_upgrade || "")}</div>
               </div>
             ` : ""}
           </div>
@@ -3246,9 +3638,9 @@
         const dims = Object.entries(sc.dimensions || {}).map(([k, v]) => `<li>${escapeHtml(k)}：<strong>${v}</strong> 分</li>`).join("");
         document.getElementById("mock-scorecard-box").innerHTML = `
           <div class="info-box">
-            <div style="font-size:15px; font-weight:800; color:var(--accent); margin-bottom:6px;">🏆 本场综合面试得分：${sc.overall_score} / 100（共 ${sc.rounds_completed} 轮）</div>
+            <div style="font-family:var(--font-serif); font-size:17px; font-weight:500; color:var(--accent); margin-bottom:6px;">综合面试得分：${sc.overall_score} / 100（共 ${sc.rounds_completed} 轮）</div>
             <ul>${dims}</ul>
-            <div style="margin-top:8px; font-size:12px;">${escapeHtml(sc.verdict || "")}</div>
+            <div style="margin-top:8px; font-size:12px; color:var(--text-2);">${escapeHtml(sc.verdict || "")}</div>
           </div>
         `;
         document.getElementById("mock-session-badge").innerText = "已完成评分";
@@ -3260,7 +3652,7 @@
       if (!currentJob) return;
       const res = await fetch(`/api/resumes/${currentJob.selected_track}`);
       const d = await res.json();
-      document.getElementById("modal-title").innerText = `母本预览：${d.track_name || d.track_key}`;
+      document.getElementById("modal-title").innerText = `母本预览 · ${d.track_name || d.track_key}`;
       document.getElementById("modal-body").innerText = d.content;
       document.getElementById("resume-modal").classList.add("open");
     }
@@ -3288,7 +3680,7 @@
           blacklist_companies: splitKw("rule-blacklist")
         })
       });
-      showToast("本地排雷词库已更新生效！");
+      showToast("本地排雷词库已更新生效");
     }
 
     function toggleTerminalDrawer() {
@@ -3339,9 +3731,22 @@
     setInterval(pollTerminalLogs, 2200);
 
     const urlParams = new URLSearchParams(window.location.search);
+    const initTheme = urlParams.get("theme");
+    if (initTheme === "dark" || initTheme === "light") setThemeMode(initTheme);
+    const initDensity = urlParams.get("density");
+    if (initDensity === "compact" || initDensity === "editorial") setDensityMode(initDensity);
+    if (urlParams.get("tweaks") === "1") document.getElementById("tweaks-popover")?.classList.remove("hidden");
     const initView = urlParams.get("view");
     if (initView && ["studio", "recruiter", "pipeline", "kanban", "analytics", "feishu", "mock"].includes(initView)) {
       switchMainView(initView);
+    }
+    if (urlParams.get("job") === "latest") {
+      fetch("/api/jobs").then(r => r.json()).then(jobs => {
+        if (jobs && jobs.length) {
+          window.JOBS_CACHE.set(jobs[0].id, jobs[0]);
+          selectJob(jobs[0].id);
+        }
+      });
     }
   </script>
 </body>

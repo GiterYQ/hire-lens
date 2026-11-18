@@ -11,53 +11,61 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-      background: #0f172a;
-      color: #1e293b;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #1c1b19;
+      color: #141413;
       display: flex;
       justify-content: center;
-      gap: 24px;
-      padding: 28px 20px;
+      gap: 28px;
+      padding: 32px 24px;
+      -webkit-font-smoothing: antialiased;
     }
-    /* A4 纸张画布 */
+    /* A4 纯白印刷画布 */
     .a4-sheet {
       width: 210mm;
       min-height: 297mm;
       background: #ffffff;
       padding: 13mm 15mm;
       border-radius: 6px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08), 0 24px 56px rgba(0, 0, 0, 0.42);
       outline: none;
       font-size: 9.4pt;
-      line-height: 1.48;
+      line-height: 1.5;
+      color: #141413;
     }
     .a4-sheet:focus {
-      box-shadow: 0 0 0 2px #10b981, 0 20px 50px rgba(0,0,0,0.45);
+      box-shadow: 0 0 0 2px #3898ec, 0 24px 56px rgba(0, 0, 0, 0.42);
     }
     .a4-sheet h1 {
+      font-family: "Iowan Old Style", "Palatino Linotype", "Georgia", "Songti SC", "STSong", serif;
+      font-weight: 600;
       font-size: 17pt;
-      color: #0f172a;
-      border-bottom: 1.5px solid #0f172a;
+      color: #141413;
+      border-bottom: 1.2px solid #141413;
       padding-bottom: 6px;
       margin-bottom: 8px;
+      letter-spacing: -0.01em;
     }
     .a4-sheet h2 {
-      font-size: 10.5pt;
-      color: #0f172a;
-      border-bottom: 1px solid #cbd5e1;
-      padding-bottom: 2px;
+      font-size: 10.4pt;
+      font-weight: 700;
+      color: #141413;
+      border-bottom: 1px solid #dbd8ce;
+      padding-bottom: 2.5px;
       margin-top: 10px;
       margin-bottom: 6px;
+      letter-spacing: 0.01em;
     }
     .a4-sheet h3 {
       font-size: 9.6pt;
-      color: #0f766e;
+      font-weight: 600;
+      color: #3d3d3a;
       margin-top: 7px;
       margin-bottom: 3px;
     }
     .a4-sheet p {
       margin-bottom: 4px;
-      color: #334155;
+      color: #2c2b28;
     }
     .a4-sheet ul {
       padding-left: 15px;
@@ -66,59 +74,75 @@
     .a4-sheet li {
       margin-bottom: 2.5px;
       text-align: justify;
+      color: #2c2b28;
     }
-    /* 右侧靶向核对辅助栏（打印时自动隐藏） */
+    /* 右侧 Claude 暖黑编辑辅助栏（打印时自动隐藏） */
     .helper-panel {
-      width: 320px;
+      width: 324px;
       position: sticky;
-      top: 24px;
+      top: 28px;
       align-self: flex-start;
-      background: #1e293b;
-      color: #e2e8f0;
-      border: 1px solid #334155;
-      border-radius: 14px;
-      padding: 18px;
+      background: #252421;
+      color: #faf9f5;
+      border-radius: 16px;
+      box-shadow: 0 0 0 1px #3a3934, 0 12px 32px rgba(0, 0, 0, 0.28);
+      padding: 22px;
       font-size: 12.5px;
-      line-height: 1.6;
+      line-height: 1.62;
+    }
+    .helper-kicker {
+      font-size: 10.5px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #87867f;
+      margin-bottom: 4px;
     }
     .helper-panel h4 {
-      font-size: 13.5px;
-      font-weight: 700;
-      color: #f8fafc;
-      margin-bottom: 8px;
-    }
-    .target-box {
-      background: #0f172a;
-      border: 1px solid #334155;
-      border-radius: 10px;
-      padding: 10px 12px;
+      font-family: "Iowan Old Style", "Palatino Linotype", "Georgia", "Songti SC", serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: #faf9f5;
       margin-bottom: 14px;
     }
-    .kw-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+    .target-box {
+      background: #1b1a18;
+      box-shadow: 0 0 0 1px #353430;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+    }
+    .sec-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #dad8ce;
+      margin-bottom: 6px;
+    }
+    .kw-wrap { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
     .kw {
       font-size: 11px;
-      padding: 2px 7px;
-      border-radius: 5px;
-      background: #334155;
-      color: #cbd5e1;
+      padding: 2px 8px;
+      border-radius: 6px;
+      background: #30302e;
+      color: #dad8ce;
     }
-    .kw.ok { background: rgba(16,185,129,0.16); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.35); }
-    .kw.warn { background: rgba(245,158,11,0.16); color: #fcd34d; border: 1px solid rgba(245,158,11,0.35); }
-    .helper-panel ul { padding-left: 16px; color: #cbd5e1; margin-bottom: 14px; }
+    .kw.ok { background: rgba(120, 140, 93, 0.20); color: #b7cea2; box-shadow: 0 0 0 1px rgba(120, 140, 93, 0.38); }
+    .kw.warn { background: rgba(212, 154, 82, 0.16); color: #e5be8a; box-shadow: 0 0 0 1px rgba(212, 154, 82, 0.34); }
+    .helper-panel ul { padding-left: 16px; color: #c9c7bc; margin-bottom: 16px; }
     .helper-panel li { margin-bottom: 6px; }
     .btn-print {
       width: 100%;
-      padding: 10px 14px;
+      padding: 10px 16px;
       border: none;
-      border-radius: 9px;
-      background: #10b981;
-      color: #052e16;
-      font-weight: 700;
+      border-radius: 10px;
+      background: #c96442;
+      color: #faf9f5;
+      font-weight: 600;
       font-size: 13px;
       cursor: pointer;
+      transition: background 0.15s;
     }
-    .btn-print:hover { background: #34d399; }
-    .hint { font-size: 11.5px; color: #94a3b8; margin-top: 8px; }
+    .btn-print:hover { background: #b55636; }
+    .hint { font-size: 11.5px; color: #9c9a92; margin-top: 10px; line-height: 1.55; }
 
     @media print {
       body { background: #ffffff; padding: 0; display: block; }
@@ -139,23 +163,24 @@
   </main>
 
   <aside class="helper-panel">
-    <h4>🎯 岗位靶向微调台</h4>
+    <div class="helper-kicker">HIRELENS PRINT STUDIO</div>
+    <h4>岗位靶向简历微调台</h4>
     <div class="target-box">
-      <div><strong>{{COMPANY_NAME}}</strong> · {{JOB_TITLE}}</div>
-      <div style="color:#34d399; font-size:12px; margin-top:2px;">综合匹配度：{{MATCH_SCORE}} / 100</div>
+      <div style="color:#faf9f5;"><strong>{{COMPANY_NAME}}</strong> · {{JOB_TITLE}}</div>
+      <div style="color:#d97757; font-size:12px; margin-top:4px; font-weight:500;">综合契合度评分：{{MATCH_SCORE}} / 100</div>
     </div>
 
-    <div style="margin-bottom:4px; font-weight:600;">✅ 已命中关键词</div>
+    <div class="sec-label">已命中核心关键词</div>
     <div class="kw-wrap">{{MATCHED_BADGES}}</div>
 
-    <div style="margin-bottom:4px; font-weight:600;">⚠️ 待关注缺口词</div>
+    <div class="sec-label">待留意补充词</div>
     <div class="kw-wrap">{{MISSING_BADGES}}</div>
 
-    <div style="margin-bottom:4px; font-weight:600;">📌 微调建议（左侧纸张可直接点击改字）</div>
+    <div class="sec-label">排版与措辞建议（左侧纸面可直接点选改字）</div>
     <ul>{{TWEAKS_HTML}}</ul>
 
-    <button class="btn-print" onclick="window.print()">🖨️ 打印 / 另存为定制 PDF</button>
-    <p class="hint">提示：左侧白色 A4 简历支持直接点击修改文字；按打印时本右侧深色辅助栏会自动隐藏，输出纯白净版 PDF。</p>
+    <button class="btn-print" onclick="window.print()">打印 / 导出净版 A4 PDF</button>
+    <p class="hint">左侧纯白 A4 纸面支持直接点击编辑字句；调用系统打印时右侧辅助栏自动隐藏，输出无边距污染的净版简历。</p>
   </aside>
 
 </body>
