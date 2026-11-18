@@ -1,0 +1,3295 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HireLens 聘镜 v3.0 · 招聘端视角全链路 AI 求职系统</title>
+  <style>
+    :root[data-theme="dark"] {
+      --bg: #0b1120;
+      --surface: #131c2e;
+      --surface-2: #1b2740;
+      --surface-3: #0f172a;
+      --border: #263552;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #00bebd;
+      --accent-hover: #00a3a2;
+      --accent-soft: rgba(0, 190, 189, 0.14);
+      --warn: #f59e0b;
+      --warn-soft: rgba(245, 158, 11, 0.15);
+      --danger: #f43f5e;
+      --danger-soft: rgba(244, 63, 94, 0.15);
+      --info: #38bdf8;
+      --info-soft: rgba(56, 189, 248, 0.14);
+      --purple: #c084fc;
+      --shadow: 0 10px 28px rgba(0, 0, 0, 0.34);
+    }
+
+    :root[data-theme="light"] {
+      --bg: #f3f6fa;
+      --surface: #ffffff;
+      --surface-2: #f1f5f9;
+      --surface-3: #f8fafc;
+      --border: #dce3ee;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --accent: #00a6a7;
+      --accent-hover: #008c8d;
+      --accent-soft: rgba(0, 166, 167, 0.1);
+      --warn: #d97706;
+      --warn-soft: rgba(217, 119, 6, 0.11);
+      --danger: #e11d48;
+      --danger-soft: rgba(225, 29, 72, 0.1);
+      --info: #0284c7;
+      --info-soft: rgba(2, 132, 199, 0.1);
+      --purple: #9333ea;
+      --shadow: 0 6px 22px rgba(15, 23, 42, 0.06);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    button, input, select, textarea { font-family: inherit; font-size: inherit; color: inherit; }
+
+    /* Top Header */
+    .topbar {
+      position: sticky; top: 0; z-index: 40;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 10px 20px;
+    }
+    .topbar-inner {
+      max-width: 1460px; margin: 0 auto;
+      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-logo {
+      width: 34px; height: 34px; border-radius: 10px;
+      background: linear-gradient(135deg, #00bebd, #0284c7);
+      color: #fff; font-weight: 800; font-size: 13.5px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .brand-title { font-size: 15px; font-weight: 800; }
+    .brand-sub { font-size: 11px; color: var(--text-muted); }
+
+    .nav-tabs {
+      display: flex; flex-wrap: wrap; gap: 4px;
+      background: var(--surface-3); padding: 4px; border-radius: 10px; border: 1px solid var(--border);
+    }
+    .nav-tab {
+      padding: 6px 11px; border-radius: 7px; border: none; background: transparent;
+      color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer; white-space: nowrap;
+    }
+    .nav-tab.active { background: var(--accent); color: #fff; }
+
+    .status-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 7px; font-size: 11.5px; }
+    .pill {
+      padding: 3px 9px; border-radius: 999px; background: var(--surface-3);
+      border: 1px solid var(--border); color: var(--text-muted); display: inline-flex; align-items: center; gap: 5px;
+    }
+    .dot-ok { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; }
+    .dot-run { width: 7px; height: 7px; border-radius: 50%; background: var(--warn); display: inline-block; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+    .container { max-width: 1460px; margin: 0 auto; padding: 16px 20px 76px; }
+    .view-panel { display: none; }
+    .view-panel.active { display: block; }
+
+    .studio-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 16px; align-items: start; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    @media (max-width: 1060px) { .studio-grid, .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 15px; padding: 16px 18px; box-shadow: var(--shadow); margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+      padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--border);
+    }
+    .card-title { font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+    /* Form Controls */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .form-group { margin-bottom: 10px; }
+    label { display: block; font-size: 11.5px; font-weight: 600; color: var(--text-muted); margin-bottom: 4px; }
+    input[type="text"], input[type="password"], input[type="number"], select, textarea {
+      width: 100%; background: var(--surface-3); border: 1px solid var(--border);
+      border-radius: 8px; padding: 7px 10px; outline: none; transition: border-color 0.15s;
+    }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    textarea { resize: vertical; line-height: 1.52; }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+      padding: 7px 13px; border-radius: 8px; border: 1px solid transparent;
+      font-weight: 600; font-size: 12px; cursor: pointer; transition: all 0.15s; text-decoration: none;
+    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+    .btn-secondary { background: var(--surface-2); border-color: var(--border); color: var(--text); }
+    .btn-secondary:hover:not(:disabled) { border-color: var(--accent); }
+    .btn-danger { background: var(--danger-soft); border-color: rgba(244,63,94,0.4); color: var(--danger); }
+    .btn-ghost { background: transparent; border-color: var(--border); color: var(--text-muted); padding: 4px 9px; font-size: 11.5px; }
+    .btn-ghost:hover { color: var(--text); border-color: var(--text-muted); }
+    .btn-full { width: 100%; padding: 9px; font-size: 13px; }
+
+    /* Quick Paste & Screenshot Dropzone */
+    .quick-paste {
+      background: var(--surface-3); border: 1px dashed var(--accent);
+      border-radius: 10px; padding: 10px; margin-bottom: 10px;
+    }
+    .shot-dropzone {
+      background: var(--surface-3); border: 1px dashed var(--info);
+      border-radius: 10px; padding: 9px 11px; margin-bottom: 11px;
+      display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    }
+    .mechanism-tip {
+      background: var(--accent-soft); border-left: 3px solid var(--accent);
+      border-radius: 7px; padding: 7px 10px; font-size: 11.5px; color: var(--text); margin-bottom: 6px;
+    }
+    .live-cut-bar {
+      background: var(--surface-3); border: 1px solid var(--border); border-radius: 8px;
+      padding: 6px 10px; font-size: 12px; margin-top: 5px;
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+    }
+    .exposed-txt { color: var(--accent); font-weight: 700; }
+
+    .chip-btn {
+      font-size: 11px; padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface-2); color: var(--text-muted); cursor: pointer;
+    }
+    .chip-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+    /* Score & Metrics */
+    .metrics-top { display: grid; grid-template-columns: 128px 1fr; gap: 12px; margin-bottom: 12px; }
+    .score-ring {
+      background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
+    }
+    .score-num { font-size: 29px; font-weight: 800; color: var(--accent); line-height: 1.1; }
+    .dim-bars {
+      background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px;
+      padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px;
+    }
+    .dim-head { display: flex; justify-content: space-between; margin-bottom: 3px; color: var(--text-muted); font-size: 11.5px; }
+    .bar-bg { height: 6px; background: var(--surface-2); border-radius: 99px; overflow: hidden; }
+    .bar-fill { height: 100%; background: var(--accent); border-radius: 99px; }
+
+    .banner { padding: 8px 12px; border-radius: 9px; font-size: 12px; margin-bottom: 11px; border: 1px solid transparent; }
+    .banner.safe { background: var(--accent-soft); border-color: rgba(0,190,189,0.3); color: var(--accent); }
+    .banner.caution { background: var(--warn-soft); border-color: rgba(245,158,11,0.35); color: var(--warn); }
+    .banner.veto { background: var(--danger-soft); border-color: rgba(244,63,94,0.4); color: var(--danger); font-weight: 600; }
+
+    .sub-tabs { display: flex; gap: 6px; margin-bottom: 12px; border-bottom: 1px solid var(--border); padding-bottom: 8px; flex-wrap: wrap; }
+    .sub-tab {
+      padding: 5px 10px; border-radius: 7px; border: 1px solid transparent;
+      background: transparent; color: var(--text-muted); font-weight: 600; font-size: 12px; cursor: pointer;
+    }
+    .sub-tab.active { background: var(--accent-soft); color: var(--accent); border-color: rgba(0,190,189,0.35); }
+
+    .kw-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+    .kw-tag { font-size: 11px; padding: 2px 8px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface-2); }
+    .kw-tag.hit { background: var(--accent-soft); color: var(--accent); border-color: rgba(0,190,189,0.35); }
+    .kw-tag.miss { background: var(--warn-soft); color: var(--warn); border-color: rgba(245,158,11,0.35); }
+
+    .info-box {
+      background: var(--surface-3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 13px; margin-bottom: 10px;
+    }
+    .info-box ul { padding-left: 16px; }
+    .info-box li { margin-bottom: 4px; }
+
+    .qa-card {
+      background: var(--surface-3); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 13px; margin-bottom: 8px;
+    }
+    .qa-q { font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .qa-intent { font-size: 11.5px; color: var(--warn); margin-bottom: 4px; }
+    .qa-ans { font-size: 12px; color: var(--text-muted); }
+
+    /* Recruiter Simulator Mockups */
+    .recruiter-layout { display: grid; grid-template-columns: 4fr 8fr; gap: 16px; align-items: start; }
+    .sim-screens-grid { display: grid; grid-template-columns: 350px 1fr; gap: 16px; align-items: start; }
+    @media (max-width: 1080px) { .recruiter-layout, .sim-screens-grid { grid-template-columns: 1fr; } }
+
+    .phone-frame {
+      background: #ffffff; color: #1f2329; border-radius: 24px;
+      border: 6px solid #1e293b; overflow: hidden; box-shadow: 0 16px 36px rgba(0,0,0,0.35);
+    }
+    .boss-app-bar {
+      background: linear-gradient(90deg, #00bebd, #00a6a7); color: #ffffff;
+      padding: 13px 15px 11px; display: flex; justify-content: space-between; align-items: center; font-weight: 700;
+    }
+    .boss-sub-filter {
+      background: #f7f8fa; padding: 6px 14px; font-size: 11.5px; color: #666;
+      border-bottom: 1px solid #eceef2; display: flex; gap: 14px;
+    }
+    .boss-msg-row { display: flex; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #f2f3f5; align-items: center; background: #fff; }
+    .boss-msg-row.me-highlight { background: #f0fafa; border-left: 4px solid #00bebd; padding-left: 9px; }
+    .boss-avatar {
+      width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #475569;
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13.5px; flex-shrink: 0; position: relative;
+    }
+    .boss-avatar.me { background: linear-gradient(135deg, #00bebd, #0284c7); color: #fff; }
+    .unread-badge {
+      position: absolute; top: -2px; right: -2px; background: #ff4d4f; color: #fff;
+      font-size: 10px; width: 15px; height: 15px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .boss-msg-body { flex: 1; min-width: 0; }
+    .boss-msg-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+    .boss-cand-name { font-size: 13px; font-weight: 700; color: #1f2329; }
+    .boss-cand-role { font-size: 11px; color: #86909c; margin-left: 4px; }
+    .boss-msg-time { font-size: 10.5px; color: #999; }
+    .boss-msg-snip { font-size: 12px; color: #646a73; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .boss-msg-row.me-highlight .boss-msg-snip { color: #111827; font-weight: 600; }
+
+    .talent-feed-wrap { background: #f4f6f9; color: #1f2329; border-radius: 16px; padding: 15px; border: 1px solid var(--border); }
+    .talent-feed-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .boss-talent-card {
+      background: #ffffff; border-radius: 13px; padding: 14px 16px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.06); border: 1.5px solid #00bebd; margin-bottom: 12px;
+    }
+    .tc-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 7px; }
+    .tc-name-line { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+    .tc-name { font-size: 15.5px; font-weight: 800; color: #1f2329; }
+    .tc-online { font-size: 11px; color: #00a6a7; background: #e6f8f8; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+    .tc-meta { font-size: 11.5px; color: #646a73; margin-top: 2px; }
+    .tc-salary { font-size: 14px; font-weight: 700; color: #00a6a7; }
+    .tc-exp-list { font-size: 11.5px; color: #4e5969; margin: 8px 0; padding: 7px 10px; background: #f8fafb; border-radius: 8px; line-height: 1.6; }
+    .tc-adv-box { font-size: 12px; color: #333; line-height: 1.55; border-top: 1px dashed #e5e7eb; padding-top: 8px; }
+    .kw-red { color: #e11d48; background: #ffe4e6; padding: 0 3px; border-radius: 3px; font-weight: 700; }
+    .tc-folded-hint { color: #9ca3af; font-size: 11px; }
+    .chat-open-card { background: #ffffff; border-radius: 12px; padding: 12px 14px; border: 1px solid #e5e7eb; }
+    .chat-bubble { background: #e8fbfb; border: 1px solid #bceeee; color: #1f2329; padding: 9px 12px; border-radius: 4px 12px 12px 12px; font-size: 12.5px; margin-top: 6px; }
+
+    /* Pipeline Steps & Analytics */
+    .pipeline-steps {
+      display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-bottom: 16px;
+    }
+    @media (max-width: 1100px) { .pipeline-steps { grid-template-columns: repeat(4, 1fr); } }
+    .p-step {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 11px;
+      padding: 10px; text-align: center; font-size: 11.5px;
+    }
+    .p-step strong { display: block; color: var(--accent); font-size: 12px; margin-bottom: 2px; }
+
+    .kpi-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-bottom: 16px; }
+    @media (max-width: 1050px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    .kpi-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+    }
+    .kpi-val { font-size: 22px; font-weight: 800; margin-top: 3px; color: var(--text); }
+
+    .funnel-row { display: grid; grid-template-columns: 175px 1fr 115px; align-items: center; gap: 12px; margin-bottom: 9px; font-size: 12px; }
+    .funnel-track { height: 20px; background: var(--surface-3); border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
+    .funnel-bar {
+      height: 100%; background: linear-gradient(90deg, #00bebd, #0284c7);
+      display: flex; align-items: center; padding-left: 8px; color: #fff; font-weight: 700; font-size: 11px; min-width: 28px;
+    }
+
+    /* Kanban & Tables */
+    .kanban-summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 14px; }
+    .stage-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 11px 14px; cursor: pointer; transition: border-color 0.15s;
+    }
+    .stage-card:hover, .stage-card.active { border-color: var(--accent); }
+    .stage-num { font-size: 21px; font-weight: 800; margin-top: 2px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { text-align: left; padding: 9px 10px; font-size: 11px; color: var(--text-muted); border-bottom: 1px solid var(--border); background: var(--surface-3); }
+    td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:hover td { background: var(--surface-2); }
+
+    .badge { font-size: 11px; padding: 2px 7px; border-radius: 5px; font-weight: 600; display: inline-block; }
+    .badge.ok { background: var(--accent-soft); color: var(--accent); }
+    .badge.warn { background: var(--warn-soft); color: var(--warn); }
+    .badge.err { background: var(--danger-soft); color: var(--danger); }
+    .badge.info { background: var(--info-soft); color: var(--info); }
+    .badge.neutral { background: var(--surface-2); color: var(--text-muted); }
+
+    /* Chat Boxes (Feishu Bot & Mock Interview) */
+    .chat-stream {
+      background: var(--surface-3); border: 1px solid var(--border); border-radius: 12px;
+      height: 340px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;
+    }
+    .msg-bubble { max-width: 86%; padding: 9px 12px; border-radius: 11px; font-size: 12.5px; white-space: pre-wrap; }
+    .msg-bot { align-self: flex-start; background: var(--surface-2); border: 1px solid var(--border); }
+    .msg-user { align-self: flex-end; background: var(--accent); color: #fff; }
+    .coach-note {
+      font-size: 11.5px; background: var(--warn-soft); border-left: 3px solid var(--warn);
+      padding: 7px 10px; border-radius: 6px; color: var(--text); margin-top: 4px;
+    }
+
+    /* Floating Live Terminal Drawer */
+    .term-drawer {
+      position: fixed; bottom: 0; right: 20px; width: 540px; max-width: calc(100vw - 40px);
+      background: #090e1a; color: #cbd5e1; border: 1px solid #263552; border-bottom: none;
+      border-radius: 12px 12px 0 0; z-index: 80; box-shadow: 0 -8px 30px rgba(0,0,0,0.45);
+    }
+    .term-head {
+      padding: 7px 13px; background: #131c2e; border-radius: 12px 12px 0 0;
+      display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 12px; font-weight: 600;
+    }
+    .term-body {
+      height: 210px; overflow-y: auto; padding: 10px 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11.5px; line-height: 1.5; display: none;
+    }
+    .term-drawer.expanded .term-body { display: block; }
+    .log-INFO { color: #94a3b8; }
+    .log-WARN { color: #fbbf24; }
+    .log-ERROR { color: #fb7185; }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.68); z-index: 90;
+      display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      max-width: 760px; width: 100%; max-height: 82vh; display: flex; flex-direction: column;
+    }
+    .modal-body { padding: 18px; overflow-y: auto; white-space: pre-wrap; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+    .toast {
+      position: fixed; bottom: 48px; left: 24px; z-index: 100;
+      background: var(--accent); color: #fff; font-weight: 600;
+      padding: 9px 16px; border-radius: 10px; box-shadow: var(--shadow);
+      opacity: 0; transform: translateY(12px); pointer-events: none; transition: all 0.2s;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-logo">HL</div>
+        <div>
+          <div class="brand-title">HireLens 聘镜 <span class="badge ok">v3.0 全链路终极版</span></div>
+          <div class="brand-sub">四平台巡航 · 双层排雷 · 招聘端模拟 · 飞书双向同步 · 全景统计 · 双向 PII 脱敏</div>
+        </div>
+      </div>
+
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-view="studio" onclick="switchMainView('studio')">🎯 诊断与话术台</button>
+        <button class="nav-tab" data-view="recruiter" onclick="switchMainView('recruiter')">👀 招聘端实时模拟页</button>
+        <button class="nav-tab" data-view="pipeline" onclick="switchMainView('pipeline')">🛸 全链路巡航指挥台</button>
+        <button class="nav-tab" data-view="kanban" onclick="switchMainView('kanban')">📋 求职看板 (<span id="nav-total-cnt">0</span>)</button>
+        <button class="nav-tab" data-view="analytics" onclick="switchMainView('analytics')">📈 数据统计大盘</button>
+        <button class="nav-tab" data-view="feishu" onclick="switchMainView('feishu')">💬 飞书协同 & 配置</button>
+        <button class="nav-tab" data-view="mock" onclick="switchMainView('mock')">🥊 模拟面试营</button>
+      </div>
+
+      <div class="status-strip">
+        <button class="btn btn-ghost" onclick="resetForm()">➕ 新建</button>
+        <span class="pill"><span id="pipe-dot" class="dot-ok"></span><span id="stat-pipe">就绪</span></span>
+        <button type="button" class="pill" id="stat-llm" onclick="openLLMModal()" style="cursor:pointer; border-color:var(--accent); color:var(--accent); font-weight:600;" title="点击切换或接入任意大模型 API">🔌 LLM: 检测中 ▾</button>
+        <span class="pill" id="stat-tokens">算力: ¥0.000</span>
+        <span class="pill" id="stat-quota">今日: 0/35</span>
+        <button class="btn btn-ghost" onclick="toggleTheme()" title="切换深浅主题">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ==================== VIEW 1: STUDIO ==================== -->
+    <section id="view-studio" class="view-panel active">
+      <div class="studio-grid">
+
+        <!-- Left: Multi-Modal Job Entry -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">⚡ 多源岗位极速采集（截图 OCR / 粘贴拆解 / 预设）</div>
+            <div style="display:flex; gap:5px; flex-wrap:wrap;">
+              <button type="button" class="chip-btn" onclick="fillPreset('ai_pm')">示例: AI产品/Agent</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('hk_ai')">示例: 香港双语岗</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('ai_ops')">示例: AI项目运营</button>
+              <button type="button" class="chip-btn" onclick="fillPreset('admin')">示例: 高管行政</button>
+            </div>
+          </div>
+
+          <!-- Screenshot OCR / VL Fast Entry -->
+          <div class="shot-dropzone" id="shot-dropzone">
+            <div>
+              <strong style="font-size:12px; color:var(--info);">🖼️ 截图一键识岗（支持微信内推图 / BOSS手机长截图）</strong>
+              <div style="font-size:11px; color:var(--text-muted);">直接在本页按 <code>Cmd+V</code> 粘贴剪贴板截图，或点右侧上传图片（默认本机 Apple Vision 离线零成本秒级识别）</div>
+            </div>
+            <div>
+              <input type="file" id="shot-file-input" accept="image/*" class="hidden" onchange="handleImageFile(this.files[0])" />
+              <button type="button" class="btn btn-secondary" id="btn-shot-upload" onclick="document.getElementById('shot-file-input').click()">📷 选择截图识别</button>
+            </div>
+          </div>
+
+          <!-- Messy Text Paste -->
+          <div class="quick-paste">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+              <strong style="font-size:12px; color:var(--accent);">✨ 整段杂乱网页文字一键拆解（BOSS / 猎聘 / 51 / 智联 / JobsDB）</strong>
+              <button type="button" class="btn btn-secondary" style="padding:3px 9px; font-size:11.5px;" onclick="smartParseRaw()">自动拆解 ↓</button>
+            </div>
+            <textarea id="raw_paste_box" rows="2" placeholder="在招聘网页全选复制整段文字粘到这里，点「自动拆解」自动填入下方字段..."></textarea>
+          </div>
+
+          <form id="analyze-form" onsubmit="event.preventDefault(); submitAnalyze();">
+            <div class="form-row">
+              <div>
+                <label>职位名称 *</label>
+                <input type="text" id="job_title" required placeholder="如: AI 产品经理 / AI Agent 应用工程师" />
+              </div>
+              <div>
+                <label>公司名称</label>
+                <input type="text" id="company_name" placeholder="如: 深圳某 AI 应用团队" />
+              </div>
+            </div>
+
+            <div class="form-row-3">
+              <div>
+                <label>薪资范围</label>
+                <input type="text" id="salary" placeholder="15-22K / HK$25k" />
+              </div>
+              <div>
+                <label>城市 / HR活跃度</label>
+                <div style="display:flex; gap:5px;">
+                  <input type="text" id="city" value="深圳" style="width:45%;" />
+                  <input type="text" id="hr_active_status" value="今日活跃" style="width:55%;" />
+                </div>
+              </div>
+              <div>
+                <label>来源平台</label>
+                <select id="platform">
+                  <option value="manual">手动录入</option>
+                  <option value="boss">BOSS直聘</option>
+                  <option value="liepin">猎聘</option>
+                  <option value="51job">前程无忧(51job)</option>
+                  <option value="zhilian">智联招聘</option>
+                  <option value="jobsdb">香港 JobsDB</option>
+                  <option value="vision_ocr">截图识岗</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>输出语种（适配深港与外企）</label>
+                <select id="language">
+                  <option value="zh-CN">简体中文（BOSS / 猎聘 / 51 / 智联）</option>
+                  <option value="zh-HK">繁體中文（香港 JobsDB / 電郵）</option>
+                  <option value="en">English（LinkedIn / 外企直投）</option>
+                </select>
+              </div>
+              <div>
+                <label>母本路由策略</label>
+                <select id="preferred_track">
+                  <option value="">🤖 AI 自动匹配最佳母本（推荐）</option>
+                  <option value="track_ai_builder">强制：AI 产品经理 / Agent 开发</option>
+                  <option value="track_ai_ops">强制：项目运营 / 数字化工作流</option>
+                  <option value="track_admin">强制：行政综合 / 专职联络</option>
+                  <option value="track_media_pr">强制：品牌物料 / 视频编导</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>岗位详情链接（填 BOSS / 猎聘 / 51job / 智联链接支持多平台拟人投递）</label>
+              <input type="text" id="job_url" placeholder="https://www.zhipin.com/job_detail/..." />
+            </div>
+
+            <div class="form-group">
+              <label>岗位职责与任职要求 (JD) *</label>
+              <textarea id="jd_text" rows="5" required placeholder="粘贴岗位描述正文..."></textarea>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; font-size:12px;">
+              <label style="margin:0; display:flex; align-items:center; gap:6px; cursor:pointer;">
+                <input type="checkbox" id="auto_render_pdf" checked />
+                分析后同步静默生成「一页净版 A4 PDF + BOSS 高清图片简历」
+              </label>
+            </div>
+
+            <button type="submit" id="btn-submit" class="btn btn-primary btn-full">
+              🔭 双层排雷 + 生成重点前置破冰语 + BOSS「个人优势」+ 定制简历
+            </button>
+          </form>
+        </div>
+
+        <!-- Right: Diagnosis, Copy, Company Intel & Artifacts -->
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex; align-items:center; gap:7px; flex-wrap:wrap;">
+              <span class="card-title">🎯 聘镜深度诊断与投递武器库</span>
+              <span id="active-job-pill" class="badge ok hidden"></span>
+              <span id="grade-pill" class="badge info hidden"></span>
+              <span id="pii-audit-pill" class="badge neutral hidden"></span>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" id="btn-jump-sim" class="btn btn-primary hidden" onclick="jumpToRecruiterView()">👀 招聘端模拟预览 ↗</button>
+              <button type="button" id="btn-gen-artifacts" class="btn btn-secondary hidden" onclick="renderJobArtifactsNow()">🖨️ 生成PDF/图片简历</button>
+              <button type="button" id="btn-push-feishu" class="btn btn-ghost hidden" onclick="pushCurrentJobToFeishu()">📨 推飞书卡片</button>
+              <button type="button" id="btn-view-master" class="btn btn-ghost hidden" onclick="openMasterResumeModal()">查看母本</button>
+            </div>
+          </div>
+
+          <div id="eval-empty" style="text-align:center; padding:66px 20px; color:var(--text-muted);">
+            <div style="font-size:34px; margin-bottom:10px;">🔭</div>
+            <div style="font-weight:600; color:var(--text); margin-bottom:6px;">等待载入或粘贴目标岗位</div>
+            <div>支持直接按 <code>Cmd+V</code> 粘贴招聘截图，或前往「🛸 全链路巡航指挥台」一键启动四平台批量巡航。</div>
+          </div>
+
+          <div id="eval-panel" class="hidden">
+            <div id="veto-banner" class="banner safe"></div>
+
+            <!-- Artifacts Bar -->
+            <div id="artifact-bar" class="info-box hidden" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+              <span style="font-size:12px;">📄 <strong>本岗专属定制简历产物已就绪</strong>（基于核验母本插槽微调，零虚构指标）：</span>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <a id="link-dl-pdf" href="#" target="_blank" class="btn btn-secondary" style="padding:4px 10px;">⬇️ 下载 A4 PDF 简历</a>
+                <a id="link-dl-png" href="#" target="_blank" class="btn btn-secondary" style="padding:4px 10px;">🖼️ 查看 BOSS 高清图片简历</a>
+                <button type="button" class="btn btn-ghost" onclick="openTailoredResumePage()">在线微调打印台 ↗</button>
+              </div>
+            </div>
+
+            <div class="metrics-top">
+              <div class="score-ring">
+                <span style="font-size:11px; color:var(--text-muted);">综合匹配度</span>
+                <span id="score-val" class="score-num">--</span>
+                <span id="track-badge" class="badge ok" style="margin-top:4px;">--</span>
+              </div>
+              <div class="dim-bars">
+                <div>
+                  <div class="dim-head"><span>技能工具契合</span><strong id="dim-skill">--</strong></div>
+                  <div class="bar-bg"><div id="bar-skill" class="bar-fill" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div class="dim-head"><span>真实经历契合</span><strong id="dim-exp">--</strong></div>
+                  <div class="bar-bg"><div id="bar-exp" class="bar-fill" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div class="dim-head"><span>转型成长含金量</span><strong id="dim-growth">--</strong></div>
+                  <div class="bar-bg"><div id="bar-growth" class="bar-fill" style="width:0%"></div></div>
+                </div>
+                <div>
+                  <div class="dim-head"><span>双层排雷安全度</span><strong id="dim-safe">--</strong></div>
+                  <div class="bar-bg"><div id="bar-safe" class="bar-fill" style="width:0%"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-tabs">
+              <button class="sub-tab active" onclick="switchSubTab('copy', this)">💬 破冰语 & BOSS个人优势</button>
+              <button class="sub-tab" onclick="switchSubTab('intel', this)">🏢 企业背调与排雷核实</button>
+              <button class="sub-tab" onclick="switchSubTab('prep', this)">🎤 考官押题包 (Grill-Me)</button>
+              <button class="sub-tab" onclick="switchSubTab('notes', this)">📝 漏斗状态 & 复盘笔记</button>
+            </div>
+
+            <!-- SubTab 1: Copy -->
+            <div id="sub-copy">
+              <div class="info-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+                  <strong style="font-size:12px;">🧬 ATS 搜索命中词（将在 BOSS 牛人推荐卡标红高亮）</strong>
+                  <div style="display:flex; gap:5px; align-items:center;">
+                    <select id="regen-lang" style="width:auto; padding:3px 7px; font-size:11.5px;">
+                      <option value="zh-CN">简体</option>
+                      <option value="zh-HK">繁體</option>
+                      <option value="en">English</option>
+                    </select>
+                    <select id="regen-track" style="width:auto; padding:3px 7px; font-size:11.5px;">
+                      <option value="">自动赛道</option>
+                      <option value="track_ai_builder">AI产品/Agent</option>
+                      <option value="track_ai_ops">AI项目运营</option>
+                      <option value="track_admin">行政综合</option>
+                      <option value="track_media_pr">品牌编导</option>
+                    </select>
+                    <button type="button" id="btn-regen" class="btn btn-ghost" onclick="regenerateCurrentJob()">🔄 切换重算</button>
+                  </div>
+                </div>
+                <div class="kw-list" id="ats-keywords"></div>
+                <div id="ats-bridge" style="font-size:11.5px; color:var(--text-muted); margin-top:6px;"></div>
+              </div>
+
+              <!-- 1. 打招呼破冰语 -->
+              <div class="form-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <label style="margin:0; color:var(--text);">① 打招呼短破冰语（重点绝对前置）</label>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span id="greeting-len" style="font-size:11px; color:var(--text-muted);">0 字</span>
+                    <button type="button" class="btn btn-ghost" onclick="copyField('greeting-box', '已复制破冰语')">📋 复制破冰语</button>
+                  </div>
+                </div>
+                <div class="mechanism-tip">
+                  💡 <strong>为什么要把重点顶在第 1 个字？</strong>很多公司招聘消息列表在未点开前<strong>只显示前 15~18 个字</strong>，后面全部消失为 <code>...</code>！开头写“您好，看到贵司招聘…”会与几十条路人消息撞脸沉底。
+                </div>
+                <textarea id="greeting-box" rows="3" oninput="onCopyTextInput()"></textarea>
+                <div class="live-cut-bar">
+                  <div>
+                    <span style="color:var(--text-muted);">📱 HR 未点开消息列表只看到：</span>
+                    <span id="greeting-exposed-preview" class="exposed-txt"></span><span style="color:var(--text-muted);">...</span>
+                  </div>
+                  <span id="greeting-hook-check" class="badge ok">✓ 硬实力已前置</span>
+                </div>
+              </div>
+
+              <!-- 2. BOSS 个人优势 -->
+              <div class="form-group">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <label style="margin:0; color:var(--text);">② BOSS 直聘「个人优势」（人才推荐页曝光卡片）</label>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <span id="advantage-len" style="font-size:11px; color:var(--text-muted);">0 / 140 字</span>
+                    <button type="button" class="btn btn-ghost" onclick="copyField('advantage-box', '已复制个人优势')">📋 复制个人优势</button>
+                  </div>
+                </div>
+                <div class="mechanism-tip">
+                  💡 <strong>为什么要专门写好「个人优势」？</strong>BOSS 直聘会把求职者的「个人优势」直接推在招聘端的<strong>「推荐牛人」人才推荐页卡片</strong>上！默认只露<strong>前 2 行（约 52 字）</strong>，命中 HR 搜索词会<strong>标红高亮</strong>。
+                </div>
+                <textarea id="advantage-box" rows="3" maxlength="160" oninput="onCopyTextInput()"></textarea>
+                <div class="live-cut-bar">
+                  <div>
+                    <span style="color:var(--text-muted);">🪪 牛人推荐卡片外露前两行：</span>
+                    <span id="adv-exposed-preview" class="exposed-txt"></span><span style="color:var(--text-muted);">...</span>
+                  </div>
+                  <button type="button" class="chip-btn" onclick="jumpToRecruiterView()">去招聘端模拟页看真实卡片 ↗</button>
+                </div>
+              </div>
+
+              <details style="margin-bottom:10px;">
+                <summary style="cursor:pointer; font-size:12px; font-weight:600; color:var(--text-muted);">
+                  展开查看：③ 邮件 / JobsDB 自荐信 & 3 条真实胜任依据
+                </summary>
+                <div style="margin-top:8px;">
+                  <div class="info-box">
+                    <strong style="font-size:12px; display:block; margin-bottom:4px;">📌 核心胜任依据：</strong>
+                    <ul id="fit-reasons-list"></ul>
+                  </div>
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                    <label style="margin:0;">📧 邮件 / JobsDB / LinkedIn 自荐信正文</label>
+                    <button type="button" class="btn btn-ghost" onclick="copyField('cover-box', '已复制自荐信')">复制自荐信</button>
+                  </div>
+                  <textarea id="cover-box" rows="4"></textarea>
+                </div>
+              </details>
+
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <button type="button" class="btn btn-secondary" onclick="saveCurrentCopy()">💾 保存文案</button>
+                <button type="button" id="btn-deliver" class="btn btn-primary" style="flex:1;" onclick="deliverCurrentJob()">🚀 批准放行 · 多平台拟人投递（含简历产物）</button>
+                <button type="button" class="btn btn-ghost" onclick="jumpToMockForCurrent()">🥊 去模拟面试对练</button>
+                <button type="button" class="btn btn-ghost" onclick="setJobStatus('rejected')">跳过归档</button>
+              </div>
+              <div id="deliver-msg" style="margin-top:8px; font-size:12px;" class="hidden"></div>
+            </div>
+
+            <!-- SubTab 2: Company Intel -->
+            <div id="sub-intel" class="hidden">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:12px; color:var(--text-muted);">结合联网摘要（可选）与 JD 组织特征，研判业务阶段、潜在工时外包雷区及 3 个一面必核底线问题</span>
+                <button type="button" id="btn-gen-intel" class="btn btn-primary" onclick="generateCompanyIntel()">🔍 生成/刷新企业背调卡</button>
+              </div>
+              <div id="intel-container"></div>
+            </div>
+
+            <!-- SubTab 3: Interview Prep -->
+            <div id="sub-prep" class="hidden">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:12px; color:var(--text-muted);">生成「30秒口语自我介绍 + 简历排布微调 + 考官最可能追问的3道尖锐题」</span>
+                <button type="button" id="btn-gen-prep" class="btn btn-primary" onclick="generateInterviewPrep()">⚡ 生成/刷新面试急救包</button>
+              </div>
+              <div id="prep-container"></div>
+            </div>
+
+            <!-- SubTab 4: Notes -->
+            <div id="sub-notes" class="hidden">
+              <div class="form-row">
+                <div>
+                  <label>当前求职漏斗阶段</label>
+                  <select id="job-stage-select" onchange="setJobStatus(this.value)">
+                    <option value="pending_review">🟡 待评估 / 待投递</option>
+                    <option value="delivered">🔵 已投递 / 已打招呼</option>
+                    <option value="interviewing">🟣 沟通反馈 / 约面中</option>
+                    <option value="offer">🟢 拿到 Offer</option>
+                    <option value="rejected">⚪ 已跳过 / 归档</option>
+                    <option value="failed">🔴 自动发送受阻</option>
+                  </select>
+                </div>
+                <div>
+                  <label>人机协同审批状态（同步飞书多维表格）</label>
+                  <select id="job-approval-select" onchange="setJobApproval(this.value)">
+                    <option value="waiting_approval">⏳ 待人工审批</option>
+                    <option value="approved">✅ 已批准放行投递</option>
+                    <option value="rejected">🚫 已否决跳过</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>HR 沟通反馈、薪资报价与面试复盘笔记（双向同步至飞书多维表格「跟进备注」列）</label>
+                <textarea id="job-notes-box" rows="5" placeholder="记录 HR 回复内容、约面时间、面试真题或薪资沟通细节..."></textarea>
+              </div>
+              <button type="button" class="btn btn-primary" onclick="saveCurrentNotes()">💾 保存跟进笔记</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 2: RECRUITER LIVE SIMULATOR + ONLINE RESUME SYNC ==================== -->
+    <section id="view-recruiter" class="view-panel">
+      <div class="recruiter-layout">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">✍️ 实时改字实验台（右侧招聘端屏幕即时同步）</div>
+          </div>
+          <div style="margin-bottom:10px; display:flex; gap:6px; flex-wrap:wrap;">
+            <button type="button" class="chip-btn" onclick="loadBadExample()">❌ 体验普通求职者错误写法</button>
+            <button type="button" class="chip-btn" onclick="restoreGoodExample()">✅ 恢复重点前置高转化写法</button>
+          </div>
+          <div class="form-group">
+            <label>模拟应聘岗位名称</label>
+            <input type="text" id="sim-job-title" value="AI 产品经理 / Agent 应用" oninput="syncFromSimInputs()" />
+          </div>
+          <div class="form-group">
+            <label>HR 后台正在搜索的关键词（逗号分隔，命中将在牛人卡片标红）</label>
+            <input type="text" id="sim-search-kws" value="App Store, AI, Agent, Prompt, Cursor, Next.js, Python, 项目统筹, SOP" oninput="renderRecruiterMockups()" />
+          </div>
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between;">
+              <label>① 你的打招呼破冰语</label>
+              <span id="sim-greet-count" style="font-size:11px; color:var(--text-muted);">0 字</span>
+            </div>
+            <textarea id="sim-greeting-input" rows="3" oninput="syncFromSimInputs()"></textarea>
+          </div>
+          <div class="form-group">
+            <div style="display:flex; justify-content:space-between;">
+              <label>② 你的 BOSS「个人优势」（推荐牛人卡片摘要）</label>
+              <span id="sim-adv-count" style="font-size:11px; color:var(--text-muted);">0 / 140 字</span>
+            </div>
+            <textarea id="sim-adv-input" rows="4" oninput="syncFromSimInputs()"></textarea>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveCurrentCopy()">💾 同步保存到当前岗位</button>
+            <button type="button" class="btn btn-secondary" onclick="copyField('sim-adv-input', '已复制个人优势')">📋 复制优势</button>
+          </div>
+        </div>
+
+        <div class="sim-screens-grid">
+          <!-- Screen A: Mobile Inbox -->
+          <div>
+            <div style="margin-bottom:8px; font-weight:700; font-size:13px;">📱 视角一：HR 手机消息列表（未点开截断状态）</div>
+            <div class="phone-frame">
+              <div class="boss-app-bar">
+                <span>沟通 · 新招呼 (99+)</span>
+                <span style="font-size:11.5px; font-weight:500;">筛选 ▾</span>
+              </div>
+              <div class="boss-sub-filter">
+                <strong style="color:#00a6a7;">全部</strong>
+                <span>未读 (48)</span>
+                <span>单聊</span>
+              </div>
+              <div class="boss-msg-row">
+                <div class="boss-avatar">张<span class="unread-badge">1</span></div>
+                <div class="boss-msg-body">
+                  <div class="boss-msg-top">
+                    <div><span class="boss-cand-name">张同学</span><span class="boss-cand-role">应聘同岗位</span></div>
+                    <span class="boss-msg-time">10:42</span>
+                  </div>
+                  <div class="boss-msg-snip">您好，看到贵司正在招聘这个岗位，我非常感兴趣...</div>
+                </div>
+              </div>
+              <div class="boss-msg-row me-highlight">
+                <div class="boss-avatar me"><span id="mock-avatar-char">我</span><span class="unread-badge">1</span></div>
+                <div class="boss-msg-body">
+                  <div class="boss-msg-top">
+                    <div>
+                      <span class="boss-cand-name" id="mock-cand-name-1">候选人</span>
+                      <span class="boss-cand-role" id="mock-inbox-role">应聘 AI 产品经理</span>
+                    </div>
+                    <span class="boss-msg-time" style="color:#00a6a7; font-weight:600;">刚刚</span>
+                  </div>
+                  <div class="boss-msg-snip" id="mock-inbox-snip"></div>
+                </div>
+              </div>
+              <div class="boss-msg-row">
+                <div class="boss-avatar">李<span class="unread-badge">1</span></div>
+                <div class="boss-msg-body">
+                  <div class="boss-msg-top">
+                    <div><span class="boss-cand-name">李先生</span><span class="boss-cand-role">应聘同岗位</span></div>
+                    <span class="boss-msg-time">10:39</span>
+                  </div>
+                  <div class="boss-msg-snip">你好老板，请问咱们这个岗位还在招人吗？想投份...</div>
+                </div>
+              </div>
+              <div class="boss-msg-row">
+                <div class="boss-avatar">陈</div>
+                <div class="boss-msg-body">
+                  <div class="boss-msg-top">
+                    <div><span class="boss-cand-name">陈女士</span><span class="boss-cand-role">应聘同岗位</span></div>
+                    <span class="boss-msg-time">昨天</span>
+                  </div>
+                  <div class="boss-msg-snip">您好！本人性格开朗、吃苦耐劳、抗压能力强，希...</div>
+                </div>
+              </div>
+            </div>
+            <div id="mock-inbox-verdict" class="banner safe" style="margin-top:10px;"></div>
+          </div>
+
+          <!-- Screen B + C: Talent Recommendation Feed & Opened Chat -->
+          <div>
+            <div style="margin-bottom:8px; font-weight:700; font-size:13px;">🪪 视角二：BOSS「推荐牛人」卡片流（展示个人优势 + 搜索标红）</div>
+            <div class="talent-feed-wrap">
+              <div class="talent-feed-header">
+                <span style="font-size:12px; font-weight:700; color:#00a6a7;">🔍 推荐牛人 · 按匹配度排序</span>
+                <span id="mock-kw-hit-badge" style="font-size:11.5px; color:#e11d48; font-weight:700;">命中 0 个搜索词</span>
+              </div>
+              <div class="boss-talent-card">
+                <div class="tc-head">
+                  <div>
+                    <div class="tc-name-line">
+                      <span class="tc-name" id="mock-cand-name-2">候选人</span>
+                      <span class="tc-online">刚刚活跃</span>
+                    </div>
+                    <div class="tc-meta"><span id="mock-cand-meta">5年经验 · 本科 · 期望：深圳</span> · <span id="mock-card-role">AI 产品经理</span></div>
+                  </div>
+                  <div class="tc-salary" id="mock-card-salary">14-20K</div>
+                </div>
+                <div class="tc-exp-list">
+                  <div id="mock-cand-exp-1">• 2024–至今 &nbsp; 独立产品与 AI 全栈实践 · 已上架 App Store 工具应用</div>
+                  <div id="mock-cand-exp-2">• 2022–2024 &nbsp; 大型科技与企服机构 · 跨部门项目统筹与数字化工作流</div>
+                </div>
+                <div class="tc-adv-box">
+                  <span style="font-size:11px; font-weight:700; color:#00a6a7; margin-right:4px;">[个人优势]</span>
+                  <span id="mock-card-adv-visible"></span><span id="mock-card-adv-folded" class="tc-folded-hint"></span>
+                </div>
+              </div>
+              <div style="margin:10px 0 5px; font-weight:700; font-size:12px; color:#1f2329;">💬 视角三：点开会话第一屏阅读压力检测</div>
+              <div class="chat-open-card">
+                <div style="font-size:11px; color:#86909c; display:flex; justify-content:space-between;">
+                  <span id="mock-cand-chat-label">候选人 正在沟通你发布的职位</span>
+                  <span id="mock-bubble-diag" style="color:#00a6a7; font-weight:600;">篇幅适中</span>
+                </div>
+                <div class="chat-bubble" id="mock-chat-bubble"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Safe Online Resume Multi-Platform Diff & Sync -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🔄 四平台「在线简历」结构化映射与安全同步助手（带基础联系方式防覆写锁）</div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <select id="sync-plat" style="width:auto;" onchange="loadOnlineResumePreview()">
+              <option value="boss">BOSS直聘（限140字优势）</option>
+              <option value="liepin">猎聘（限300字自评）</option>
+              <option value="51job">前程无忧 51job</option>
+              <option value="zhilian">智联招聘</option>
+            </select>
+            <select id="sync-track" style="width:auto;" onchange="loadOnlineResumePreview()">
+              <option value="track_ai_builder">赛道：AI 产品经理 / Agent</option>
+              <option value="track_ai_ops">赛道：项目运营 / 数字化工作流</option>
+              <option value="track_admin">赛道：行政综合 / 专职联络</option>
+              <option value="track_media_pr">赛道：品牌物料 / 视频编导</option>
+            </select>
+            <button type="button" class="btn btn-secondary" onclick="openPlatformResumePage()">🌐 在独立登录浏览器打开该平台在线简历页</button>
+          </div>
+        </div>
+        <div id="online-resume-box"></div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 3: PIPELINE COMMAND CENTER ==================== -->
+    <section id="view-pipeline" class="view-panel">
+      <div class="pipeline-steps">
+        <div class="p-step"><strong>Step 1</strong>四平台低频巡航</div>
+        <div class="p-step"><strong>Step 2</strong>Tier1+2 双层排雷</div>
+        <div class="p-step"><strong>Step 3</strong>4赛道定级 S/A/B</div>
+        <div class="p-step"><strong>Step 4</strong>重点前置话术生成</div>
+        <div class="p-step"><strong>Step 5</strong>无头A4 PDF+图片</div>
+        <div class="p-step"><strong>Step 6</strong>飞书多维表同步</div>
+        <div class="p-step"><strong>Step 7</strong>桌面/手机审批闸门</div>
+        <div class="p-step"><strong>Step 8</strong>拟人带简历投递</div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Cruise Launcher -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🛸 启动多平台自动巡航与清洗流水线</div>
+            <span class="badge info" id="pipe-live-badge">当前空闲</span>
+          </div>
+
+          <div class="form-group">
+            <label>勾选巡航目标平台</label>
+            <div style="display:flex; gap:14px; flex-wrap:wrap; padding:6px 0;">
+              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="boss" checked /> BOSS直聘</label>
+              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="liepin" checked /> 猎聘</label>
+              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="51job" checked /> 前程无忧(51job)</label>
+              <label style="display:inline-flex; align-items:center; gap:5px; color:var(--text);"><input type="checkbox" class="plat-chk" value="zhilian" checked /> 智联招聘</label>
+            </div>
+          </div>
+
+          <div class="form-row-3">
+            <div>
+              <label>搜索关键词（逗号分隔）</label>
+              <input type="text" id="cruise-kws" value="AI产品经理, AI Agent" />
+            </div>
+            <div>
+              <label>目标城市</label>
+              <input type="text" id="cruise-city" value="深圳" />
+            </div>
+            <div>
+              <label>单平台单次上限（防封）</label>
+              <input type="number" id="cruise-max" value="5" min="1" max="25" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>运行模式</label>
+              <select id="cruise-sim-mode">
+                <option value="true">🛡️ 安全沙盒巡航预演（零弹窗·秒级实测双层排雷与PDF生成）</option>
+                <option value="false">🌐 本机持久化浏览器实盘巡航（需先在右侧扫码保存登录态）</option>
+              </select>
+            </div>
+            <div>
+              <label>定制简历渲染策略</label>
+              <select id="cruise-pdf-mode">
+                <option value="true">自动为 S/A/B 级生成无头 PDF 与图片简历</option>
+                <option value="false">仅评分入库，按需手动生成 PDF</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:8px;">
+            <button type="button" id="btn-run-pipe" class="btn btn-primary" style="flex:1;" onclick="startPipelineRun()">🚀 一键启动全链路巡航流水线</button>
+            <button type="button" class="btn btn-danger" onclick="abortPipelineRun()">🛑 紧急中止</button>
+          </div>
+        </div>
+
+        <!-- Browser Login Profile Manager & Batch Delivery -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🔐 四平台独立登录态管理 & 批量放行投递</div>
+            <button type="button" class="btn btn-ghost" onclick="loadBrowserProfiles()">刷新检测 🔄</button>
+          </div>
+          <div class="mechanism-tip">
+            💡 <strong>防封与反验证码准则：</strong>每个平台拥有独立的本地持久化 Cookie 目录，扫码一次长期有效。一旦平台弹出滑块或验证码，系统<strong>绝不强行破解绕过</strong>，将立即安全挂起并通知您手动确认。
+          </div>
+          <div id="profiles-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px;"></div>
+
+          <div class="info-box" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:0;">
+            <div>
+              <strong>🚀 批量投递审批闸门队列</strong>
+              <div style="font-size:11.5px; color:var(--text-muted);">仅投递已在下方或飞书手机端标记为「已批准」的岗位（遵循每日上限与 Dry-Run 开关）</div>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="batchDeliverApproved()">⚡ 批量投递全部已批准岗位</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Approval Gate Queue -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">🚦 人机协同审批闸门（待审批 / 已就绪高匹配岗位）</div>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn-secondary" onclick="approveAllGradeSA()">✅ 一键批准全部 S/A 级岗位</button>
+            <button type="button" class="btn btn-ghost" onclick="loadPipelineCenter()">刷新队列 🔄</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>评级 / 分数</th>
+                <th>职位与公司</th>
+                <th>渠道</th>
+                <th>HR未点开前17字预览</th>
+                <th>定制简历产物</th>
+                <th>审批状态</th>
+                <th style="text-align:right;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="approval-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Historical Runs -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">📜 历史巡航批次记录</div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>批次#</th>
+                <th>巡航平台</th>
+                <th>关键词 / 城市</th>
+                <th>模式</th>
+                <th>发现数 → 新增 → Tier1通过 → Tier2通过 → 定制PDF</th>
+                <th>状态</th>
+                <th>启动时间</th>
+              </tr>
+            </thead>
+            <tbody id="runs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 4: KANBAN CRM ==================== -->
+    <section id="view-kanban" class="view-panel">
+      <div class="kanban-summary">
+        <div class="stage-card active" onclick="filterKanban('', this)">
+          <div style="font-size:12px; color:var(--text-muted);">全部岗位资产</div>
+          <div class="stage-num" id="st-all">0</div>
+        </div>
+        <div class="stage-card" onclick="filterKanban('pending_review', this)">
+          <div style="font-size:12px; color:var(--warn);">🟡 待投递放行</div>
+          <div class="stage-num" id="st-pending">0</div>
+        </div>
+        <div class="stage-card" onclick="filterKanban('delivered', this)">
+          <div style="font-size:12px; color:var(--info);">🔵 已投递跟进</div>
+          <div class="stage-num" id="st-delivered">0</div>
+        </div>
+        <div class="stage-card" onclick="filterKanban('interviewing', this)">
+          <div style="font-size:12px; color:var(--purple);">🟣 约面推进中</div>
+          <div class="stage-num" id="st-interview">0</div>
+        </div>
+        <div class="stage-card" onclick="filterKanban('offer', this)">
+          <div style="font-size:12px; color:var(--accent);">🟢 录用 Offer</div>
+          <div class="stage-num" id="st-offer">0</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="card-title">📋 本地岗位全生命周期台账</span>
+            <input type="text" id="search-kw" placeholder="搜索岗位 / 公司 / 笔记..." style="width:200px; padding:5px 9px;" oninput="loadJobs()" />
+            <select id="filter-track" style="width:155px; padding:5px 8px;" onchange="loadJobs()">
+              <option value="">全部赛道母本</option>
+              <option value="track_ai_builder">AI 产品 / Agent</option>
+              <option value="track_ai_ops">AI 项目运营</option>
+              <option value="track_admin">行政综合</option>
+              <option value="track_media_pr">品牌宣传</option>
+            </select>
+            <select id="filter-platform" style="width:135px; padding:5px 8px;" onchange="loadJobs()">
+              <option value="">全部来源渠道</option>
+              <option value="boss">BOSS直聘</option>
+              <option value="liepin">猎聘</option>
+              <option value="51job">前程无忧</option>
+              <option value="zhilian">智联招聘</option>
+              <option value="vision_ocr">截图识岗</option>
+              <option value="manual">手动录入</option>
+            </select>
+            <select id="filter-grade" style="width:115px; padding:5px 8px;" onchange="loadJobs()">
+              <option value="">全部评级</option>
+              <option value="S">S 级精选</option>
+              <option value="A">A 级推荐</option>
+              <option value="B">B 级备选</option>
+              <option value="VETO">VETO 雷区</option>
+            </select>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <a href="/api/export/csv" class="btn btn-secondary">⬇️ 导出 CSV</a>
+            <button type="button" class="btn btn-ghost" onclick="loadJobs()">刷新 🔄</button>
+          </div>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>职位与企业</th>
+                <th>渠道</th>
+                <th>匹配赛道</th>
+                <th>评级 / 排雷</th>
+                <th>审批 / 漏斗阶段</th>
+                <th>简历产物 / 飞书</th>
+                <th style="text-align:right;">操作</th>
+              </tr>
+            </thead>
+            <tbody id="jobs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 5: FULL ANALYTICS DASHBOARD ==================== -->
+    <section id="view-analytics" class="view-panel">
+      <div class="kpi-grid" id="ana-kpi-grid"></div>
+
+      <div class="grid-2">
+        <!-- Conversion Funnel -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🌪️ 全链路求职转化漏斗（采集 → 排雷 → 定制 → 投递 → 约面 → Offer）</div>
+            <button type="button" class="btn btn-ghost" onclick="loadAnalytics()">刷新 🔄</button>
+          </div>
+          <div id="ana-funnel-box"></div>
+        </div>
+
+        <!-- 14-Day SVG Trend Chart -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📅 近 14 日岗位采集、有效排雷与投递趋势</div>
+          </div>
+          <div id="ana-trend-svg-box"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Platform ROI Matrix -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">📡 多招聘渠道质量与转化 ROI 对比矩阵</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>来源渠道</th>
+                  <th>总采集</th>
+                  <th>排雷净率</th>
+                  <th>平均匹配分</th>
+                  <th>S/A级数</th>
+                  <th>已投递</th>
+                  <th>约面 / 回复率</th>
+                </tr>
+              </thead>
+              <tbody id="ana-plat-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 4-Track Performance Matrix -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🧭 四大真实母本赛道投产表现对比</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>求职赛道</th>
+                  <th>命中岗位</th>
+                  <th>均分</th>
+                  <th>S/A高分</th>
+                  <th>已投递</th>
+                  <th>最高契合代表企业</th>
+                </tr>
+              </thead>
+              <tbody id="ana-track-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- LLM Token & Cost Audit Log -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">💰 大模型 Token 消耗与人民币成本精细化审计台账</div>
+          <span id="ana-token-badge" class="badge ok">累计 ¥0.0000</span>
+        </div>
+        <div class="grid-2">
+          <div>
+            <strong style="font-size:12px; display:block; margin-bottom:8px;">按功能模块成本拆解：</strong>
+            <table>
+              <thead>
+                <tr>
+                  <th>调用动作</th>
+                  <th>次数</th>
+                  <th>Prompt / Completion</th>
+                  <th>总 Tokens</th>
+                  <th>折合费用(¥)</th>
+                </tr>
+              </thead>
+              <tbody id="ana-tok-action-tbody"></tbody>
+            </table>
+          </div>
+          <div>
+            <strong style="font-size:12px; display:block; margin-bottom:8px;">最近 API 调用审计流水（自动物理脱敏后发出）：</strong>
+            <div style="max-height:240px; overflow-y:auto;">
+              <table>
+                <thead>
+                  <tr>
+                    <th>时间</th>
+                    <th>动作</th>
+                    <th>关联岗位</th>
+                    <th>Tokens</th>
+                    <th>费用(¥)</th>
+                  </tr>
+                </thead>
+                <tbody id="ana-tok-logs-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 6: FEISHU HUB & SYSTEM SETTINGS ==================== -->
+    <section id="view-feishu" class="view-panel">
+      <div class="banner veto" style="font-size:12.5px;">
+        🛡️ <strong>防在职泄密最高安全铁律：</strong>严禁接入【当前在职雇主公司】的企业飞书租户（企业管理员后台可审计云文档与机器人记录）！请务必使用个人手机号免费注册的<strong>独立飞书个人版/个人新建团队</strong>接入。
+      </div>
+
+      <div class="grid-2">
+        <!-- Left: Feishu Bitable Auto-Provision + Sync + ChatOps Console -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">☁️ 飞书多维表格「零手工建表」与手机端双向同步</div>
+              <button type="button" class="btn btn-ghost" onclick="checkFeishuStatus()">连通性体检 🩺</button>
+            </div>
+            <div class="mechanism-tip">
+              ✨ <strong>零手工建表（Auto-Schema）：</strong>无需手动在飞书建立多张数据表并逐列核对字段名；填入应用凭证后一键自动生成标准多维表格与全部下拉选项列，并支持把手机飞书上的「批准投递/跳过」和「备注」双向同步回本地 SQLite。
+            </div>
+            <div id="feishu-diag-box" class="info-box" style="font-size:12px;">点击右上角「连通性体检」查看飞书 Webhook 与开放平台自建应用状态。</div>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <button type="button" class="btn btn-primary" onclick="autoInitFeishuBitable()">✨ 一键自动创建/校准飞书多维表格</button>
+              <button type="button" class="btn btn-secondary" onclick="feishuSyncPush()">⬆️ 本地推送至飞书多维表</button>
+              <button type="button" class="btn btn-secondary" onclick="feishuSyncPull()">⬇️ 从飞书拉取手机审批与备注</button>
+              <button type="button" class="btn btn-secondary" onclick="feishuPushReport()">📊 推送今日飞书战报卡片</button>
+            </div>
+          </div>
+
+          <!-- Feishu Bot ChatOps Console -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🤖 飞书机器人 ChatOps 实时指令交互台（本地直连可测）</div>
+            </div>
+            <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+              <button type="button" class="chip-btn" onclick="sendBotCmd('状态')">📡 状态</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('待批')">📋 待批岗位</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('日报')">📊 14日战报</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('巡航 深圳 AI产品经理')">🛸 巡航 深圳 AI产品</button>
+              <button type="button" class="chip-btn" onclick="sendBotCmd('帮助')">❓ 指令菜单</button>
+            </div>
+            <div class="chat-stream" id="feishu-bot-stream">
+              <div class="msg-bubble msg-bot">你好！我是 HireLens 飞书指令中枢。你可以直接点击上方快捷指令，或输入 `批准 #1`、`目前哪个赛道匹配分最高？` 测试与飞书机器人完全一致的响应逻辑。</div>
+            </div>
+            <form onsubmit="event.preventDefault(); submitBotInput();" style="display:flex; gap:8px;">
+              <input type="text" id="feishu-bot-input" placeholder="输入飞书指令（如：待批 / 批准 #1 / 统计摘要）..." />
+              <button type="submit" class="btn btn-primary">发送</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Runtime Settings + Veto Rules + Chrome Extension -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">⚙️ 全系统热重载配置中心（密钥自动脱敏保护）</div>
+              <div style="display:flex; gap:6px;">
+                <button type="button" class="btn btn-secondary" onclick="openLLMModal()">🔌 厂商预设 & 测试连通性</button>
+                <button type="button" class="btn btn-primary" onclick="saveRuntimeSettings()">💾 保存配置并立即生效</button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>大模型服务商预设（支持 13 家主流云端/中转站与免Key本地 Ollama）</label>
+                <select id="cfg-llm-provider" onchange="applyProviderToSettingsCard(this.value)">
+                  <option value="deepseek">DeepSeek 官方</option>
+                  <option value="siliconflow">硅基流动 SiliconFlow</option>
+                  <option value="dashscope">阿里云百炼 (通义千问)</option>
+                  <option value="moonshot">月之暗面 Kimi</option>
+                  <option value="zhipu">智谱清言 GLM (含免费模型)</option>
+                  <option value="volcengine">火山方舟 (豆包)</option>
+                  <option value="openai">OpenAI 官方</option>
+                  <option value="anthropic">Anthropic Claude (原生协议)</option>
+                  <option value="gemini">Google Gemini</option>
+                  <option value="openrouter">OpenRouter 聚合</option>
+                  <option value="ollama">本地 Ollama (免 Key 离线)</option>
+                  <option value="lmstudio">本地 LM Studio (免 Key)</option>
+                  <option value="custom">自定义兼容网关 / 中转站</option>
+                </select>
+              </div>
+              <div>
+                <label>大模型总开关（关闭则 100% 走本地零成本规则引擎）</label>
+                <select id="cfg-llm-enabled">
+                  <option value="true">🟢 启用大模型 API（推荐）</option>
+                  <option value="false">⚪ 仅使用本地离线规则引擎（零 Token）</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>文本大模型 API Key（留空或保留 **** 则不改动原密钥）</label>
+                <input type="text" id="cfg-openai-key" placeholder="sk-...（本地 Ollama 无需填写）" />
+              </div>
+              <div>
+                <label>Base URL / 模型名</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="text" id="cfg-openai-url" style="width:58%;" placeholder="https://api.deepseek.com" />
+                  <input type="text" id="cfg-openai-model" list="llm-model-datalist" style="width:42%;" placeholder="deepseek-chat" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>截图识岗引擎策略</label>
+                <select id="cfg-vision-provider">
+                  <option value="apple_vision_first">🍎 优先本机 Apple Vision 原生离线 OCR（零成本推荐）</option>
+                  <option value="cloud_vl">☁️ 优先云端多模态视觉模型 (VISION_MODEL)</option>
+                </select>
+              </div>
+              <div>
+                <label>Token 计费单价（输入 / 输出 元/百万Tokens）</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="number" step="0.1" id="cfg-price-in" value="2.0" />
+                  <input type="number" step="0.1" id="cfg-price-out" value="8.0" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label style="display:flex; align-items:center; gap:6px; color:var(--accent); cursor:pointer;">
+                <input type="checkbox" id="cfg-feishu-enabled" /> 启用飞书协同推送与多维表格同步
+              </label>
+            </div>
+
+            <div class="form-group">
+              <label>飞书群自定义机器人 Webhook URL（1分钟极简卡片推送模式）</label>
+              <input type="text" id="cfg-feishu-webhook" placeholder="https://open.feishu.cn/open-apis/bot/v2/hook/..." />
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>飞书开放平台 App ID（多维表格双向同步模式）</label>
+                <input type="text" id="cfg-feishu-appid" placeholder="cli_..." />
+              </div>
+              <div>
+                <label>飞书 App Secret</label>
+                <input type="text" id="cfg-feishu-secret" placeholder="自动脱敏保护" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>多维表格 App Token（留空点「一键自动建表」可自动生成）</label>
+                <input type="text" id="cfg-feishu-apptoken" placeholder="bascn... / 自动回填" />
+              </div>
+              <div>
+                <label>岗位子表 Table ID</label>
+                <input type="text" id="cfg-feishu-jobtable" placeholder="tbl... / 自动回填" />
+              </div>
+            </div>
+
+            <div class="form-row-3">
+              <div>
+                <label>投递安全预演开关 (Dry-Run)</label>
+                <select id="cfg-dry-run">
+                  <option value="true">开启预演（不真实点击发送）</option>
+                  <option value="false">实盘发送（调用真实浏览器）</option>
+                </select>
+              </div>
+              <div>
+                <label>每日防封上限</label>
+                <input type="number" id="cfg-daily-limit" value="35" />
+              </div>
+              <div>
+                <label>投递简历附件模式</label>
+                <select id="cfg-attach-mode">
+                  <option value="greeting_and_img">破冰语 + 高清图片简历</option>
+                  <option value="greeting_and_pdf">破冰语 + A4 PDF附件</option>
+                  <option value="greeting_only">仅发送重点前置破冰语</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row-3">
+              <div>
+                <label>每日定时自动调度</label>
+                <select id="cfg-sched-enabled">
+                  <option value="false">关闭定时任务（手动触发）</option>
+                  <option value="true">开启每日定时巡航与日报</option>
+                </select>
+              </div>
+              <div>
+                <label>每日巡航时刻</label>
+                <input type="text" id="cfg-cruise-time" value="09:30" />
+              </div>
+              <div>
+                <label>每日飞书战报时刻</label>
+                <input type="text" id="cfg-report-time" value="20:30" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div>
+                <label>Serper 联网搜索 Key（可选，增强企业背调）</label>
+                <input type="text" id="cfg-serper-key" placeholder="可选" />
+              </div>
+              <div>
+                <label>本地 API 访问口令（可选，开启后写接口需校验令牌）</label>
+                <input type="text" id="cfg-local-token" placeholder="留空默认本机免密" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Veto Rules & Clipper -->
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">🛡️ Tier-1 本地排雷词库 & Chrome 剪藏插件</div>
+              <button type="button" class="btn btn-secondary" onclick="saveRules()">💾 保存词库</button>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>⛔ 一票否决硬伤词</label>
+                <textarea id="rule-veto" rows="2"></textarea>
+              </div>
+              <div>
+                <label>⚠️ 警惕核实词（含沉睡 HR 标签）</label>
+                <textarea id="rule-caution" rows="2"></textarea>
+              </div>
+            </div>
+            <div class="form-row">
+              <div>
+                <label>✅ 正向加分信号词</label>
+                <textarea id="rule-green" rows="2"></textarea>
+              </div>
+              <div>
+                <label>🚫 企业黑名单（逗号分隔）</label>
+                <textarea id="rule-blacklist" rows="2"></textarea>
+              </div>
+            </div>
+            <div style="font-size:11.5px; color:var(--text-muted);">
+              🧩 <strong>HireLens Clipper 浏览器插件</strong>位于 <code>hire_lens/chrome_extension/</code>，支持在浏览 BOSS / 猎聘 / 51job / 智联 / JobsDB / LinkedIn 时零自动化指纹一键剪藏入库。
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== VIEW 7: MULTI-TURN MOCK INTERVIEW CAMP ==================== -->
+    <section id="view-mock" class="view-panel">
+      <div class="studio-grid">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">🥊 多轮实战模拟面试考官设置（双向脱敏保护）</div>
+          </div>
+          <div class="form-group">
+            <label>选择要模拟对练的目标岗位</label>
+            <select id="mock-job-select"></select>
+          </div>
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <button type="button" id="btn-mock-start" class="btn btn-primary" style="flex:1;" onclick="startMockSession()">🎙️ 开启新一轮考官拷打对练</button>
+            <button type="button" id="btn-mock-finish" class="btn btn-secondary" onclick="finishMockSession()">🏁 结束并出五维成绩单</button>
+          </div>
+          <div id="mock-scorecard-box"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">💬 实时面试对练室（每轮回答即时附带场外教练点评与示范改写）</div>
+            <span id="mock-session-badge" class="badge neutral">尚未开场</span>
+          </div>
+          <div class="chat-stream" id="mock-chat-stream" style="height:410px;">
+            <div class="msg-bubble msg-bot">请在左侧选择任意一个入库岗位并点击「开启新一轮考官拷打对练」。我将扮演该企业一线业务主管对你进行针对性提问与追问，并在每一轮给出真实平实的改进示范。</div>
+          </div>
+          <form onsubmit="event.preventDefault(); submitMockAnswer();" style="display:flex; gap:8px;">
+            <textarea id="mock-answer-input" rows="2" placeholder="用平时说话的口吻输入你的回答（说清具体做了什么、怎么控制边界）..."></textarea>
+            <button type="submit" id="btn-mock-send" class="btn btn-primary" style="min-width:96px;">发送回答</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Floating Live SSE / Polling Terminal Drawer -->
+  <div id="term-drawer" class="term-drawer">
+    <div class="term-head" onclick="toggleTerminalDrawer()">
+      <span>📡 实时全链路终端监控日志 (<span id="term-count">0</span>)</span>
+      <span id="term-toggle-label">展开 ▲</span>
+    </div>
+    <div id="term-body" class="term-body"></div>
+  </div>
+
+  <!-- Master Resume Preview Modal -->
+  <div id="resume-modal" class="modal-backdrop" onclick="if(event.target===this) closeResumeModal()">
+    <div class="modal-box">
+      <div class="card-header" style="padding:14px 18px; margin:0;">
+        <strong id="modal-title">母本原文预览</strong>
+        <button class="btn btn-ghost" onclick="closeResumeModal()">关闭 ✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Universal BYOK LLM API Configurator Modal -->
+  <div id="llm-modal" class="modal-backdrop" onclick="if(event.target===this) closeLLMModal()">
+    <div class="modal-box" style="max-width:680px;">
+      <div class="card-header" style="padding:14px 18px; margin:0;">
+        <strong>🔌 接入自定义大模型 API (BYOK 全厂商/本地 Ollama 通用向导)</strong>
+        <button class="btn btn-ghost" onclick="closeLLMModal()">关闭 ✕</button>
+      </div>
+      <div style="padding:16px 18px; overflow-y:auto;">
+        <div class="mechanism-tip" style="margin-bottom:12px;">
+          🛡️ <strong>本地隐私与双向脱敏承诺：</strong>您填写的 API Key 仅加密/脱敏保存在您本机 <code>data/settings.json</code> 中，且发往任何云端模型前均经过 <code>PIIMasker</code> 物理替换姓名、电话、院校与敏感机构名称。
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>① 选择大模型服务商（一键自动填入官方网关地址与单价）</label>
+            <select id="m-llm-provider" onchange="onModalProviderChange(this.value)">
+              <option value="deepseek">DeepSeek 官方 (deepseek-chat / reasoner)</option>
+              <option value="siliconflow">硅基流动 SiliconFlow (含免费额度模型)</option>
+              <option value="dashscope">阿里云百炼 · 通义千问 (qwen-plus)</option>
+              <option value="moonshot">月之暗面 · Kimi (moonshot-v1)</option>
+              <option value="zhipu">智谱清言 · GLM (glm-4-flash 免费)</option>
+              <option value="volcengine">火山方舟 · 豆包 (Doubao / DeepSeek)</option>
+              <option value="openai">OpenAI 官方 (gpt-4o-mini / gpt-4o)</option>
+              <option value="anthropic">Anthropic Claude (原生 /v1/messages 协议)</option>
+              <option value="gemini">Google Gemini (gemini-2.5-flash)</option>
+              <option value="openrouter">OpenRouter 全球聚合网关</option>
+              <option value="ollama">💻 本地 Ollama (免 API Key · 100% 离线)</option>
+              <option value="lmstudio">💻 本地 LM Studio (免 API Key · 100% 离线)</option>
+              <option value="custom">⚙️ 自定义 OpenAI 兼容中转站 / 私有网关</option>
+            </select>
+          </div>
+          <div>
+            <label>运行模式开关</label>
+            <select id="m-llm-enabled">
+              <option value="true">🟢 启用上述大模型 API</option>
+              <option value="false">⚪ 停用云端，切回本地零成本启发式引擎</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="m-provider-hint" style="font-size:11.5px; color:var(--info); margin-bottom:10px;"></div>
+
+        <div class="form-group">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <label id="m-key-label">② API Key 密钥（若显示 **** 代表已安全存储，不改可直接测试或保存）</label>
+            <button type="button" class="chip-btn" onclick="clearSavedLLMKey()">🗑️ 清空已存密钥</button>
+          </div>
+          <input type="text" id="m-llm-key" placeholder="粘贴您的 sk-... 密钥（本地 Ollama / LM Studio 免填）" />
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>③ API Base URL（自动兼容带或不带 /v1 后缀）</label>
+            <input type="text" id="m-llm-url" placeholder="https://api.deepseek.com" />
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label>④ 模型名称 (Model ID)</label>
+              <button type="button" class="chip-btn" id="btn-fetch-models" onclick="fetchModelsForModal()">🔄 拉取模型列表</button>
+            </div>
+            <input type="text" id="m-llm-model" list="llm-model-datalist" placeholder="如: deepseek-chat / qwen-plus / gpt-4o-mini" />
+            <datalist id="llm-model-datalist"></datalist>
+          </div>
+        </div>
+
+        <div id="m-model-chips" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;"></div>
+
+        <details style="margin-bottom:12px;">
+          <summary style="cursor:pointer; font-size:12px; color:var(--text-muted); font-weight:600;">
+            展开高级项：⑤ 自定义 Token 计费单价 & 云端多模态视觉识图 API（可选）
+          </summary>
+          <div style="margin-top:10px;">
+            <div class="form-row">
+              <div>
+                <label>输入单价（元 / 百万 Prompt Tokens）</label>
+                <input type="number" step="0.1" id="m-price-in" value="2.0" />
+              </div>
+              <div>
+                <label>输出单价（元 / 百万 Completion Tokens）</label>
+                <input type="number" step="0.1" id="m-price-out" value="8.0" />
+              </div>
+            </div>
+            <div class="form-row-3">
+              <div>
+                <label>视觉模型 API Key (可选)</label>
+                <input type="text" id="m-vis-key" placeholder="留空默认用 Apple Vision 离线识图" />
+              </div>
+              <div>
+                <label>视觉 Base URL</label>
+                <input type="text" id="m-vis-url" placeholder="https://dashscope.aliyuncs.com/compatible-mode/v1" />
+              </div>
+              <div>
+                <label>视觉模型名</label>
+                <input type="text" id="m-vis-model" placeholder="qwen-vl-plus / gpt-4o-mini" />
+              </div>
+            </div>
+          </div>
+        </details>
+
+        <div id="m-llm-test-res" class="banner safe hidden"></div>
+
+        <div style="display:flex; gap:10px; margin-top:8px;">
+          <button type="button" id="btn-test-llm" class="btn btn-secondary" onclick="testModalLLMConnection()">⚡ 测试接口连通性与延迟</button>
+          <button type="button" class="btn btn-primary" style="flex:1;" onclick="saveModalLLMSettings()">💾 保存大模型配置并全局生效</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script>
+    window.JOBS_CACHE = new Map();
+    let currentJob = null;
+    let currentStatusFilter = "";
+    let savedGoodSnapshot = null;
+    let activeMockSessionId = null;
+    let lastLogId = 0;
+
+    const TRACK_LABELS = {
+      track_ai_builder: "AI产品 / Agent开发",
+      track_ai_ops: "AI项目运营 / 工作流",
+      track_admin: "行政综合 / 专职联络",
+      track_media_pr: "品牌宣传 / 视频编导"
+    };
+
+    const PLAT_LABELS = {
+      boss: "BOSS直聘",
+      liepin: "猎聘",
+      "51job": "前程无忧",
+      zhilian: "智联招聘",
+      jobsdb: "JobsDB",
+      vision_ocr: "截图识岗",
+      clipper: "剪藏插件",
+      manual: "手动录入"
+    };
+
+    const DEFAULT_SIM_GREETING = "【独立上架iOS·AI全栈】您好！针对贵司AI产品岗，我已独立用Cursor/Claude上架App Store应用并搭过防幻觉AI解读网关，做事踏实闭环，盼发简历交流！";
+    const DEFAULT_SIM_ADVANTAGE = "独立上架App Store工具应用，具0→1原型、Prompt防幻觉与AI Agent工作流实战。能用Cursor/Claude开发SwiftUI/Flutter/Next.js/Python；4年300+企业项目统筹与SOP拆解经验，粤普流利。";
+
+    const PRESETS = {
+      ai_pm: {
+        title: "AI 产品经理 / AI Agent 应用工程师（含实习/初级）",
+        company: "深圳某出海 AI 应用团队",
+        salary: "14-20K",
+        city: "深圳",
+        lang: "zh-CN",
+        jd: "岗位职责：\n1. 负责公司 AI Agent 与日常效率工具产品的需求拆解、原型设计与快速 MVP 验证；\n2. 结合业务场景设计系统 Prompt、Function Calling 工具边界及防幻觉策略，持续跟踪 Bad Case；\n3. 能使用 Cursor / Claude 等 AI 编程工具快速搭建可交互网页或移动端 Demo，推动研发快速对齐上线。\n任职要求：本科及以上，不限计算机专业，有自己独立从0到1做过上线 App 或 AI 项目作品者优先，周末双休。"
+      },
+      hk_ai: {
+        title: "AI Project & Product Coordinator",
+        company: "HK Digital Innovation Studio Limited",
+        salary: "HK$22,000-28,000",
+        city: "香港",
+        lang: "zh-HK",
+        jd: "職責：\n1. 協助團隊推進 AI 應用及數碼化工作流項目落地，梳理跨部門需求與 SOP；\n2. 參與產品原型驗證、用戶測試反饋整理及中英文/繁中產品文檔撰寫；\n3. 熟悉 Cursor / Claude / LLM 提示詞調優，有個人開發上架作品優先，流利粵語及普通話。"
+      },
+      ai_ops: {
+        title: "AI 项目运营专员（数字化工作流）",
+        company: "某科技企业效率工程部",
+        salary: "11-15K",
+        city: "深圳",
+        lang: "zh-CN",
+        jd: "岗位职责：\n1. 统筹跟进跨部门业务项目进度，建立标准化台账与飞书多维表格看板；\n2. 结合大模型与 n8n / 飞书自动化工作流优化团队内容与资料处理流程，明确人工审核节点；\n3. 撰写项目复盘报告与SOP文档。要求做事踏实闭环，五险一金，周末双休。"
+      },
+      admin: {
+        title: "总裁办行政专员 / 专职联络",
+        company: "深圳某智能硬件集团",
+        salary: "11-14K",
+        city: "深圳",
+        lang: "zh-CN",
+        jd: "岗位职责：\n1. 负责领导日常日程衔接、差旅行程统筹及大型会议现场服务配合；\n2. 统筹跨部门事项督办台账、OA公文纪要流转及外包供应商验收报销；\n任职要求：本科，3年以上政府或大型机构行政协调经验，保密意识强，细心稳重。"
+      }
+    };
+
+    function apiHeaders(extra = {}) {
+      const tok = localStorage.getItem("hl_api_token") || "";
+      const h = { "Content-Type": "application/json", ...extra };
+      if (tok) h["X-HireLens-Token"] = tok;
+      return h;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.innerText = msg;
+      el.classList.add("show");
+      setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function toggleTheme() {
+      const root = document.documentElement;
+      const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      localStorage.setItem("hl_theme", next);
+    }
+    (function initTheme() {
+      const saved = localStorage.getItem("hl_theme");
+      if (saved) document.documentElement.setAttribute("data-theme", saved);
+    })();
+
+    function switchMainView(view) {
+      document.querySelectorAll(".view-panel").forEach(p => p.classList.remove("active"));
+      const target = document.getElementById("view-" + view);
+      if (target) target.classList.add("active");
+      document.querySelectorAll(".nav-tab").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("data-view") === view);
+      });
+      if (view === "recruiter") { renderRecruiterMockups(); loadOnlineResumePreview(); }
+      if (view === "pipeline") { loadPipelineCenter(); loadBrowserProfiles(); }
+      if (view === "kanban") loadJobs();
+      if (view === "analytics") loadAnalytics();
+      if (view === "feishu") { loadRuntimeSettings(); loadRules(); checkFeishuStatus(); }
+      if (view === "mock") populateMockJobSelect();
+    }
+
+    function jumpToRecruiterView() {
+      switchMainView("recruiter");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function switchSubTab(sub, btn) {
+      ["copy", "intel", "prep", "notes"].forEach(k => {
+        document.getElementById("sub-" + k).classList.toggle("hidden", k !== sub);
+      });
+      document.querySelectorAll(".sub-tab").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    }
+
+    function fillPreset(key) {
+      const p = PRESETS[key];
+      if (!p) return;
+      document.getElementById("job_title").value = p.title;
+      document.getElementById("company_name").value = p.company;
+      document.getElementById("salary").value = p.salary;
+      document.getElementById("city").value = p.city;
+      document.getElementById("language").value = p.lang;
+      document.getElementById("jd_text").value = p.jd;
+    }
+
+    function resetForm() {
+      document.getElementById("analyze-form").reset();
+      document.getElementById("raw_paste_box").value = "";
+      currentJob = null;
+      document.getElementById("eval-empty").classList.remove("hidden");
+      document.getElementById("eval-panel").classList.add("hidden");
+      ["active-job-pill", "grade-pill", "pii-audit-pill", "btn-jump-sim", "btn-gen-artifacts", "btn-push-feishu", "btn-view-master"].forEach(id => {
+        document.getElementById(id).classList.add("hidden");
+      });
+      switchMainView("studio");
+    }
+
+    // ==================== Clipboard Screenshot Paste & Image OCR ====================
+    document.addEventListener("paste", (e) => {
+      const items = (e.clipboardData || window.clipboardData)?.items || [];
+      for (const item of items) {
+        if (item.type && item.type.startsWith("image/")) {
+          const file = item.getAsFile();
+          if (file) {
+            e.preventDefault();
+            handleImageFile(file);
+            return;
+          }
+        }
+      }
+    });
+
+    function handleImageFile(file) {
+      if (!file) return;
+      const btn = document.getElementById("btn-shot-upload");
+      btn.disabled = true;
+      btn.innerText = "⏳ 正在离线 OCR 识图中...";
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const res = await fetch("/api/parse-image", {
+            method: "POST",
+            headers: apiHeaders(),
+            body: JSON.stringify({ image_data: reader.result })
+          });
+          const data = await res.json();
+          if (data.success && data.parsed) {
+            const p = data.parsed;
+            document.getElementById("job_title").value = p.job_title || "";
+            document.getElementById("company_name").value = p.company_name || "";
+            document.getElementById("salary").value = p.salary || "";
+            document.getElementById("city").value = p.city || "深圳";
+            document.getElementById("hr_active_status").value = p.hr_active_status || "今日活跃";
+            document.getElementById("platform").value = "vision_ocr";
+            document.getElementById("jd_text").value = p.jd_text || data.raw_text || "";
+            switchMainView("studio");
+            showToast(`✅ 截图识别成功 (${data.engine})！已自动填入表单`);
+          } else {
+            alert("截图识别提示：" + (data.detail || "未能提取文字"));
+          }
+        } catch (err) {
+          alert("识图请求异常：" + err.message);
+        } finally {
+          btn.disabled = false;
+          btn.innerText = "📷 选择截图识别";
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function smartParseRaw() {
+      const raw = document.getElementById("raw_paste_box").value.trim();
+      if (!raw) { showToast("请先粘贴招聘网页文字"); return; }
+      const res = await fetch("/api/parse-raw", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({ raw_text: raw })
+      });
+      const data = await res.json();
+      if (data.success) {
+        const p = data.parsed;
+        if (p.job_title) document.getElementById("job_title").value = p.job_title;
+        if (p.company_name) document.getElementById("company_name").value = p.company_name;
+        if (p.salary) document.getElementById("salary").value = p.salary;
+        if (p.city) document.getElementById("city").value = p.city;
+        if (p.hr_active_status) document.getElementById("hr_active_status").value = p.hr_active_status;
+        if (p.job_url) document.getElementById("job_url").value = p.job_url;
+        if (p.platform && document.querySelector(`#platform option[value="${p.platform}"]`)) {
+          document.getElementById("platform").value = p.platform;
+        }
+        if (p.jd_text) document.getElementById("jd_text").value = p.jd_text;
+        if (p.city === "香港" || p.platform === "jobsdb") document.getElementById("language").value = "zh-HK";
+        showToast(`已拆解字段 · ${data.veto.advice.slice(0, 24)}...`);
+      }
+    }
+
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/stats");
+        if (!res.ok) return;
+        const d = await res.json();
+        document.getElementById("nav-total-cnt").innerText = d.total_jobs;
+        document.getElementById("stat-llm").innerText = d.has_llm ? `🔌 LLM: ${d.model} ▾` : "🔌 LLM: 本地离线引擎 ▾";
+        document.getElementById("stat-tokens").innerText = `算力: ¥${(d.tokens?.total_cost_cny || 0).toFixed(3)}`;
+        document.getElementById("stat-quota").innerText = `今日: ${d.delivered_today}/${d.daily_limit}`;
+        document.getElementById("stat-pipe").innerText = d.pipeline_running ? `运行中(${d.pipeline_stage})` : "就绪";
+        document.getElementById("pipe-dot").className = d.pipeline_running ? "dot-run" : "dot-ok";
+
+        const sc = d.status_counts || {};
+        document.getElementById("st-all").innerText = d.total_jobs;
+        document.getElementById("st-pending").innerText = sc.pending_review || 0;
+        document.getElementById("st-delivered").innerText = sc.delivered || 0;
+        document.getElementById("st-interview").innerText = sc.interviewing || 0;
+        document.getElementById("st-offer").innerText = sc.offer || 0;
+
+        if (d.candidate && d.candidate.candidate_name) {
+          const cn = d.candidate.candidate_name;
+          document.getElementById("mock-avatar-char").innerText = cn.slice(0, 1);
+          document.getElementById("mock-cand-name-1").innerText = cn;
+          document.getElementById("mock-cand-name-2").innerText = cn;
+          document.getElementById("mock-cand-chat-label").innerText = `${cn} 正在沟通你发布的职位`;
+          if (d.candidate.sim_meta) document.getElementById("mock-cand-meta").innerText = d.candidate.sim_meta;
+          if (d.candidate.sim_exp_1) document.getElementById("mock-cand-exp-1").innerText = d.candidate.sim_exp_1;
+          if (d.candidate.sim_exp_2) document.getElementById("mock-cand-exp-2").innerText = d.candidate.sim_exp_2;
+        }
+      } catch (e) { console.warn(e); }
+    }
+
+    async function submitAnalyze() {
+      const btn = document.getElementById("btn-submit");
+      btn.disabled = true;
+      btn.innerText = "⏳ 正在执行双层排雷、重点前置话术与定制简历渲染...";
+
+      const payload = {
+        job_title: document.getElementById("job_title").value.trim(),
+        company_name: document.getElementById("company_name").value.trim(),
+        salary: document.getElementById("salary").value.trim(),
+        city: document.getElementById("city").value.trim(),
+        hr_active_status: document.getElementById("hr_active_status").value.trim(),
+        platform: document.getElementById("platform").value,
+        job_url: document.getElementById("job_url").value.trim(),
+        jd_text: document.getElementById("jd_text").value.trim(),
+        language: document.getElementById("language").value,
+        preferred_track: document.getElementById("preferred_track").value,
+        auto_render_pdf: document.getElementById("auto_render_pdf").checked
+      };
+
+      try {
+        const res = await fetch("/api/analyze", {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify(payload)
+        });
+        const data = JSON.parse(await res.text());
+        if (res.ok && data.success) {
+          renderEvaluation(data.job);
+          fetchStats();
+          loadJobs();
+          showToast("分析与简历生成完成！可随时预览招聘端真实屏幕效果");
+        } else {
+          alert("分析提示：" + (data.detail || "未知错误"));
+        }
+      } catch (e) {
+        alert("请求失败：" + e.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🔭 双层排雷 + 生成重点前置破冰语 + BOSS「个人优势」+ 定制简历";
+      }
+    }
+
+    function renderEvaluation(job) {
+      currentJob = job;
+      window.JOBS_CACHE.set(job.id, job);
+      document.getElementById("eval-empty").classList.add("hidden");
+      document.getElementById("eval-panel").classList.remove("hidden");
+
+      const pill = document.getElementById("active-job-pill");
+      pill.innerText = `#${job.id} ${job.company_name} · ${job.job_title}`;
+      pill.classList.remove("hidden");
+
+      const gPill = document.getElementById("grade-pill");
+      gPill.innerText = `评级: ${job.grade || "B"}`;
+      gPill.classList.remove("hidden");
+
+      const pii = job.pii_audit || {};
+      const piiPill = document.getElementById("pii-audit-pill");
+      piiPill.innerText = `🛡️ 脱敏 ${pii.masked_count || 0} 处`;
+      piiPill.classList.remove("hidden");
+
+      ["btn-jump-sim", "btn-gen-artifacts", "btn-push-feishu", "btn-view-master"].forEach(id => {
+        document.getElementById(id).classList.remove("hidden");
+      });
+
+      const artBar = document.getElementById("artifact-bar");
+      if (job.tailored_pdf_path || job.tailored_img_path) {
+        artBar.classList.remove("hidden");
+        document.getElementById("link-dl-pdf").href = `/api/jobs/${job.id}/artifact/pdf`;
+        document.getElementById("link-dl-png").href = `/api/jobs/${job.id}/artifact/png`;
+      } else {
+        artBar.classList.add("hidden");
+      }
+
+      const veto = job.veto_report || {};
+      const risk = job.risk_level || veto.risk_level || "safe";
+      const banner = document.getElementById("veto-banner");
+      banner.className = "banner " + risk;
+      const greenExtra = (veto.green_hits && veto.green_hits.length) ? ` ｜ 加分项：${veto.green_hits.join("、")}` : "";
+      banner.innerText = (veto.advice || "✅ 双层排雷通过，未见外包或虚标陷阱") + greenExtra;
+
+      document.getElementById("score-val").innerText = job.match_score ?? "--";
+      document.getElementById("track-badge").innerText = TRACK_LABELS[job.selected_track] || job.selected_track;
+
+      const dims = job.dimension_scores || {};
+      const setBar = (id, val) => {
+        const v = Math.max(0, Math.min(100, val || 80));
+        document.getElementById("dim-" + id).innerText = v;
+        document.getElementById("bar-" + id).style.width = v + "%";
+      };
+      setBar("skill", dims.skill_fit || job.match_score);
+      setBar("exp", dims.exp_fit || (job.match_score - 3));
+      setBar("growth", dims.growth_value || 86);
+      setBar("safe", job.tier2_score || dims.safety_score || veto.safety_score || 88);
+
+      const ats = job.ats_matrix || {};
+      const hits = (ats.matched_keywords || []).map(k => `<span class="kw-tag hit">✓ ${escapeHtml(k)}</span>`);
+      const misses = (ats.missing_keywords || []).map(k => `<span class="kw-tag miss">△ 待补齐: ${escapeHtml(k)}</span>`);
+      document.getElementById("ats-keywords").innerHTML = [...hits, ...misses].join("") || '<span class="kw-tag">通用综合要求</span>';
+      document.getElementById("ats-bridge").innerText = ats.bridge_strategy ? `💡 补位策略：${ats.bridge_strategy}` : "";
+
+      if (ats.matched_keywords && ats.matched_keywords.length) {
+        document.getElementById("sim-search-kws").value = ats.matched_keywords.join(", ");
+      }
+
+      document.getElementById("regen-lang").value = job.language || "zh-CN";
+      document.getElementById("regen-track").value = job.selected_track || "";
+      document.getElementById("fit-reasons-list").innerHTML =
+        (job.fit_reasons || []).map(r => `<li>${escapeHtml(r)}</li>`).join("");
+
+      const greetTxt = job.greeting_final || job.greeting_draft || "";
+      const advTxt = job.profile_advantage || DEFAULT_SIM_ADVANTAGE;
+      document.getElementById("greeting-box").value = greetTxt;
+      document.getElementById("advantage-box").value = advTxt;
+      document.getElementById("cover-box").value = job.cover_letter || "";
+
+      document.getElementById("sim-job-title").value = job.job_title || "AI 产品经理";
+      document.getElementById("sim-greeting-input").value = greetTxt;
+      document.getElementById("sim-adv-input").value = advTxt;
+      document.getElementById("mock-card-salary").innerText = job.salary || "面议";
+
+      onCopyTextInput();
+
+      document.getElementById("job-stage-select").value = job.delivery_status || "pending_review";
+      document.getElementById("job-approval-select").value =
+        (job.approval_status === "auto_pass" ? "approved" : (job.approval_status || "waiting_approval"));
+      document.getElementById("job-notes-box").value = job.notes || "";
+
+      if (job.company_intel && job.company_intel.business_stage) {
+        renderIntelContent(job.company_intel);
+      } else {
+        document.getElementById("intel-container").innerHTML =
+          '<div style="padding:28px; text-align:center; color:var(--text-muted);">点击右上角「生成/刷新企业背调卡」，获取针对该企业的阶段研判与 3 个一面必问核实项。</div>';
+      }
+
+      if (job.interview_prep && job.interview_prep.grill_questions) {
+        renderPrepContent(job.interview_prep);
+      } else {
+        document.getElementById("prep-container").innerHTML =
+          '<div style="padding:28px; text-align:center; color:var(--text-muted);">点击右上角「生成/刷新面试急救包」，获取 30 秒口语介绍与考官必问 3 题。</div>';
+      }
+      document.getElementById("deliver-msg").classList.add("hidden");
+    }
+
+    function isBadGreetingStart(txt) {
+      return /^(?:您好|你好|哈喽|嗨|老板好|HR好|Hello|Hi|Dear)[\s,，！!。]*(?:看到|关注到|留意到|请问|咱们|贵司|我是)/i.test((txt || "").trim());
+    }
+
+    function onCopyTextInput() {
+      const g = document.getElementById("greeting-box").value;
+      const adv = document.getElementById("advantage-box").value;
+      document.getElementById("greeting-len").innerText = `${g.length} 字`;
+      document.getElementById("advantage-len").innerText = `${adv.length} / 140 字`;
+      document.getElementById("greeting-exposed-preview").innerText = g.slice(0, 17) || "（未输入）";
+      document.getElementById("adv-exposed-preview").innerText = adv.slice(0, 52) || "（未输入）";
+
+      const checkEl = document.getElementById("greeting-hook-check");
+      if (isBadGreetingStart(g)) {
+        checkEl.className = "badge warn";
+        checkEl.innerText = "⚠️ 前 16 字全是寒暄，列表会被埋没";
+      } else {
+        checkEl.className = "badge ok";
+        checkEl.innerText = "✓ 硬实力已前置";
+      }
+      document.getElementById("sim-greeting-input").value = g;
+      document.getElementById("sim-adv-input").value = adv;
+      renderRecruiterMockups();
+    }
+
+    function syncFromSimInputs() {
+      const g = document.getElementById("sim-greeting-input").value;
+      const adv = document.getElementById("sim-adv-input").value;
+      if (currentJob) {
+        document.getElementById("greeting-box").value = g;
+        document.getElementById("advantage-box").value = adv;
+      }
+      renderRecruiterMockups();
+    }
+
+    function loadBadExample() {
+      const curG = document.getElementById("sim-greeting-input").value;
+      const curA = document.getElementById("sim-adv-input").value;
+      if (!curG.startsWith("您好，看到贵司")) savedGoodSnapshot = { g: curG, a: curA };
+      document.getElementById("sim-greeting-input").value = "您好，看到贵司正在招聘这个岗位，我觉得自己非常匹配，请问目前还在招人吗？希望能发一份简历给您看看！";
+      document.getElementById("sim-adv-input").value = "本人性格开朗，为人诚恳，做事认真负责，吃苦耐劳，具有很强的抗压能力和团队合作精神，学习能力强，沟通能力好，希望能加入贵公司共同成长。";
+      renderRecruiterMockups();
+      showToast("已切换为普通求职者错误示范——观察右侧截断与命中词变化！");
+    }
+
+    function restoreGoodExample() {
+      if (savedGoodSnapshot) {
+        document.getElementById("sim-greeting-input").value = savedGoodSnapshot.g;
+        document.getElementById("sim-adv-input").value = savedGoodSnapshot.a;
+      } else {
+        document.getElementById("sim-greeting-input").value = DEFAULT_SIM_GREETING;
+        document.getElementById("sim-adv-input").value = DEFAULT_SIM_ADVANTAGE;
+      }
+      syncFromSimInputs();
+      showToast("已恢复重点前置 + 关键词标红高转化写法！");
+    }
+
+    function renderRecruiterMockups() {
+      const role = document.getElementById("sim-job-title").value.trim() || "AI 产品经理";
+      const g = document.getElementById("sim-greeting-input").value.trim();
+      const adv = document.getElementById("sim-adv-input").value.trim();
+      const rawKws = document.getElementById("sim-search-kws").value.split(/[,，]/).map(s => s.trim()).filter(Boolean);
+
+      document.getElementById("sim-greet-count").innerText = `${g.length} 字`;
+      document.getElementById("sim-adv-count").innerText = `${adv.length} / 140 字`;
+      document.getElementById("mock-inbox-role").innerText = `应聘 ${role.slice(0, 12)}`;
+      document.getElementById("mock-card-role").innerText = role.slice(0, 16);
+
+      const snip = g.length > 18 ? g.slice(0, 18) + "..." : (g || "（空消息）");
+      document.getElementById("mock-inbox-snip").innerText = snip;
+
+      const verdict = document.getElementById("mock-inbox-verdict");
+      if (!g) {
+        verdict.className = "banner caution";
+        verdict.innerText = "请在左侧输入破冰语查看实时截断效果。";
+      } else if (isBadGreetingStart(g)) {
+        verdict.className = "banner veto";
+        verdict.innerText = `❌ 危险诊断：HR 未点开时只看到「${g.slice(0, 17)}...」，和上下两条路人消息完全撞脸，极易被划走忽略！`;
+      } else {
+        verdict.className = "banner safe";
+        verdict.innerText = `✅ 第一眼吸睛：HR 在未点开列表直接看到「${g.slice(0, 17)}...」，与上下群发寒暄形成强烈反差！`;
+      }
+
+      const visibleAdv = adv.slice(0, 56);
+      const foldedAdv = adv.slice(56);
+      let hitCount = 0;
+      const highlightKeywords = (text) => {
+        let htmlStr = escapeHtml(text);
+        rawKws.forEach(kw => {
+          if (!kw) return;
+          const escapedKw = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+          const reg = new RegExp(`(${escapedKw})`, "gi");
+          if (reg.test(htmlStr)) htmlStr = htmlStr.replace(reg, '<span class="kw-red">$1</span>');
+        });
+        return htmlStr;
+      };
+      rawKws.forEach(kw => { if (kw && adv.toLowerCase().includes(kw.toLowerCase())) hitCount++; });
+
+      const badge = document.getElementById("mock-kw-hit-badge");
+      badge.innerText = hitCount > 0 ? `🔥 命中 ${hitCount} 个 HR 搜索标红词` : `⚠️ 命中 0 个搜索词（推荐排名极低）`;
+      badge.style.color = hitCount > 0 ? "#e11d48" : "#d97706";
+
+      document.getElementById("mock-card-adv-visible").innerHTML = highlightKeywords(visibleAdv);
+      document.getElementById("mock-card-adv-folded").innerText = foldedAdv
+        ? `...（后续 ${foldedAdv.length} 字默认折叠，搜索仍可命中索引）`
+        : "";
+
+      document.getElementById("mock-chat-bubble").innerText = g || "（暂无内容）";
+      const diag = document.getElementById("mock-bubble-diag");
+      if (g.length > 115) {
+        diag.innerText = `⚠️ ${g.length}字偏长，超 5 行有阅读压力`;
+        diag.style.color = "#d97706";
+      } else {
+        diag.innerText = `✓ ${g.length}字黄金篇幅`;
+        diag.style.color = "#00a6a7";
+      }
+    }
+
+    async function loadOnlineResumePreview() {
+      const plat = document.getElementById("sync-plat").value;
+      const track = document.getElementById("sync-track").value;
+      const jid = currentJob ? currentJob.id : 0;
+      const res = await fetch(`/api/online-resume/preview?platform=${plat}&track=${track}&job_id=${jid}`);
+      if (!res.ok) return;
+      const d = await res.json();
+      const adv = d.fields.advantage;
+      const projs = (d.fields.projects || []).map(p => `
+        <div class="qa-card">
+          <div class="qa-q">${escapeHtml(p.title)}</div>
+          <div class="qa-ans" style="white-space:pre-wrap;">${escapeHtml(p.description)}</div>
+        </div>
+      `).join("");
+
+      document.getElementById("online-resume-box").innerHTML = `
+        <div class="banner safe">🔒 <strong>联系方式防覆写安全锁已激活：</strong>${escapeHtml(d.contact_protection_lock.note)}</div>
+        <div class="grid-2">
+          <div>
+            <div class="info-box">
+              <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <strong>① ${escapeHtml(adv.title)} (${adv.char_count}/${adv.max_limit} 字)</strong>
+                <button class="btn btn-ghost" onclick="navigator.clipboard.writeText(${JSON.stringify(adv.content).replace(/"/g, '&quot;')}).then(()=>showToast('已复制优势字段'))">📋 复制</button>
+              </div>
+              <div style="color:var(--text);">${escapeHtml(adv.content)}</div>
+            </div>
+            <div class="info-box">
+              <strong>② 核心工作履历摘要（已过滤黑话）：</strong>
+              <div style="margin-top:5px; white-space:pre-wrap; font-size:11.5px; color:var(--text-muted);">${escapeHtml(d.fields.work_experience)}</div>
+            </div>
+          </div>
+          <div>
+            <strong style="display:block; margin-bottom:6px;">③ 结构化项目经历卡片（可直接逐段粘贴至 ${escapeHtml(d.platform_label)}）：</strong>
+            ${projs}
+          </div>
+        </div>
+      `;
+    }
+
+    async function openPlatformResumePage() {
+      const plat = document.getElementById("sync-plat").value;
+      const res = await fetch(`/api/online-resume/open/${plat}`, { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      showToast(d.message || d.detail || "已请求打开");
+    }
+
+    // ==================== Studio Actions ====================
+    function copyField(id, msg) {
+      const val = document.getElementById(id).value;
+      navigator.clipboard.writeText(val).then(() => showToast(msg));
+    }
+
+    async function saveCurrentCopy() {
+      if (!currentJob) { showToast("当前为草稿，请先分析录入岗位后保存"); return; }
+      await fetch(`/api/jobs/${currentJob.id}/greeting`, {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({
+          greeting: document.getElementById("greeting-box").value,
+          profile_advantage: document.getElementById("advantage-box").value,
+          cover_letter: document.getElementById("cover-box").value
+        })
+      });
+      showToast("破冰语、BOSS个人优势与自荐信均已保存！");
+      loadJobs();
+    }
+
+    async function renderJobArtifactsNow() {
+      if (!currentJob) return;
+      const btn = document.getElementById("btn-gen-artifacts");
+      btn.disabled = true;
+      btn.innerText = "⏳ 无头渲染中...";
+      try {
+        const res = await fetch(`/api/jobs/${currentJob.id}/render-artifacts`, { method: "POST", headers: apiHeaders() });
+        const d = await res.json();
+        if (d.job) renderEvaluation(d.job);
+        showToast(d.message || "生成完毕");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🖨️ 生成PDF/图片简历";
+      }
+    }
+
+    async function pushCurrentJobToFeishu() {
+      if (!currentJob) return;
+      const res = await fetch(`/api/feishu/push-job/${currentJob.id}`, { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      showToast(d.success ? "✅ 已推送交互卡片到飞书！" : (d.message || "请先在「飞书协同」页配置 Webhook 或 App"));
+    }
+
+    async function regenerateCurrentJob() {
+      if (!currentJob) return;
+      const btn = document.getElementById("btn-regen");
+      btn.disabled = true;
+      btn.innerText = "重算中...";
+      try {
+        const res = await fetch(`/api/jobs/${currentJob.id}/regenerate`, {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify({
+            language: document.getElementById("regen-lang").value,
+            preferred_track: document.getElementById("regen-track").value
+          })
+        });
+        const data = await res.json();
+        if (data.success) {
+          renderEvaluation(data.job);
+          fetchStats();
+          loadJobs();
+          showToast("已重新生成全套招聘端文案");
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🔄 切换重算";
+      }
+    }
+
+    async function generateCompanyIntel() {
+      if (!currentJob) return;
+      const btn = document.getElementById("btn-gen-intel");
+      btn.disabled = true;
+      btn.innerText = "⏳ 研判企业背景中...";
+      try {
+        const res = await fetch(`/api/jobs/${currentJob.id}/company-intel`, { method: "POST", headers: apiHeaders() });
+        const d = await res.json();
+        if (d.success) {
+          currentJob = d.job;
+          renderIntelContent(d.company_intel);
+          fetchStats();
+          showToast("企业背调研判完成！");
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🔍 生成/刷新企业背调卡";
+      }
+    }
+
+    function renderIntelContent(intel) {
+      const flags = (intel.red_flag_watch || []).map(f => `<li>${escapeHtml(f)}</li>`).join("");
+      const qs = (intel.must_verify_questions || []).map(q => `<li>${escapeHtml(q)}</li>`).join("");
+      document.getElementById("intel-container").innerHTML = `
+        <div class="banner safe" style="font-size:11.5px;">📡 情报来源声明：${escapeHtml(intel.provenance || "")}</div>
+        <div class="info-box">
+          <strong>🏢 团队定位与阶段研判：</strong>
+          <p style="margin-top:4px;">${escapeHtml(intel.business_stage || "")}</p>
+        </div>
+        <div class="info-box">
+          <strong>⏰ 工时、外包与协作信号：</strong>
+          <p style="margin-top:4px;">${escapeHtml(intel.culture_and_workload || "")}</p>
+        </div>
+        <div class="info-box">
+          <strong>🎯 最强切入抓手：</strong>
+          <p style="margin-top:4px;">${escapeHtml(intel.entry_leverage || "")}</p>
+        </div>
+        <div class="info-box">
+          <strong>⚠️ 重点留意风险项：</strong>
+          <ul style="margin-top:4px;">${flags}</ul>
+        </div>
+        <div class="info-box">
+          <strong>❓ 一面建议向 HR 核实的 3 个底线问题：</strong>
+          <ul style="margin-top:4px;">${qs}</ul>
+        </div>
+      `;
+    }
+
+    async function generateInterviewPrep() {
+      if (!currentJob) return;
+      const btn = document.getElementById("btn-gen-prep");
+      btn.disabled = true;
+      btn.innerText = "⏳ 考官推演中...";
+      try {
+        const res = await fetch(`/api/jobs/${currentJob.id}/interview-prep`, { method: "POST", headers: apiHeaders() });
+        const data = await res.json();
+        if (data.success) {
+          currentJob = data.job;
+          renderPrepContent(data.interview_prep);
+          fetchStats();
+          showToast("面试急救包已生成！");
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "⚡ 生成/刷新面试急救包";
+      }
+    }
+
+    function renderPrepContent(prep) {
+      const tweaks = (prep.resume_tweaks || []).map(t => `<li>${escapeHtml(t)}</li>`).join("");
+      const qas = (prep.grill_questions || []).map((item, idx) => `
+        <div class="qa-card">
+          <div class="qa-q">Q${idx + 1}：${escapeHtml(item.question)}</div>
+          <div class="qa-intent">🎯 考官真实顾虑：${escapeHtml(item.intent)}</div>
+          <div class="qa-ans">💡 务实回答提纲：${escapeHtml(item.answer_points)}</div>
+        </div>
+      `).join("");
+      const askHr = (prep.questions_to_ask_hr || []).map(q => `<li>${escapeHtml(q)}</li>`).join("");
+      document.getElementById("prep-container").innerHTML = `
+        <div class="info-box"><strong>🎙️ 30 秒口语化自我介绍：</strong><p style="margin-top:4px;">${escapeHtml(prep.elevator_pitch || "")}</p></div>
+        <div class="info-box"><strong>✂️ 简历靶向微调动作：</strong><ul style="margin-top:4px;">${tweaks}</ul></div>
+        <div style="margin-bottom:10px;"><strong style="display:block; margin-bottom:6px;">🔥 考官视角 Grill-Me 必问 3 题：</strong>${qas}</div>
+        <div class="info-box"><strong>🙋 反问面试官问题：</strong><ul style="margin-top:4px;">${askHr}</ul></div>
+      `;
+    }
+
+    async function setJobStatus(status) {
+      if (!currentJob) return;
+      await fetch(`/api/jobs/${currentJob.id}/status`, {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({ status })
+      });
+      currentJob.delivery_status = status;
+      document.getElementById("job-stage-select").value = status;
+      fetchStats();
+      loadJobs();
+      showToast("求职阶段已更新");
+    }
+
+    async function setJobApproval(approval_status) {
+      if (!currentJob) return;
+      await fetch(`/api/jobs/${currentJob.id}/approval`, {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({ approval_status })
+      });
+      currentJob.approval_status = approval_status;
+      showToast("审批状态已更新");
+      loadJobs();
+    }
+
+    async function saveCurrentNotes() {
+      if (!currentJob) return;
+      const notes = document.getElementById("job-notes-box").value;
+      await fetch(`/api/jobs/${currentJob.id}/notes`, {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({ notes })
+      });
+      currentJob.notes = notes;
+      showToast("跟进笔记已保存");
+      loadJobs();
+    }
+
+    async function deliverCurrentJob() {
+      if (!currentJob) return;
+      await saveCurrentCopy();
+      const btn = document.getElementById("btn-deliver");
+      btn.disabled = true;
+      btn.innerText = "⏳ 正在执行多平台防封投递...";
+      try {
+        const res = await fetch(`/api/jobs/${currentJob.id}/deliver`, { method: "POST", headers: apiHeaders() });
+        const data = await res.json();
+        const msg = document.getElementById("deliver-msg");
+        msg.classList.remove("hidden");
+        msg.style.color = data.success ? "var(--accent)" : "var(--danger)";
+        msg.innerText = (data.success ? "✅ " : "❌ ") + data.message;
+        fetchStats();
+        loadJobs();
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🚀 批准放行 · 多平台拟人投递（含简历产物）";
+      }
+    }
+
+    // ==================== Pipeline Command Center ====================
+    async function loadBrowserProfiles() {
+      const res = await fetch("/api/browser/profiles");
+      if (!res.ok) return;
+      const d = await res.json();
+      const htmlCards = Object.entries(d).map(([plat, info]) => `
+        <div class="info-box" style="margin:0; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong>${escapeHtml(info.name)}</strong>
+            <div style="font-size:11px; color:var(--text-muted);">${info.has_session_cookies ? "✅ 已有持久化 Cookie" : "⚪ 待首次扫码登录"}</div>
+          </div>
+          <button class="btn btn-ghost" onclick="openPlatformLogin('${plat}')">扫码登录</button>
+        </div>
+      `).join("");
+      document.getElementById("profiles-grid").innerHTML = htmlCards;
+    }
+
+    async function openPlatformLogin(plat) {
+      const res = await fetch(`/api/browser/login/${plat}`, { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      showToast(d.message || d.detail || "已启动");
+    }
+
+    async function startPipelineRun() {
+      const plats = Array.from(document.querySelectorAll(".plat-chk:checked")).map(el => el.value);
+      if (!plats.length) { showToast("请至少勾选 1 个招聘平台"); return; }
+      document.getElementById("term-drawer").classList.add("expanded");
+      document.getElementById("term-toggle-label").innerText = "收起 ▼";
+
+      const res = await fetch("/api/pipeline/run", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({
+          cruise_platforms: plats,
+          cruise_keywords: document.getElementById("cruise-kws").value,
+          cruise_city: document.getElementById("cruise-city").value,
+          cruise_max_per_platform: parseInt(document.getElementById("cruise-max").value || "5", 10),
+          cruise_simulate: document.getElementById("cruise-sim-mode").value === "true",
+          render_pdfs: document.getElementById("cruise-pdf-mode").value === "true"
+        })
+      });
+      const d = await res.json();
+      showToast(d.message || "流水线已启动");
+      setTimeout(() => { pollTerminalLogs(); loadPipelineCenter(); fetchStats(); }, 1000);
+    }
+
+    async function abortPipelineRun() {
+      await fetch("/api/pipeline/abort", { method: "POST", headers: apiHeaders() });
+      showToast("🛑 已发送紧急中止指令");
+    }
+
+    async function loadPipelineCenter() {
+      const [stRes, jobsRes] = await Promise.all([
+        fetch("/api/pipeline/status"),
+        fetch("/api/jobs?status=pending_review")
+      ]);
+      if (stRes.ok) {
+        const st = await stRes.json();
+        document.getElementById("pipe-live-badge").innerText = st.is_running ? `运行中: ${st.current_stage}` : "当前空闲";
+        const runs = st.runs || [];
+        document.getElementById("runs-tbody").innerHTML = runs.length ? runs.map(r => `
+          <tr>
+            <td>#${r.id}</td>
+            <td>${escapeHtml(r.platforms)}</td>
+            <td>${escapeHtml(r.keywords)} (${escapeHtml(r.city)})</td>
+            <td><span class="badge ${r.mode==='simulate'?'info':'ok'}">${r.mode==='simulate'?'沙盒预演':'实盘登录'}</span></td>
+            <td>发现 ${r.total_found} → 新增 ${r.deduplicated_new} → T1过 ${r.tier1_passed} → T2过 ${r.tier2_passed} → PDF ${r.tailored_count}</td>
+            <td><span class="badge ${r.status==='completed'?'ok':'warn'}">${escapeHtml(r.status)}</span></td>
+            <td style="color:var(--text-muted);">${escapeHtml((r.started_at || "").slice(5, 16))}</td>
+          </tr>
+        `).join("") : '<tr><td colspan="7" style="text-align:center; padding:18px; color:var(--text-muted);">暂无巡航记录，点击上方「一键启动全链路巡航流水线」立即体验</td></tr>';
+      }
+
+      if (jobsRes.ok) {
+        const jobs = (await jobsRes.json()).filter(j => j.risk_level !== "veto");
+        jobs.forEach(j => window.JOBS_CACHE.set(j.id, j));
+        document.getElementById("approval-tbody").innerHTML = jobs.length ? jobs.map(j => {
+          const g = (j.greeting_final || j.greeting_draft || "").slice(0, 18);
+          const hasPdf = Boolean(j.tailored_pdf_path);
+          const appSt = j.approval_status || "waiting_approval";
+          const appBadge = appSt === "approved" || appSt === "auto_pass"
+            ? '<span class="badge ok">✓ 已批准待投</span>'
+            : '<span class="badge warn">⏳ 待审批</span>';
+          return `
+            <tr>
+              <td>#${j.id}</td>
+              <td><span class="badge info">${escapeHtml(j.grade || 'B')}</span> <strong>${j.match_score}</strong>分</td>
+              <td>
+                <div style="font-weight:700;">${escapeHtml(j.job_title)}</div>
+                <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(j.company_name)} · ${escapeHtml(j.salary || '面议')}</div>
+              </td>
+              <td>${escapeHtml(PLAT_LABELS[j.platform] || j.platform)}</td>
+              <td style="color:var(--accent); font-weight:600;">${escapeHtml(g)}...</td>
+              <td>
+                ${hasPdf
+                  ? `<a href="/api/jobs/${j.id}/artifact/pdf" target="_blank" class="chip-btn">PDF</a> <a href="/api/jobs/${j.id}/artifact/png" target="_blank" class="chip-btn">图片</a>`
+                  : `<button class="chip-btn" onclick="quickGenPdf(${j.id})">生成</button>`}
+              </td>
+              <td>${appBadge}</td>
+              <td style="text-align:right;">
+                <button class="btn btn-primary" style="padding:3px 9px; font-size:11.5px;" onclick="quickApprove(${j.id}, 'approved')">批准</button>
+                <button class="btn btn-secondary" style="padding:3px 9px; font-size:11.5px;" onclick="selectJob(${j.id})">精修</button>
+                <button class="btn btn-ghost" style="padding:3px 8px;" onclick="quickApprove(${j.id}, 'rejected')">跳过</button>
+              </td>
+            </tr>
+          `;
+        }).join("") : '<tr><td colspan="8" style="text-align:center; padding:22px; color:var(--text-muted);">当前暂无待审批岗位</td></tr>';
+      }
+    }
+
+    async function quickApprove(id, st) {
+      await fetch(`/api/jobs/${id}/approval`, {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({ approval_status: st })
+      });
+      loadPipelineCenter();
+      fetchStats();
+      showToast(st === "approved" ? `已批准 #${id}` : `已归档跳过 #${id}`);
+    }
+
+    async function quickGenPdf(id) {
+      showToast(`正在为 #${id} 静默生成 A4 PDF 与图片简历...`);
+      await fetch(`/api/jobs/${id}/render-artifacts`, { method: "POST", headers: apiHeaders() });
+      loadPipelineCenter();
+      showToast(`#${id} 定制简历已生成！`);
+    }
+
+    async function approveAllGradeSA() {
+      const res = await fetch("/api/jobs?status=pending_review");
+      const jobs = await res.json();
+      let cnt = 0;
+      for (const j of jobs) {
+        if ((j.grade === "S" || j.grade === "A") && j.approval_status === "waiting_approval") {
+          await fetch(`/api/jobs/${j.id}/approval`, {
+            method: "POST",
+            headers: apiHeaders(),
+            body: JSON.stringify({ approval_status: "approved" })
+          });
+          cnt++;
+        }
+      }
+      loadPipelineCenter();
+      fetchStats();
+      showToast(`已一键批准 ${cnt} 个 S/A 级高匹配岗位！`);
+    }
+
+    async function batchDeliverApproved() {
+      const res = await fetch("/api/pipeline/batch-deliver", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({})
+      });
+      const d = await res.json();
+      loadPipelineCenter();
+      fetchStats();
+      loadJobs();
+      showToast(`批量投递执行完毕：成功 ${d.delivered_count} 个（${d.dry_run ? "预演模式" : "实盘模式"}）`);
+    }
+
+    // ==================== Kanban ====================
+    function filterKanban(status, el) {
+      currentStatusFilter = status;
+      document.querySelectorAll(".stage-card").forEach(c => c.classList.remove("active"));
+      if (el) el.classList.add("active");
+      loadJobs();
+    }
+
+    async function loadJobs() {
+      const search = document.getElementById("search-kw")?.value.trim() || "";
+      const track = document.getElementById("filter-track")?.value || "";
+      const plat = document.getElementById("filter-platform")?.value || "";
+      const grade = document.getElementById("filter-grade")?.value || "";
+      const params = new URLSearchParams();
+      if (currentStatusFilter) params.set("status", currentStatusFilter);
+      if (track) params.set("track", track);
+      if (plat) params.set("platform", plat);
+      if (grade) params.set("grade", grade);
+      if (search) params.set("search", search);
+
+      const res = await fetch("/api/jobs?" + params.toString());
+      if (!res.ok) return;
+      const jobs = await res.json();
+      jobs.forEach(j => window.JOBS_CACHE.set(j.id, j));
+
+      const tbody = document.getElementById("jobs-tbody");
+      if (!jobs.length) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:26px; color:var(--text-muted);">当前筛选下暂无岗位记录</td></tr>';
+        return;
+      }
+
+      const stageMap = {
+        pending_review: '<span class="badge warn">待放行</span>',
+        delivered: '<span class="badge ok">已投递</span>',
+        interviewing: '<span class="badge info">约面中</span>',
+        offer: '<span class="badge ok">Offer 🎉</span>',
+        rejected: '<span class="badge neutral">已跳过</span>',
+        failed: '<span class="badge err">受阻</span>'
+      };
+      const riskMap = {
+        safe: '<span class="badge ok">安全</span>',
+        caution: '<span class="badge warn">需核实</span>',
+        veto: '<span class="badge err">雷区拦截</span>'
+      };
+
+      tbody.innerHTML = jobs.map(j => `
+        <tr>
+          <td style="color:var(--text-muted); font-family:monospace;">#${j.id}</td>
+          <td>
+            <div style="font-weight:700;">${escapeHtml(j.job_title)}</div>
+            <div style="font-size:11px; color:var(--text-muted);">${escapeHtml(j.company_name)} · ${escapeHtml(j.city || "深圳")} · ${escapeHtml(j.salary || "面议")}</div>
+          </td>
+          <td><span class="badge neutral">${escapeHtml(PLAT_LABELS[j.platform] || j.platform)}</span></td>
+          <td><span class="badge neutral">${escapeHtml(TRACK_LABELS[j.selected_track] || j.selected_track)}</span></td>
+          <td><span class="badge info">${escapeHtml(j.grade || "B")}</span> <strong>${j.match_score}</strong>分 ${riskMap[j.risk_level || "safe"] || ""}</td>
+          <td>${stageMap[j.delivery_status] || j.delivery_status}</td>
+          <td>
+            ${j.tailored_pdf_path ? `<a href="/api/jobs/${j.id}/artifact/pdf" target="_blank" class="badge ok" style="text-decoration:none;">PDF✓</a>` : '<span class="badge neutral">未生成</span>'}
+            ${j.feishu_record_id ? '<span class="badge info">飞书✓</span>' : ''}
+          </td>
+          <td style="text-align:right;">
+            <button class="btn btn-secondary" style="padding:4px 9px; font-size:11.5px;" onclick="selectJob(${j.id})">调取 🔍</button>
+            <button class="btn btn-ghost" style="padding:4px 7px;" onclick="deleteJobRow(${j.id})">✕</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function selectJob(id) {
+      const job = window.JOBS_CACHE.get(id);
+      if (!job) return;
+      document.getElementById("job_title").value = job.job_title || "";
+      document.getElementById("company_name").value = job.company_name || "";
+      document.getElementById("salary").value = job.salary || "";
+      document.getElementById("city").value = job.city || "深圳";
+      document.getElementById("hr_active_status").value = job.hr_active_status || "今日活跃";
+      document.getElementById("job_url").value = job.job_url || "";
+      document.getElementById("jd_text").value = job.jd_text || "";
+      document.getElementById("language").value = job.language || "zh-CN";
+      renderEvaluation(job);
+      switchMainView("studio");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    async function deleteJobRow(id) {
+      if (!confirm("确认从本地数据库删除该条记录吗？")) return;
+      await fetch(`/api/jobs/${id}`, { method: "DELETE", headers: apiHeaders() });
+      if (currentJob && currentJob.id === id) resetForm();
+      fetchStats();
+      loadJobs();
+    }
+
+    // ==================== Full Analytics Dashboard ====================
+    async function loadAnalytics() {
+      const res = await fetch("/api/analytics?days=14");
+      if (!res.ok) return;
+      const d = await res.json();
+      const k = d.kpis;
+      const tok = d.tokens.summary;
+
+      document.getElementById("ana-kpi-grid").innerHTML = `
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">总采集岗位池</div><div class="kpi-val">${k.total_jobs}</div><div style="font-size:11px; color:var(--danger);">排雷拦截 ${k.vetoed_jobs} 条</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">S / A 级高匹配</div><div class="kpi-val" style="color:var(--accent);">${k.sa_grade_jobs}</div><div style="font-size:11px; color:var(--text-muted);">全局均分 ${k.avg_match_score}</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">定制 PDF 简历数</div><div class="kpi-val">${k.tailored_pdfs}</div><div style="font-size:11px; color:var(--info);">飞书同步 ${k.feishu_synced} 条</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">已投递触达</div><div class="kpi-val" style="color:var(--info);">${k.delivered_jobs}</div><div style="font-size:11px; color:var(--text-muted);">约面推进 ${k.interview_jobs}</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">投递 → 约面率</div><div class="kpi-val" style="color:var(--purple);">${k.delivery_to_interview_rate}%</div><div style="font-size:11px; color:var(--accent);">Offer ${k.offer_jobs} 个</div></div>
+        <div class="kpi-card"><div style="color:var(--text-muted); font-size:11.5px;">大模型累计账单</div><div class="kpi-val">¥${tok.total_cost_cny.toFixed(3)}</div><div style="font-size:11px; color:var(--text-muted);">${tok.total_tokens} Tokens (${tok.total_calls}次)</div></div>
+      `;
+
+      document.getElementById("ana-funnel-box").innerHTML = (d.funnel || []).map(f => `
+        <div class="funnel-row">
+          <div style="font-weight:600;">${escapeHtml(f.label)}</div>
+          <div class="funnel-track">
+            <div class="funnel-bar" style="width:${Math.max(6, f.rate_from_top)}%;">${f.count}</div>
+          </div>
+          <div style="text-align:right; color:var(--text-muted); font-size:11px;">总占比 ${f.rate_from_top}%</div>
+        </div>
+      `).join("");
+
+      // Render Pure Inline SVG 14-day Trend Bar Chart
+      const trends = d.daily_trends || [];
+      const maxVal = Math.max(4, ...trends.map(t => Math.max(t.captured, t.delivered)));
+      const svgW = 560, svgH = 190, padB = 28, padT = 16;
+      const colW = svgW / Math.max(1, trends.length);
+      const barsSvg = trends.map((t, idx) => {
+        const x = idx * colW + 8;
+        const hCap = Math.round((t.captured / maxVal) * (svgH - padB - padT));
+        const hDel = Math.round((t.delivered / maxVal) * (svgH - padB - padT));
+        return `
+          <rect x="${x}" y="${svgH - padB - hCap}" width="11" height="${hCap}" rx="3" fill="#0284c7" opacity="0.85"><title>${t.date} 采集: ${t.captured}</title></rect>
+          <rect x="${x + 13}" y="${svgH - padB - hDel}" width="11" height="${hDel}" rx="3" fill="#00bebd"><title>${t.date} 投递: ${t.delivered}</title></rect>
+          <text x="${x + 11}" y="${svgH - 8}" font-size="9.5" fill="#94a3b8" text-anchor="middle">${t.short_date}</text>
+        `;
+      }).join("");
+      document.getElementById("ana-trend-svg-box").innerHTML = `
+        <div style="display:flex; gap:16px; font-size:11.5px; color:var(--text-muted); margin-bottom:6px;">
+          <span>🟦 每日新采集入库</span><span>🟩 每日完成投递</span>
+        </div>
+        <svg viewBox="0 0 ${svgW} ${svgH}" style="width:100%; height:auto; overflow:visible;">
+          <line x1="0" y1="${svgH - padB}" x2="${svgW}" y2="${svgH - padB}" stroke="#263552" stroke-width="1" />
+          ${barsSvg}
+        </svg>
+      `;
+
+      document.getElementById("ana-plat-tbody").innerHTML = (d.platform_roi || []).map(p => `
+        <tr>
+          <td><strong>${escapeHtml(p.label)}</strong></td>
+          <td>${p.total}</td>
+          <td><span class="badge ${p.clean_rate>=80?'ok':'warn'}">${p.clean_rate}%</span></td>
+          <td><strong>${p.avg_score}</strong></td>
+          <td>${p.sa_count}</td>
+          <td>${p.delivered}</td>
+          <td>${p.interview} (${p.reply_rate}%)</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("ana-track-tbody").innerHTML = (d.track_matrix || []).map(t => `
+        <tr>
+          <td><strong>${escapeHtml(t.label)}</strong></td>
+          <td>${t.total}</td>
+          <td><strong>${t.avg_score}</strong></td>
+          <td>${t.sa_count}</td>
+          <td>${t.delivered}</td>
+          <td style="font-size:11.5px; color:var(--text-muted);">${escapeHtml(t.top_match)}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("ana-token-badge").innerText = `累计 ${tok.total_tokens} Tokens · ¥${tok.total_cost_cny.toFixed(4)}`;
+      document.getElementById("ana-tok-action-tbody").innerHTML = (d.tokens.by_action || []).length
+        ? d.tokens.by_action.map(a => `
+          <tr>
+            <td>${escapeHtml(a.label)}</td>
+            <td>${a.calls}</td>
+            <td style="color:var(--text-muted);">${a.prompt_tokens} / ${a.completion_tokens}</td>
+            <td><strong>${a.total_tokens}</strong></td>
+            <td>¥${a.cost_cny.toFixed(4)}</td>
+          </tr>
+        `).join("")
+        : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:16px;">暂无云端 Token 消耗记录</td></tr>';
+
+      document.getElementById("ana-tok-logs-tbody").innerHTML = (d.tokens.recent_logs || []).length
+        ? d.tokens.recent_logs.map(l => `
+          <tr>
+            <td style="color:var(--text-muted);">${escapeHtml((l.created_at || "").slice(5, 16))}</td>
+            <td><span class="badge neutral">${escapeHtml(l.action)}</span></td>
+            <td>${l.job_id ? `#${l.job_id} ${escapeHtml(l.company_name || "")}` : "-"}</td>
+            <td>${l.total_tokens}</td>
+            <td>¥${Number(l.estimated_cny || 0).toFixed(4)}</td>
+          </tr>
+        `).join("")
+        : '<tr><td colspan="5" style="text-align:center; color:var(--text-muted); padding:16px;">暂无流水</td></tr>';
+    }
+
+    // ==================== Feishu Hub & Settings ====================
+    async function checkFeishuStatus() {
+      const res = await fetch("/api/feishu/check");
+      if (!res.ok) return;
+      const d = await res.json();
+      document.getElementById("feishu-diag-box").innerHTML = `
+        <div>• <strong>群机器人 Webhook</strong>：${d.webhook_configured ? '<span class="badge ok">已配置</span>' : '<span class="badge neutral">未配置</span>'}</div>
+        <div style="margin-top:4px;">• <strong>开放平台自建应用 (多维表格/机器人)</strong>：${d.app_configured ? (d.app_auth_ok ? `<span class="badge ok">鉴权成功</span> 租户：${escapeHtml(d.tenant_name)}` : `<span class="badge err">鉴权失败: ${escapeHtml(d.auth_error || '')}</span>`) : '<span class="badge neutral">待填入 AppID & Secret</span>'}</div>
+      `;
+    }
+
+    async function autoInitFeishuBitable() {
+      await saveRuntimeSettings(true);
+      const res = await fetch("/api/feishu/init-bitable", { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      if (res.ok && d.success) {
+        loadRuntimeSettings();
+        showToast("✅ 已自动创建/校准飞书多维表格与全部标准列！");
+      } else {
+        alert("飞书自动建表提示：" + (d.detail || "请先在右侧填入个人飞书自建应用的 App ID 与 App Secret"));
+      }
+    }
+
+    async function feishuSyncPush() {
+      const res = await fetch("/api/feishu/sync-push", { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      if (res.ok && d.success) showToast(`☁️ 推送成功：新增 ${d.created} 条，更新 ${d.updated} 条`);
+      else alert("推送提示：" + (d.detail || "请先配置并初始化多维表格"));
+    }
+
+    async function feishuSyncPull() {
+      const res = await fetch("/api/feishu/sync-pull", { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      if (res.ok && d.success) {
+        fetchStats();
+        loadJobs();
+        showToast(`⬇️ 拉取完成：更新本地 ${d.updated_local} 条，手机新批准 ${d.newly_approved_ids.length} 条`);
+      } else {
+        alert("拉取提示：" + (d.detail || "请先配置多维表格"));
+      }
+    }
+
+    async function feishuPushReport() {
+      const res = await fetch("/api/feishu/push-report", { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      showToast(d.success ? "📊 飞书战报卡片已送达！" : (d.message || "未配置 Webhook，已在本地指令台可用"));
+    }
+
+    async function sendBotCmd(cmd) {
+      const stream = document.getElementById("feishu-bot-stream");
+      stream.innerHTML += `<div class="msg-bubble msg-user">${escapeHtml(cmd)}</div>`;
+      stream.scrollTop = stream.scrollHeight;
+      const res = await fetch("/api/feishu/bot-command", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({ command: cmd })
+      });
+      const d = await res.json();
+      stream.innerHTML += `<div class="msg-bubble msg-bot">${escapeHtml(d.reply || "")}</div>`;
+      stream.scrollTop = stream.scrollHeight;
+      fetchStats();
+    }
+
+    function submitBotInput() {
+      const inp = document.getElementById("feishu-bot-input");
+      const v = inp.value.trim();
+      if (!v) return;
+      inp.value = "";
+      sendBotCmd(v);
+    }
+
+    let LLM_PROVIDER_CATALOG = {};
+
+    async function ensureProviderCatalog() {
+      if (Object.keys(LLM_PROVIDER_CATALOG).length) return LLM_PROVIDER_CATALOG;
+      const res = await fetch("/api/llm/providers");
+      if (res.ok) {
+        const d = await res.json();
+        LLM_PROVIDER_CATALOG = d.providers || {};
+      }
+      return LLM_PROVIDER_CATALOG;
+    }
+
+    function renderModelChips(models, targetInputId) {
+      const dl = document.getElementById("llm-model-datalist");
+      dl.innerHTML = (models || []).map(m => `<option value="${escapeHtml(m)}"></option>`).join("");
+      const box = document.getElementById("m-model-chips");
+      if (box) {
+        box.innerHTML = (models || []).slice(0, 8).map(m =>
+          `<button type="button" class="chip-btn" onclick="document.getElementById('${targetInputId}').value='${escapeHtml(m)}'">${escapeHtml(m)}</button>`
+        ).join("");
+      }
+    }
+
+    async function openLLMModal() {
+      await ensureProviderCatalog();
+      const res = await fetch("/api/settings");
+      if (res.ok) {
+        const d = await res.json();
+        const s = d.settings;
+        const prov = s.llm_provider || "deepseek";
+        document.getElementById("m-llm-provider").value = prov;
+        document.getElementById("m-llm-enabled").value = String(s.llm_enabled !== false);
+        document.getElementById("m-llm-key").value = s.openai_api_key || "";
+        document.getElementById("m-llm-url").value = s.openai_base_url || "https://api.deepseek.com";
+        document.getElementById("m-llm-model").value = s.openai_model || "deepseek-chat";
+        document.getElementById("m-price-in").value = s.price_prompt_per_m_cny ?? 2.0;
+        document.getElementById("m-price-out").value = s.price_completion_per_m_cny ?? 8.0;
+        document.getElementById("m-vis-key").value = s.vision_api_key || "";
+        document.getElementById("m-vis-url").value = s.vision_base_url || "https://dashscope.aliyuncs.com/compatible-mode/v1";
+        document.getElementById("m-vis-model").value = s.vision_model || "qwen-vl-plus";
+        const meta = LLM_PROVIDER_CATALOG[prov] || {};
+        document.getElementById("m-provider-hint").innerText = meta.key_hint ? `💡 ${meta.key_hint}` : "";
+        renderModelChips(meta.models || [], "m-llm-model");
+      }
+      document.getElementById("m-llm-test-res").classList.add("hidden");
+      document.getElementById("llm-modal").classList.add("open");
+    }
+
+    function closeLLMModal() {
+      document.getElementById("llm-modal").classList.remove("open");
+    }
+
+    async function onModalProviderChange(prov) {
+      await ensureProviderCatalog();
+      const meta = LLM_PROVIDER_CATALOG[prov];
+      if (!meta) return;
+      if (meta.base_url) document.getElementById("m-llm-url").value = meta.base_url;
+      if (meta.default_model) document.getElementById("m-llm-model").value = meta.default_model;
+      document.getElementById("m-price-in").value = meta.price_in ?? 2.0;
+      document.getElementById("m-price-out").value = meta.price_out ?? 8.0;
+      document.getElementById("m-provider-hint").innerText = meta.key_hint ? `💡 ${meta.key_hint}` : "";
+      if (!meta.requires_key) {
+        document.getElementById("m-llm-key").placeholder = "本地离线模型免填 API Key";
+      } else {
+        document.getElementById("m-llm-key").placeholder = "粘贴您的 API Key 密钥...";
+      }
+      renderModelChips(meta.models || [], "m-llm-model");
+    }
+
+    async function applyProviderToSettingsCard(prov) {
+      await ensureProviderCatalog();
+      const meta = LLM_PROVIDER_CATALOG[prov];
+      if (!meta) return;
+      if (meta.base_url) document.getElementById("cfg-openai-url").value = meta.base_url;
+      if (meta.default_model) document.getElementById("cfg-openai-model").value = meta.default_model;
+      document.getElementById("cfg-price-in").value = meta.price_in ?? 2.0;
+      document.getElementById("cfg-price-out").value = meta.price_out ?? 8.0;
+      renderModelChips(meta.models || [], "cfg-openai-model");
+    }
+
+    function clearSavedLLMKey() {
+      document.getElementById("m-llm-key").value = "__CLEAR__";
+      showToast("已标记清空密钥，点击「保存大模型配置」即可擦除本地存储的 Key");
+    }
+
+    async function fetchModelsForModal() {
+      const btn = document.getElementById("btn-fetch-models");
+      btn.disabled = true;
+      btn.innerText = "拉取中...";
+      try {
+        const res = await fetch("/api/llm/models", {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify({
+            provider: document.getElementById("m-llm-provider").value,
+            api_key: document.getElementById("m-llm-key").value.trim(),
+            base_url: document.getElementById("m-llm-url").value.trim(),
+            model: document.getElementById("m-llm-model").value.trim()
+          })
+        });
+        const d = await res.json();
+        if (d.models && d.models.length) {
+          renderModelChips(d.models, "m-llm-model");
+          showToast(`✅ 已获取 ${d.models.length} 个可选模型，点击下方标签或下拉框即可选用`);
+        } else {
+          showToast(d.message || "该网关未公开 /models 列表，请直接输入模型名");
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🔄 拉取模型列表";
+      }
+    }
+
+    async function testModalLLMConnection() {
+      const btn = document.getElementById("btn-test-llm");
+      const box = document.getElementById("m-llm-test-res");
+      btn.disabled = true;
+      btn.innerText = "⏳ 正在握手实测...";
+      box.classList.remove("hidden");
+      box.className = "banner caution";
+      box.innerText = "正在向目标大模型网关发送轻量连通性探针...";
+      try {
+        const res = await fetch("/api/llm/test", {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify({
+            provider: document.getElementById("m-llm-provider").value,
+            api_key: document.getElementById("m-llm-key").value.trim(),
+            base_url: document.getElementById("m-llm-url").value.trim(),
+            model: document.getElementById("m-llm-model").value.trim()
+          })
+        });
+        const d = await res.json();
+        box.className = "banner " + (d.success ? "safe" : "veto");
+        box.innerText = (d.success ? "✅ " : "❌ ") + d.message;
+      } catch (e) {
+        box.className = "banner veto";
+        box.innerText = "❌ 请求异常：" + e.message;
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "⚡ 测试接口连通性与延迟";
+      }
+    }
+
+    async function saveModalLLMSettings() {
+      const visKey = document.getElementById("m-vis-key").value.trim();
+      const payload = {
+        llm_provider: document.getElementById("m-llm-provider").value,
+        llm_enabled: document.getElementById("m-llm-enabled").value === "true",
+        openai_api_key: document.getElementById("m-llm-key").value.trim(),
+        openai_base_url: document.getElementById("m-llm-url").value.trim(),
+        openai_model: document.getElementById("m-llm-model").value.trim(),
+        price_prompt_per_m_cny: parseFloat(document.getElementById("m-price-in").value || "2.0"),
+        price_completion_per_m_cny: parseFloat(document.getElementById("m-price-out").value || "8.0"),
+        vision_api_key: visKey,
+        vision_base_url: document.getElementById("m-vis-url").value.trim(),
+        vision_model: document.getElementById("m-vis-model").value.trim(),
+        vision_provider: (visKey && !visKey.includes("****")) ? "cloud_vl" : undefined
+      };
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        await loadRuntimeSettings();
+        await fetchStats();
+        closeLLMModal();
+        showToast("✅ 自定义大模型 API 配置已保存并立即生效！");
+      }
+    }
+
+    async function loadRuntimeSettings() {
+      const res = await fetch("/api/settings");
+      if (!res.ok) return;
+      const d = await res.json();
+      const s = d.settings;
+      document.getElementById("cfg-llm-provider").value = s.llm_provider || "deepseek";
+      document.getElementById("cfg-llm-enabled").value = String(s.llm_enabled !== false);
+      document.getElementById("cfg-openai-key").value = s.openai_api_key || "";
+      document.getElementById("cfg-openai-url").value = s.openai_base_url || "https://api.deepseek.com";
+      document.getElementById("cfg-openai-model").value = s.openai_model || "deepseek-chat";
+      document.getElementById("cfg-vision-provider").value = s.vision_provider || "apple_vision_first";
+      document.getElementById("cfg-price-in").value = s.price_prompt_per_m_cny ?? 2.0;
+      document.getElementById("cfg-price-out").value = s.price_completion_per_m_cny ?? 8.0;
+      document.getElementById("cfg-feishu-enabled").checked = Boolean(s.feishu_enabled);
+      document.getElementById("cfg-feishu-webhook").value = s.feishu_webhook_url || "";
+      document.getElementById("cfg-feishu-appid").value = s.feishu_app_id || "";
+      document.getElementById("cfg-feishu-secret").value = s.feishu_app_secret || "";
+      document.getElementById("cfg-feishu-apptoken").value = s.feishu_app_token || "";
+      document.getElementById("cfg-feishu-jobtable").value = s.feishu_jobs_table_id || "";
+      document.getElementById("cfg-dry-run").value = String(Boolean(s.dry_run));
+      document.getElementById("cfg-daily-limit").value = s.daily_delivery_limit || 35;
+      document.getElementById("cfg-attach-mode").value = s.delivery_attach_mode || "greeting_and_img";
+      document.getElementById("cfg-sched-enabled").value = String(Boolean(s.scheduler_enabled));
+      document.getElementById("cfg-cruise-time").value = s.cruise_cron_time || "09:30";
+      document.getElementById("cfg-report-time").value = s.report_cron_time || "20:30";
+      document.getElementById("cfg-serper-key").value = s.serper_api_key || "";
+      document.getElementById("cfg-local-token").value = s.local_api_token || "";
+    }
+
+    async function saveRuntimeSettings(silent = false) {
+      const rawTok = document.getElementById("cfg-local-token").value.trim();
+      if (rawTok && !rawTok.includes("****")) localStorage.setItem("hl_api_token", rawTok);
+
+      const payload = {
+        llm_provider: document.getElementById("cfg-llm-provider").value,
+        llm_enabled: document.getElementById("cfg-llm-enabled").value === "true",
+        openai_api_key: document.getElementById("cfg-openai-key").value.trim(),
+        openai_base_url: document.getElementById("cfg-openai-url").value.trim(),
+        openai_model: document.getElementById("cfg-openai-model").value.trim(),
+        vision_provider: document.getElementById("cfg-vision-provider").value,
+        price_prompt_per_m_cny: parseFloat(document.getElementById("cfg-price-in").value || "2.0"),
+        price_completion_per_m_cny: parseFloat(document.getElementById("cfg-price-out").value || "8.0"),
+        feishu_enabled: document.getElementById("cfg-feishu-enabled").checked,
+        feishu_webhook_url: document.getElementById("cfg-feishu-webhook").value.trim(),
+        feishu_app_id: document.getElementById("cfg-feishu-appid").value.trim(),
+        feishu_app_secret: document.getElementById("cfg-feishu-secret").value.trim(),
+        feishu_app_token: document.getElementById("cfg-feishu-apptoken").value.trim(),
+        feishu_jobs_table_id: document.getElementById("cfg-feishu-jobtable").value.trim(),
+        dry_run: document.getElementById("cfg-dry-run").value === "true",
+        daily_delivery_limit: parseInt(document.getElementById("cfg-daily-limit").value || "35", 10),
+        delivery_attach_mode: document.getElementById("cfg-attach-mode").value,
+        scheduler_enabled: document.getElementById("cfg-sched-enabled").value === "true",
+        cruise_cron_time: document.getElementById("cfg-cruise-time").value.trim(),
+        report_cron_time: document.getElementById("cfg-report-time").value.trim(),
+        serper_api_key: document.getElementById("cfg-serper-key").value.trim(),
+        local_api_token: rawTok
+      };
+
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        await loadRuntimeSettings();
+        fetchStats();
+        if (!silent) showToast("✅ 系统配置已保存并即时热重载生效！");
+      }
+    }
+
+    // ==================== Multi-Turn Mock Interview Camp ====================
+    async function populateMockJobSelect() {
+      const res = await fetch("/api/jobs");
+      if (!res.ok) return;
+      const jobs = await res.json();
+      const sel = document.getElementById("mock-job-select");
+      if (!jobs.length) {
+        sel.innerHTML = '<option value="">请先录入或巡航至少 1 个岗位</option>';
+        return;
+      }
+      sel.innerHTML = jobs.map(j => `<option value="${j.id}">#${j.id} ${escapeHtml(j.company_name)} · ${escapeHtml(j.job_title)} (${j.match_score}分)</option>`).join("");
+      if (currentJob) sel.value = String(currentJob.id);
+    }
+
+    function jumpToMockForCurrent() {
+      switchMainView("mock");
+    }
+
+    async function startMockSession() {
+      const jid = parseInt(document.getElementById("mock-job-select").value || "0", 10);
+      if (!jid) { showToast("请先选择一个岗位"); return; }
+      const btn = document.getElementById("btn-mock-start");
+      btn.disabled = true;
+      btn.innerText = "⏳ 考官正在审阅简历开场...";
+      try {
+        const res = await fetch("/api/mock-interview/start", {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify({ job_id: jid })
+        });
+        const d = await res.json();
+        if (d.success) {
+          activeMockSessionId = d.session.id;
+          document.getElementById("mock-session-badge").className = "badge ok";
+          document.getElementById("mock-session-badge").innerText = `对练会话 #${activeMockSessionId} 进行中`;
+          document.getElementById("mock-scorecard-box").innerHTML = "";
+          renderMockMessages(d.session.messages);
+          fetchStats();
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "🎙️ 开启新一轮考官拷打对练";
+      }
+    }
+
+    async function submitMockAnswer() {
+      if (!activeMockSessionId) { showToast("请先点击左侧「开启新一轮考官拷打对练」"); return; }
+      const inp = document.getElementById("mock-answer-input");
+      const ans = inp.value.trim();
+      if (!ans) return;
+      inp.value = "";
+      const btn = document.getElementById("btn-mock-send");
+      btn.disabled = true;
+      btn.innerText = "点评追问中...";
+      try {
+        const res = await fetch(`/api/mock-interview/${activeMockSessionId}/answer`, {
+          method: "POST",
+          headers: apiHeaders(),
+          body: JSON.stringify({ answer: ans })
+        });
+        const d = await res.json();
+        if (d.success) {
+          renderMockMessages(d.session.messages);
+          fetchStats();
+        }
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "发送回答";
+      }
+    }
+
+    function renderMockMessages(msgs) {
+      const box = document.getElementById("mock-chat-stream");
+      box.innerHTML = (msgs || []).map(m => {
+        if (m.role === "interviewer") {
+          return `<div class="msg-bubble msg-bot"><strong>👔 面试官：</strong>${escapeHtml(m.content)}</div>`;
+        }
+        const cf = m.coach_feedback || {};
+        return `
+          <div style="align-self:flex-end; max-width:88%;">
+            <div class="msg-bubble msg-user" style="max-width:100%;">${escapeHtml(m.content)}</div>
+            ${cf.turn_score ? `
+              <div class="coach-note">
+                <strong>🎯 场外教练单轮评分：${cf.turn_score} 分</strong><br/>
+                ✓ 亮点：${escapeHtml(cf.strength || "")}<br/>
+                △ 提升：${escapeHtml(cf.improvement || "")}<br/>
+                💡 示范表达：${escapeHtml(cf.sample_upgrade || "")}
+              </div>
+            ` : ""}
+          </div>
+        `;
+      }).join("");
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function finishMockSession() {
+      if (!activeMockSessionId) return;
+      const res = await fetch(`/api/mock-interview/${activeMockSessionId}/finish`, { method: "POST", headers: apiHeaders() });
+      const d = await res.json();
+      if (d.success) {
+        const sc = d.scorecard;
+        const dims = Object.entries(sc.dimensions || {}).map(([k, v]) => `<li>${escapeHtml(k)}：<strong>${v}</strong> 分</li>`).join("");
+        document.getElementById("mock-scorecard-box").innerHTML = `
+          <div class="info-box">
+            <div style="font-size:15px; font-weight:800; color:var(--accent); margin-bottom:6px;">🏆 本场综合面试得分：${sc.overall_score} / 100（共 ${sc.rounds_completed} 轮）</div>
+            <ul>${dims}</ul>
+            <div style="margin-top:8px; font-size:12px;">${escapeHtml(sc.verdict || "")}</div>
+          </div>
+        `;
+        document.getElementById("mock-session-badge").innerText = "已完成评分";
+      }
+    }
+
+    // ==================== Modals, Rules & Live Terminal ====================
+    async function openMasterResumeModal() {
+      if (!currentJob) return;
+      const res = await fetch(`/api/resumes/${currentJob.selected_track}`);
+      const d = await res.json();
+      document.getElementById("modal-title").innerText = `母本预览：${d.track_name || d.track_key}`;
+      document.getElementById("modal-body").innerText = d.content;
+      document.getElementById("resume-modal").classList.add("open");
+    }
+    function closeResumeModal() { document.getElementById("resume-modal").classList.remove("open"); }
+    function openTailoredResumePage() { if (currentJob) window.open(`/jobs/${currentJob.id}/tailored-resume`, "_blank"); }
+
+    async function loadRules() {
+      const res = await fetch("/api/rules");
+      const r = await res.json();
+      document.getElementById("rule-veto").value = (r.hard_veto_keywords || []).join(", ");
+      document.getElementById("rule-caution").value = (r.caution_keywords || []).join(", ");
+      document.getElementById("rule-green").value = (r.green_keywords || []).join(", ");
+      document.getElementById("rule-blacklist").value = (r.blacklist_companies || []).join(", ");
+    }
+
+    async function saveRules() {
+      const splitKw = id => document.getElementById(id).value.split(/[,，\n]/).map(s => s.trim()).filter(Boolean);
+      await fetch("/api/rules", {
+        method: "POST",
+        headers: apiHeaders(),
+        body: JSON.stringify({
+          hard_veto_keywords: splitKw("rule-veto"),
+          caution_keywords: splitKw("rule-caution"),
+          green_keywords: splitKw("rule-green"),
+          blacklist_companies: splitKw("rule-blacklist")
+        })
+      });
+      showToast("本地排雷词库已更新生效！");
+    }
+
+    function toggleTerminalDrawer() {
+      const d = document.getElementById("term-drawer");
+      const exp = d.classList.toggle("expanded");
+      document.getElementById("term-toggle-label").innerText = exp ? "收起 ▼" : "展开 ▲";
+    }
+
+    async function pollTerminalLogs() {
+      try {
+        const res = await fetch(`/api/pipeline/status?since_log_id=${lastLogId}`);
+        if (!res.ok) return;
+        const d = await res.json();
+        const logs = d.logs || [];
+        if (logs.length) {
+          const body = document.getElementById("term-body");
+          logs.forEach(l => {
+            lastLogId = Math.max(lastLogId, l.id);
+            const div = document.createElement("div");
+            div.className = `log-${l.level || 'INFO'}`;
+            div.textContent = `[${(l.created_at || "").slice(11)}] [${l.stage}] ${l.message}`;
+            body.appendChild(div);
+          });
+          body.scrollTop = body.scrollHeight;
+          document.getElementById("term-count").innerText = body.children.length;
+        }
+        if (d.is_running) {
+          fetchStats();
+        }
+      } catch (e) {}
+    }
+
+    function escapeHtml(str) {
+      return String(str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    // Boot
+    document.getElementById("sim-greeting-input").value = DEFAULT_SIM_GREETING;
+    document.getElementById("sim-adv-input").value = DEFAULT_SIM_ADVANTAGE;
+    renderRecruiterMockups();
+    fetchStats();
+    loadJobs();
+    pollTerminalLogs();
+    setInterval(pollTerminalLogs, 2200);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const initView = urlParams.get("view");
+    if (initView && ["studio", "recruiter", "pipeline", "kanban", "analytics", "feishu", "mock"].includes(initView)) {
+      switchMainView(initView);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+
+# Local Private Data, SQLite DB, Resumes, Browser Cookies & Rendered PDFs
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Python Virtual Env & Bytecode
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# OS & Editor Artifacts
+.DS_Store
+._*
+*.log
+.idea/
+.vscode/

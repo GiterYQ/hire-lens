@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "HireLens 聘镜 · 招聘端视角一键剪藏",
+  "version": "2.1.0",
+  "description": "零风控提取当前招聘页 JD，直连本机 127.0.0.1:8765 生成前16字外露破冰语与 BOSS 推荐牛人卡片「个人优势」。",
+  "permissions": ["activeTab", "scripting", "clipboardWrite"],
+  "host_permissions": ["http://127.0.0.1:8765/*"],
+  "action": {
+    "default_title": "HireLens 聘镜一键剪藏",
+    "default_popup": "popup.html"
+  }
+}
